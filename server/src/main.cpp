@@ -1,11 +1,12 @@
 extern "C" {
 	#include <signal.h>
 }
+
 #include <iostream>
+#include <unistd.h>
 
 #include "server_config.h"
-#include "mongoose/mongoose.h"
-#include "rest/root_node.h"
+#include "wa/wa_server.h"
 
 using std::cout;
 using std::endl;
@@ -17,33 +18,6 @@ void sig_handler(int sig)
 	running = 0;
 }
 
-static int ev_handler(struct mg_connection *conn, enum mg_event ev) {
-	RootNode *root = (RootNode*) conn->server_param;
-
-	switch (ev) {
-		case MG_AUTH:
-			return MG_TRUE;
-
-		case MG_REQUEST:
-			if(root->handle(conn, conn->uri))
-				return MG_TRUE;
-			//return MG_MORE;
-			return MG_FALSE;
-
-			//if (!strcmp(conn->uri, "/api/sum")) {
-			//	handle_restful_call(conn);
-			//	return MG_TRUE;
-			//}
-			//mg_send_file(conn, "index.html", s_no_cache_header);
-			//return MG_MORE;
-			break;
-
-		default:
-			return MG_FALSE;
-			break;
-	}
-}
-
 int main(int, char**){
 	// Registro se~nales para cerrar de manera linda
 	signal(SIGHUP, sig_handler);
@@ -52,20 +26,18 @@ int main(int, char**){
 	signal(SIGINT, sig_handler);
 
 	cout << "Version: " << SERVER_VERSION_MAJOR << "." << SERVER_VERSION_MINOR << endl;
-	cout << "Mongoose: " << MONGOOSE_VERSION << endl;
+	//cout << "Mongoose: " << MONGOOSE_VERSION << endl;
 
 	cout << "Run!" << endl;
 
-	RootNode root;
-	struct mg_server *server;
 
-	server = mg_create_server(&root, ev_handler);
-	mg_set_option(server, "listening_port", "8000");
+	WAServer server(2);
+	server.setPort(8000);
+
+	server.run();
 
 	while(running)
-		mg_poll_server(server, 1000);
-
-	mg_destroy_server(&server);
+		sleep(1);
 
 	return 0;
 }
