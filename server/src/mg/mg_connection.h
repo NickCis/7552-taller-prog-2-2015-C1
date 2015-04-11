@@ -21,11 +21,21 @@ class MgConnection {
 			STATUS_CODE_METHOD_NOT_ALLOWED=405
 		} StatusCodes;
 
+		typedef enum ContentTypes {
+			CONTENT_TYPE_JSON=0,
+			CONTENT_TYPE_HTML,
+			CONTENT_TYPE_TOTAL
+		} ContentTypes;
+
 		void sendStatus(MgConnection::StatusCodes code);
 		void sendStatus(int code);
 
 		void sendHeader(const std::string& name, const std::string& val);
 		void sendHeader(const char* name, const char* val);
+
+		void sendContentType(const std::string& type);
+		void sendContentType(const char* type);
+		void sendContentType(MgConnection::ContentTypes type);
 
 		size_t printfData(const char* format, ...);
 

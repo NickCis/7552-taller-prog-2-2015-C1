@@ -6,6 +6,11 @@ extern "C" {
 
 using std::string;
 
+static const char* CONTENT_TYPES[] = {
+	"application/json", // CONTENT_TYPE_JSON
+	"text/html" // CONTENT_TYPE_HTML
+};
+
 MgConnection::MgConnection(struct mg_connection *c) : conn(c) {
 
 }
@@ -36,4 +41,18 @@ size_t MgConnection::printfData(const char* fmt, ...){
 
 struct mg_connection* MgConnection::operator->(){
 	return this->conn;
+}
+
+void MgConnection::sendContentType(const std::string& type){
+	this->sendContentType(type.c_str());
+}
+
+void MgConnection::sendContentType(const char* type){
+	this->sendHeader("Content-Type", type);
+}
+
+void MgConnection::sendContentType(MgConnection::ContentTypes type){
+	if(type >= MgConnection::CONTENT_TYPE_TOTAL)
+		return;
+	this->sendContentType(CONTENT_TYPES[type]);
 }

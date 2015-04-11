@@ -5,12 +5,19 @@
 using std::cout;
 using std::endl;
 
-SignupNode::SignupNode() : WAStrNode("signup") {
+SignupNode::SignupNode() : WAMethodNode("signup") {
 }
 
-void SignupNode::execute(MgConnection& conn, const char* url){
+void SignupNode::executePost(MgConnection& conn, const char* url){
 	cout << "estoy ejecutando!" << endl;
 	conn.sendStatus(MgConnection::STATUS_CODE_CREATED);
-	conn.sendHeader("Content-Type", "application/json");
+	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
+	conn.printfData("{ \"result\": %d }", 1);
+}
+
+void SignupNode::executeGet(MgConnection& conn, const char* url){
+	cout << "estoy ejecutando! Get" << endl;
+	conn.sendStatus(MgConnection::STATUS_CODE_CREATED);
+	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
 	conn.printfData("{ \"result\": %d }", 1);
 }

@@ -33,7 +33,7 @@ configure_file (
 
 include_directories("${PROJECT_BINARY_DIR}")
 
-file( GLOB WA_FILES src/wa_server.cpp src/node/wa_node.cpp src/node/wa_str_node.cpp src/node/wa_parent_node.cpp)
+file( GLOB WA_FILES src/wa_server.cpp src/node/wa_node.cpp src/node/wa_str_node.cpp src/node/wa_method_node.cpp src/node/wa_parent_node.cpp)
 file( GLOB REST_FILES src/rest/root_node.cpp src/rest/signup_node.cpp src/rest/not_found_node.cpp)
 file( GLOB MONGOOSE_FILES src/mg/mg_server.cpp src/mg/mg_connection.cpp src/mg/mongoose/mongoose.c)
 
