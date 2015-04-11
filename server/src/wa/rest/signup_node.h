@@ -1,7 +1,7 @@
 #ifndef __SINGUP_NODE_H__
 #define __SINGUP_NODE_H__
 
-#include "../wa/node/wa_parent_node.h"
+#include "../node/wa_parent_node.h"
 
 class SignupNode : public WAStrNode {
 	public:

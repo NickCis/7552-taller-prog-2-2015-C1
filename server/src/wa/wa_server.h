@@ -2,7 +2,7 @@
 #define __WA_SERVER_H__
 
 #include "../mg/mg_server.h"
-#include "../rest/root_node.h"
+#include "rest/root_node.h"
 
 class WAServer : public MgServer {
 	public:

@@ -1,7 +1,7 @@
 #ifndef __NOT_FOUND_NODE_H__
 #define __NOT_FOUND_NODE_H__
 
-#include "../wa/node/wa_node.h"
+#include "../node/wa_node.h"
 
 class NotFoundNode : public WANode {
 	public:
