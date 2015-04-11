@@ -56,3 +56,11 @@ void MgConnection::sendContentType(MgConnection::ContentTypes type){
 		return;
 	this->sendContentType(CONTENT_TYPES[type]);
 }
+
+const std::string& MgConnection::getParameter(const std::string& key){
+	return this->parameters[key];
+}
+
+void MgConnection::setParameter(const std::string& key, const std::string& value){
+	this->parameters[key] = value;
+}

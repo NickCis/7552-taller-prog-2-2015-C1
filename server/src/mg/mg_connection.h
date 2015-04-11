@@ -3,6 +3,7 @@
 
 #include "mongoose/mongoose.h"
 
+#include <map>
 #include <string>
 
 class MgConnection {
@@ -41,8 +42,12 @@ class MgConnection {
 
 		struct mg_connection* operator->();
 
+		const std::string& getParameter(const std::string& key);
+		void setParameter(const std::string& key, const std::string& value);
+
 	protected:
 		struct mg_connection *conn;
+		std::map<std::string, std::string> parameters;
 };
 
 #endif
