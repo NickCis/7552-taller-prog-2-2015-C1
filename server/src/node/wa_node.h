@@ -1,7 +1,7 @@
 #ifndef __WA_NODE_H__
 #define __WA_NODE_H__
 
-#include "../..//mg/mg_connection.h"
+#include "../mg/mg_connection.h"
 
 class WANode {
 	public:

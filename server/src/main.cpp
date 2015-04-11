@@ -6,7 +6,7 @@ extern "C" {
 #include <unistd.h>
 
 #include "server_config.h"
-#include "wa/wa_server.h"
+#include "wa_server.h"
 
 using std::cout;
 using std::endl;
@@ -30,7 +30,6 @@ int main(int, char**){
 
 	cout << "Run!" << endl;
 
-
 	WAServer server(2);
 	server.setPort(8000);
 
@@ -38,6 +37,8 @@ int main(int, char**){
 
 	while(running)
 		sleep(1);
+
+	server.stop();
 
 	return 0;
 }
