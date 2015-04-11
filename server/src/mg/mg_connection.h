@@ -45,6 +45,13 @@ class MgConnection {
 		const std::string& getParameter(const std::string& key);
 		void setParameter(const std::string& key, const std::string& value);
 
+		std::string getVarStr(const char* varName, size_t max=64);
+		std::string getVarStr(const std::string& varName, size_t max=64);
+
+		int getVarInt(const char* varName, size_t max=64);
+		int getVarInt(const std::string& varName, size_t max=64);
+
+
 	protected:
 		struct mg_connection *conn;
 		std::map<std::string, std::string> parameters;

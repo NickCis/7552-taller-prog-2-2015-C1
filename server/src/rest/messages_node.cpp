@@ -22,5 +22,5 @@ void MessagesNode::executeGet(MgConnection& conn, const char* url){
 	cout << "messages: estoy ejecutando! Get user" << user << endl;
 	conn.sendStatus(MgConnection::STATUS_CODE_CREATED);
 	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
-	conn.printfData("{ \"result\": %d, \"username\": \"%s\" }", 1, user.c_str());
+	conn.printfData("{ \"result\": %d, \"username\": \"%s\" \"token\": \"%s\"}", 1, user.c_str(), conn.getVarStr("access_token").c_str());
 }

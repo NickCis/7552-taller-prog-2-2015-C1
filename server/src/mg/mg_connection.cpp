@@ -4,6 +4,9 @@ extern "C" {
 	#include <stdarg.h>
 }
 
+#include <cstdlib>
+
+using std::atoi;
 using std::string;
 
 static const char* CONTENT_TYPES[] = {
@@ -57,10 +60,46 @@ void MgConnection::sendContentType(MgConnection::ContentTypes type){
 	this->sendContentType(CONTENT_TYPES[type]);
 }
 
-const std::string& MgConnection::getParameter(const std::string& key){
+const std::string& MgConnection::getParameter(const string& key){
 	return this->parameters[key];
 }
 
-void MgConnection::setParameter(const std::string& key, const std::string& value){
+void MgConnection::setParameter(const std::string& key, const string& value){
 	this->parameters[key] = value;
 }
+
+string MgConnection::getVarStr(const char* varName, size_t max){
+	string value;
+	value.resize(max);
+	// XXX: fixme es feo esto!,, jaja
+	switch(mg_get_var(this->conn, varName, (char*) value.data(), max)){
+		case -2:
+			return this->getVarStr(varName, max+max);
+			break;
+
+		case -1:
+			return string();
+			break;
+
+		default:
+			break;
+	}
+
+	return value;
+}
+
+string MgConnection::getVarStr(const string& varName, size_t max){
+	return this->getVarStr(varName.c_str(), max);
+}
+
+
+int MgConnection::getVarInt(const char* varName, size_t max){
+	return atoi(this->getVarStr(varName, max).c_str());
+
+}
+
+int MgConnection::getVarInt(const string& varName, size_t max){
+	return this->getVarInt(varName, max);
+}
+
+
