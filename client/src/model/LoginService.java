@@ -18,7 +18,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.util.Log;
+import com.android.volley.Request;
+import com.android.volley.Request.Method;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import model.ServerResultReceiver;
+import org.json.JSONObject;
+import services.AppController;
 
 
 
@@ -36,7 +43,26 @@ public class LoginService extends IntentService{
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        
+		final Bundle data = (Bundle)intent.getParcelableExtra("info");
+        final String URI = String.format("http://httpbin.org/get?param1=%1$s","hello");
+
+        final ResultReceiver rec = (ResultReceiver) intent.getParcelableExtra("rec");
+
+        JsonObjectRequest req = new JsonObjectRequest(Method.GET,URI,null, new Response.Listener<JSONObject>(){
+            public void onResponse(JSONObject t) {
+                data.putString("data", "asdasdasd");
+                data.putBoolean("SERVICE", true);
+                rec.send(0, data);
+            }
+        }, new Response.ErrorListener(){
+
+            public void onErrorResponse(VolleyError ve) {
+                data.putString("data", "salio todo como el orto");
+                data.putBoolean("SERVICE", false);
+                rec.send(0, data);
+            }
+            
+        });
         /* ESTO ES LO VIEJO Y FUNCIONA:
 
 
@@ -89,12 +115,9 @@ public class LoginService extends IntentService{
         
         */
         
-		Bundle data = (Bundle)intent.getParcelableExtra("info");
-        final ResultReceiver rec = (ResultReceiver) intent.getParcelableExtra("rec");
 
-        Bundle b = new Bundle();
-        b.putBoolean("SERVICE", true);
-        rec.send(0, b);
+        AppController.getInstance().addToRequestQueue(req);
+
     }
     
 }
