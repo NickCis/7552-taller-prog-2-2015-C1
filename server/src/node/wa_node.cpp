@@ -1,7 +1,7 @@
 #include "wa_node.h"
 
-bool WANode::handle(struct mg_connection* conn, const char* url){
-	if(this->match(conn, url)){
+bool WANode::handle(MgConnection& conn, const char* url){
+	if(this->match(url)){
 		this->execute(conn, url);
 		return true;
 	}

@@ -3,9 +3,9 @@
 
 #include "../node/wa_method_node.h"
 
-class SignupNode : public WAMethodNode {
+class MessagesNode : public WAMethodNode {
 	public:
-		SignupNode();
+		MessagesNode();
 
 	protected:
 		void executePost(MgConnection& conn, const char* url);

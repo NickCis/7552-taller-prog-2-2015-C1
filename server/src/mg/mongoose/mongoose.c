@@ -2785,16 +2785,21 @@ size_t mg_send_data(struct mg_connection *c, const void *data, int data_len) {
 }
 
 size_t mg_printf_data(struct mg_connection *c, const char *fmt, ...) {
-  struct connection *conn = MG_CONN_2_CONN(c);
   va_list ap;
+  va_start(ap, fmt);
+  size_t ret = mg_vprintf_data(c, fmt, ap);
+  va_end(ap);
+  return ret;
+}
+
+size_t mg_vprintf_data(struct mg_connection *c, const char *fmt, va_list ap) {
+  struct connection *conn = MG_CONN_2_CONN(c);
   int len;
   char mem[IOBUF_SIZE], *buf = mem;
 
   terminate_headers(c);
 
-  va_start(ap, fmt);
   len = ns_avprintf(&buf, sizeof(mem), fmt, ap);
-  va_end(ap);
 
   if (len >= 0) {
     write_chunk((struct connection *) conn, buf, len);
@@ -5436,4 +5441,8 @@ struct mg_server *mg_create_server(void *server_data, mg_handler_t handler) {
   set_default_option_values(server->config_options);
   server->event_handler = handler;
   return server;
+}
+
+void *mg_get_server_param(struct mg_server *server) {
+  return server->ns_mgr.user_data;
 }
