@@ -15,8 +15,8 @@ SignupNode::SignupNode() : WAMethodNode("signup") {
 }
 
 void SignupNode::executePost(MgConnection& conn, const char* url){
-	string u = conn.getVarStr("username");
-	string p = conn.getVarStr("password");
+	string u = conn.getVarStr("user");
+	string p = conn.getVarStr("pass");
 	Status s = User::Put(u, p);
 
 	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
