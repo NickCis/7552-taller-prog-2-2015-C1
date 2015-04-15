@@ -23,11 +23,9 @@ public class MainActivity extends Activity implements ServerResultReceiver.Liste
         
         final ListView listview = (ListView) findViewById(R.id.mainListview);
         
-        String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
-            "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-            "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
-            "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
-            "Android", "iPhone", "WindowsMobile" };
+        String[] values = new String[] { "Rodri", "Nico", "TuVieja",
+            "Maty", "Se", "Los", "Coje", "A",
+            "Todos", "P.D.", "Rodri", "La", "Tiene", "Chiquitita"};
 
         final ArrayList<String> list = new ArrayList<String>();
         for (int i = 0; i < values.length; ++i) {
