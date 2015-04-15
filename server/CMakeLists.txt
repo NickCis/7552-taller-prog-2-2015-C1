@@ -10,11 +10,13 @@ set (SERVER_VERSION_MAJOR 0)
 set (SERVER_VERSION_MINOR 1)
 
 file( GLOB WA_FILES src/wa_server.cpp src/node/wa_node.cpp src/node/wa_str_node.cpp src/node/wa_method_node.cpp src/node/wa_parent_node.cpp)
+file( GLOB DB_FILES src/db/db_manager.cpp src/db/user.cpp)
 file( GLOB REST_FILES src/rest/root_node.cpp src/rest/signup_node.cpp src/rest/not_found_node.cpp src/rest/user_node.cpp src/rest/messages_node.cpp)
 file( GLOB MONGOOSE_FILES src/mg/mg_server.cpp src/mg/mg_connection.cpp src/mg/mongoose/mongoose.c)
 
 # add the executable
-add_executable(server src/main.cpp ${WA_FILES} ${REST_FILES} ${MONGOOSE_FILES})
+add_executable(server src/main.cpp ${WA_FILES} ${REST_FILES} ${MONGOOSE_FILES} ${DB_FILES})
+add_executable(dbtest test/test.cpp)
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
@@ -37,6 +39,7 @@ find_package(RocksDB)
 if(ROCKSDB_FOUND)
 	include_directories("${ROCKSDB_INCLUDE_DIRS}")
 	target_link_libraries(server ${ROCKSDB_LIBRARIES})
+	target_link_libraries(dbtest ${ROCKSDB_LIBRARIES})
 	#set(LIBS ${LIBS} ${ROCKSDB_LIBRARIES})
 else()
 	message(FATAL_ERROR "No se encuentra RocksDB")

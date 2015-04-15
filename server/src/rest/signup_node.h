@@ -9,7 +9,6 @@ class SignupNode : public WAMethodNode {
 
 	protected:
 		void executePost(MgConnection& conn, const char* url);
-		void executeGet(MgConnection& conn, const char* url);
 };
 
 #endif

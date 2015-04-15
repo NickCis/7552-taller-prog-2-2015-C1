@@ -8,6 +8,8 @@ extern "C" {
 #include "server_config.h"
 #include "wa_server.h"
 
+#include "db/db_manager.h"
+
 using std::cout;
 using std::endl;
 
@@ -24,6 +26,14 @@ int main(int, char**){
 	signal(SIGQUIT, sig_handler);
 	signal(SIGKILL, sig_handler);
 	signal(SIGINT, sig_handler);
+
+	rocksdb::Status s;
+	DBManager dbm("/tmp/test_db", s);
+	if(!s.ok()){
+		cout << "error creando db,, mefui" << endl;
+		return -1;
+	}
+	dbm.setEnviroment();
 
 	cout << "Version: " << SERVER_VERSION_MAJOR << "." << SERVER_VERSION_MINOR << endl;
 	//cout << "Mongoose: " << MONGOOSE_VERSION << endl;
