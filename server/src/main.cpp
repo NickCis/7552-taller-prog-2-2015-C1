@@ -30,7 +30,7 @@ int main(int, char**){
 	rocksdb::Status s;
 	DBManager dbm("/tmp/test_db", s);
 	if(!s.ok()){
-		cout << "error creando db,, mefui" << endl;
+		cout << "error creando db,, mefui :: " << s.ToString() << endl;
 		return -1;
 	}
 	dbm.setEnviroment();

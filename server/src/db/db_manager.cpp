@@ -32,6 +32,7 @@ DBManager::DBManager(const string& p, Status& s) : path(p){
 void DBManager::create(Status& s){
 	Options options;
 	DB* _db;
+	options.error_if_exists = true;
 	options.create_if_missing = true;
 	s = DB::Open(options, path, &_db);
 
@@ -43,6 +44,8 @@ void DBManager::create(Status& s){
 			if(!s.ok())
 				break;
 		}
+	}else if(s.IsInvalidArgument() && s.ToString().find("error_if_exists is true") != string::npos){
+		s = Status::OK();
 	}
 
 	delete _db;
