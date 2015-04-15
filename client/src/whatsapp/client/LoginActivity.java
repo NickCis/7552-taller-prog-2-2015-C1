@@ -22,10 +22,11 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
         super.onCreate(savedInstanceState);
         if (!isUserRegistered())
             setContentView(R.layout.login);
-        else 
+        else
+        {
             Log.v("REGISTRO", "tengo que a la proxima activity porque ya estoy registrado");
-        //TODO: ir a la proxima activity
-
+            startActivity(new Intent(this, MainActivity.class));
+        }
     }
 
     public void register(View v){
@@ -73,5 +74,6 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
         String text = resultData.getString("data");
         tv.setText(text);
         registerUser();
+        startActivity(new Intent(this, MainActivity.class));
     }
 }
