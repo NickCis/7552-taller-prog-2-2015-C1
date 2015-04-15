@@ -21,7 +21,6 @@ void AuthNode::executePost(MgConnection& conn, const char* url){
 	User user;
 	Status s = User::Get(u, user);
 
-	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
 
 	if(s.ok()){
 		if(p == user.getPassword()){
@@ -29,12 +28,14 @@ void AuthNode::executePost(MgConnection& conn, const char* url){
 			Status s = AccessToken::Put(u, at);
 			if(s.ok()){
 				conn.sendStatus(MgConnection::STATUS_CODE_CREATED);
+				conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
 				conn.printfData("{ \"access_token\": \"%s\" }", at.getToken().c_str());
+				return;
 			}
-			return;
 		}
 	}
 
 	conn.sendStatus(MgConnection::STATUS_CODE_BAD_REQUEST);
+	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
 	conn.printfData("{ \"message\": \"%s\",  \"error_user_msg\": \"Problemas con el logeo\"}", s.ToString().c_str());
 }

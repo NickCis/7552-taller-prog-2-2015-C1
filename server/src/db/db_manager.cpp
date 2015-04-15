@@ -2,6 +2,7 @@
 #include <rocksdb/options.h>
 
 #include "user.h"
+#include "access_token.h"
 
 using std::string;
 using std::vector;
@@ -78,4 +79,5 @@ shared_ptr<ColumnFamilyHandle> DBManager::getColumnFamily(DBManager::ColumnFamil
 
 void DBManager::setEnviroment(){
 	User::setDB(this->db, this->cfs[DBManager::COLUMN_FAMILY_USERS]);
+	AccessToken::setDB(this->db, this->cfs[DBManager::COLUMN_FAMILY_ACCESS_TOKENS]);
 }

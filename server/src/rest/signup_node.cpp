@@ -19,13 +19,13 @@ void SignupNode::executePost(MgConnection& conn, const char* url){
 	string p = conn.getVarStr("pass");
 	Status s = User::Put(u, p);
 
-	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
-
 	if(s.ok()){
 		conn.sendStatus(MgConnection::STATUS_CODE_CREATED);
+		conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
 		conn.printfData("{ \"success\": true }");
 	}else{
 		conn.sendStatus(MgConnection::STATUS_CODE_BAD_REQUEST);
+		conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
 		conn.printfData("{ \"message\": \"%s\",  \"error_user_msg\": \"Problemas registrandose\"}", s.ToString().c_str());
 	}
 }
