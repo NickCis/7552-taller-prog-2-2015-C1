@@ -16,11 +16,12 @@ class User {
 
 		std::string& getUsername();
 
-		std::string& getPassword();
-		void setPassword(std::string& p);
+		std::string& getPassword(bool forceFetch=false);
+		rocksdb::Status setPassword(const std::string& p);
 
 	protected:
 		std::string username;
+		std::string password;
 
 		static std::shared_ptr<rocksdb::DB> db;
 		static std::shared_ptr<rocksdb::ColumnFamilyHandle> cf;

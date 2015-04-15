@@ -12,15 +12,14 @@ using rocksdb::ReadOptions;
 using rocksdb::WriteOptions;
 using rocksdb::ColumnFamilyHandle;
 
-User::User() : username(""){
+User::User() : username(""), password(""){
 }
 
 Status User::Get(const string& username, User& u, bool check){
 	u.username = username;
-	if(check){
-		string password;
-		return User::db->Get(ReadOptions(), User::cf.get(), Slice(u.username), &password);;
-	}
+	u.password = "";
+	if(check)
+		return User::db->Get(ReadOptions(), User::cf.get(), Slice(u.username), &u.password);
 
 	return rocksdb::Status::OK();
 }
@@ -57,3 +56,19 @@ void User::setDB(shared_ptr<DB> &db, shared_ptr<ColumnFamilyHandle> &cf){
 
 shared_ptr<DB> User::db = NULL;
 shared_ptr<ColumnFamilyHandle> User::cf = NULL;
+
+string& User::getUsername(){
+	return this->username;
+}
+
+string& User::getPassword(bool forceFetch){
+	if(forceFetch || this->password == "")
+		User::db->Get(ReadOptions(), User::cf.get(), Slice(this->username), &this->password);
+
+	return this->password;
+}
+
+Status User::setPassword(const std::string& p){
+	this->password = p;
+	return User::db->Put(WriteOptions(), User::cf.get(), Slice(this->username), Slice(p));
+}
