@@ -60,12 +60,18 @@ static uint32_t to_int32(const uint8_t *bytes)
 }
 
 void md5(vector<char>& out, const vector<char>& in){
+	out.resize(MD5_BYTE_LENGTH);
+	md5((uint8_t*) out.data(), (const uint8_t *) in.data(), in.size());
+}
+
+void md5(vector<char>& out, const string& in){
+	out.resize(MD5_BYTE_LENGTH);
+	md5((uint8_t*) out.data(), (const uint8_t*) in.data(), in.size());
+}
+
+void md5(uint8_t* digest, const uint8_t *initial_msg, size_t initial_len){
 	// These vars will contain the hash
 	uint32_t h0, h1, h2, h3;
-	const uint8_t *initial_msg = (uint8_t*) in.data();
-	size_t initial_len = in.size();
-	out.resize(MD5_BYTE_LENGTH);
-	uint8_t* digest = (uint8_t*) out.data();
 
 	// Message (to prepare)
 	uint8_t *msg = NULL;
@@ -146,6 +152,12 @@ void md5(vector<char>& out, const vector<char>& in){
 	to_bytes(h1, digest + 4);
 	to_bytes(h2, digest + 8);
 	to_bytes(h3, digest + 12);
+}
+
+void md5Str(string& digest, const string& msg){
+	vector<char> output;
+	md5(output, msg);
+	digest = bin2hex(output);
 }
 
 void md5Str(string& digest, const vector<char>& msg){
