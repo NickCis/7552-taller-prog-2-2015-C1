@@ -4,6 +4,7 @@ import model.ServerResultReceiver;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,6 +13,8 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import utils.ActiveConversation;
+import utils.User;
 
 public class MainActivity extends Activity implements ServerResultReceiver.Listener{
 
@@ -22,16 +25,28 @@ public class MainActivity extends Activity implements ServerResultReceiver.Liste
         setContentView(R.layout.main);
         
         final ListView listview = (ListView) findViewById(R.id.mainListview);
-        
-        String[] values = new String[] { "Rodri", "Nico", "TuVieja",
-            "Maty", "Se", "Los", "Coje", "A",
-            "Todos", "P.D.", "Rodri", "La", "Tiene", "Chiquitita"};
-
         final ArrayList<String> list = new ArrayList<String>();
-        for (int i = 0; i < values.length; ++i) {
-            list.add(values[i]);
+        
+        ActiveConversation aC = new ActiveConversation(this);
+        /*
+        aC.open();
+        
+        Cursor aCC = aC.fetchAllActiveConversations();
+        
+        while(aCC.moveToNext())
+        {
+            User user = new User(this);
+            user.open();
+            Cursor uC = user.fetchUser(aCC.getInt(aCC.getColumnIndex(User.KEY_USERID)));
+            list.add(uC.getString(uC.getColumnIndex(User.KEY_NAME)));
+            user.close();
         }
-
+        
+        aC.close();
+        */
+        
+        list.add("Carlos");
+        list.add("Alberto");
         final StableArrayAdapter adapter = new StableArrayAdapter(this, android.R.layout.simple_list_item_1, list);
         listview.setAdapter(adapter);
 

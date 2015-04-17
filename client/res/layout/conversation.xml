@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/loginbgimg">
+    android:background="@drawable/loginbgimg"
+    android:id="@+id/conversationLayout">
 
     <ListView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/conversationListview"
