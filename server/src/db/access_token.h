@@ -12,17 +12,18 @@ class AccessToken {
 
 		static rocksdb::Status Get(const std::string& token, AccessToken& a);
 		static rocksdb::Status Put(const std::string& u, AccessToken& a);
+		static bool IsLoggedIn(const std::string&t);
 
 		const std::string& getToken();
+		const std::string& getUsername();
 
-
-		static void setDB(std::shared_ptr<rocksdb::DB> &db, std::shared_ptr<rocksdb::ColumnFamilyHandle> &cf);
+		static void SetDB(std::shared_ptr<rocksdb::DB> &db, std::shared_ptr<rocksdb::ColumnFamilyHandle> &cf);
 
 	protected:
 		std::string token;
 		std::string username;
 
-		static std::string createToken(const std::string& username);
+		static std::string CreateToken(const std::string& username);
 
 		static std::shared_ptr<rocksdb::DB> db;
 		static std::shared_ptr<rocksdb::ColumnFamilyHandle> cf;

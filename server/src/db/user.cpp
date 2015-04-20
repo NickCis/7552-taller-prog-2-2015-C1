@@ -12,6 +12,9 @@ using rocksdb::ReadOptions;
 using rocksdb::WriteOptions;
 using rocksdb::ColumnFamilyHandle;
 
+shared_ptr<DB> User::db = NULL;
+shared_ptr<ColumnFamilyHandle> User::cf = NULL;
+
 User::User() : username(""), password(""){
 }
 
@@ -42,20 +45,41 @@ Status User::Put(const string& u, const string p, bool check){
 }
 
 bool User::IsUsernameValid(const string& username){
-	return username.length() > 1 && username.find_first_of("/\" ") == string::npos;
+	if(username.length() < 1)
+		return false;
+
+	for(auto it=username.begin(); it != username.end(); it++){
+		if('a' <= *it && *it <= 'z'){
+			continue;
+		}
+
+		switch(*it){
+			case '.':
+			case ',':
+			case '-':
+			case '_':
+			case 0:
+				continue;
+				break;
+
+			default:
+				return false;
+				break;
+		}
+	}
+
+	return true;
 }
 
 bool User::IsPasswordValid(const string& password){
-	return password.length() > 6;
+	return password.length() >= 6;
 }
 
-void User::setDB(shared_ptr<DB> &db, shared_ptr<ColumnFamilyHandle> &cf){
+void User::SetDB(shared_ptr<DB> &db, shared_ptr<ColumnFamilyHandle> &cf){
 	User::db = db;
 	User::cf = cf;
 }
 
-shared_ptr<DB> User::db = NULL;
-shared_ptr<ColumnFamilyHandle> User::cf = NULL;
 
 string& User::getUsername(){
 	return this->username;

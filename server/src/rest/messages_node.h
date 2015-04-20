@@ -1,9 +1,9 @@
 #ifndef __SINGUP_NODE_H__
 #define __SINGUP_NODE_H__
 
-#include "../node/wa_method_node.h"
+#include "wa_method_auth_node.h"
 
-class MessagesNode : public WAMethodNode {
+class MessagesNode : public WAMethodAuthNode {
 	public:
 		MessagesNode();
 

@@ -11,7 +11,7 @@ class User {
 		User();
 
 		static rocksdb::Status Get(const std::string& username, User& u, bool check=true);
-		static void setDB(std::shared_ptr<rocksdb::DB> &db, std::shared_ptr<rocksdb::ColumnFamilyHandle> &cf);
+		static void SetDB(std::shared_ptr<rocksdb::DB> &db, std::shared_ptr<rocksdb::ColumnFamilyHandle> &cf);
 		static rocksdb::Status Put(const std::string& u, const std::string p, bool check=true);
 
 		std::string& getUsername();

@@ -3,6 +3,7 @@
 
 #include "user.h"
 #include "access_token.h"
+#include "message.h"
 
 using std::string;
 using std::vector;
@@ -78,6 +79,7 @@ shared_ptr<ColumnFamilyHandle> DBManager::getColumnFamily(DBManager::ColumnFamil
 }
 
 void DBManager::setEnviroment(){
-	User::setDB(this->db, this->cfs[DBManager::COLUMN_FAMILY_USERS]);
-	AccessToken::setDB(this->db, this->cfs[DBManager::COLUMN_FAMILY_ACCESS_TOKENS]);
+	User::SetDB(this->db, this->cfs[DBManager::COLUMN_FAMILY_USERS]);
+	AccessToken::SetDB(this->db, this->cfs[DBManager::COLUMN_FAMILY_ACCESS_TOKENS]);
+	Message::SetDB(this->db, this->cfs[DBManager::COLUMN_FAMILY_MESSAGES]);
 }
