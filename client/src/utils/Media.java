@@ -66,7 +66,7 @@ public class Media extends SQLiteOpenHelper
     }
     
     public Cursor fetchAllMedia() { 
-          return mDb.query(DATABASE_TABLE, new String[]{KEY_MEDIAID, KEY_LOCATION, KEY_TYPE}, null, null, null, KEY_MEDIAID + " ASC", null); 
+          return mDb.query(DATABASE_TABLE, new String[]{KEY_MEDIAID, KEY_LOCATION, KEY_TYPE}, null, null, null, null, KEY_MEDIAID + " ASC"); 
     }
     
     public Cursor fetchMedia(Integer mediaId) throws SQLException {

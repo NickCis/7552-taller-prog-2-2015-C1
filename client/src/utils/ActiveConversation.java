@@ -30,8 +30,9 @@ public class ActiveConversation extends SQLiteOpenHelper
     
     private static final String DATABASE_CREATE = "CREATE TABLE " + DATABASE_TABLE + " ("
             + KEY_CONVERSATIONID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + "FOREIGN KEY(" + KEY_USER + ") REFERENCES " + User.DATABASE_TABLE + "(" + KEY_USER + ") NOT NULL, "
-            + KEY_DATE + " DATETIME DEFAULT CURRENT_TIMESTAMP);";
+            + KEY_USER + " INTEGER NOT NULL, "
+            + KEY_DATE + " DATETIME DEFAULT CURRENT_TIMESTAMP, "
+            + "FOREIGN KEY(" + KEY_USER + ") REFERENCES " + User.DATABASE_TABLE + "(" + User.KEY_USERID + "));";
 
     private final Context context;
 
@@ -68,7 +69,7 @@ public class ActiveConversation extends SQLiteOpenHelper
     }
     
     public Cursor fetchAllActiveConversations() { 
-          return mDb.query(DATABASE_TABLE, new String[]{KEY_CONVERSATIONID, KEY_USER, KEY_DATE}, null, null, null, KEY_DATE + " DESC", null); 
+          return mDb.query(DATABASE_TABLE, new String[]{KEY_CONVERSATIONID, KEY_USER, KEY_DATE}, null, null, null, null, KEY_DATE + " DESC"); 
     }
     
     public Cursor fetchActiveConversation(Integer conversationId) throws SQLException { 

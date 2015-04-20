@@ -35,12 +35,15 @@ public class Message extends SQLiteOpenHelper
 
     private SQLiteDatabase mDb;
     private static final String DATABASE_CREATE = "CREATE TABLE " + DATABASE_TABLE + " ("
-            + "FOREIGN KEY(" + KEY_CONVERSATIONID + ") REFERENCES " + ActiveConversation.DATABASE_TABLE + "(" + KEY_CONVERSATIONID + "), "
+            + KEY_CONVERSATIONID + " INTEGER NOT NULL, "
+            + KEY_USERID + " INTEGER NOT NULL, "
+            + KEY_MEDIAID + " INTEGER, "
             + KEY_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP, "
-            + "FOREIGN KEY(" + KEY_USERID + ") REFERENCES " + User.DATABASE_TABLE + "(" + KEY_USERID + "), "
-            + "FOREIGN KEY(" + KEY_MEDIAID + ") REFERENCES " + Media.DATABASE_TABLE + "(" + KEY_MEDIAID + "), "
-            + KEY_CONTENT + " TEXT NOT NULL, "
-            + KEY_STATUS + " SHORT INTEGER DEFAULT " + NOT_SENT + " NOT NULL);";
+            + KEY_CONTENT + " TEXT, "
+            + KEY_STATUS + " SHORT INTEGER DEFAULT " + NOT_SENT + " NOT NULL, "
+            + "FOREIGN KEY(" + KEY_CONVERSATIONID + ") REFERENCES " + ActiveConversation.DATABASE_TABLE + "(" + ActiveConversation.KEY_CONVERSATIONID + "), "
+            + "FOREIGN KEY(" + KEY_USERID + ") REFERENCES " + User.DATABASE_TABLE + "(" + User.KEY_USERID + "), "
+            + "FOREIGN KEY(" + KEY_MEDIAID + ") REFERENCES " + Media.DATABASE_TABLE + "(" + Media.KEY_MEDIAID + "));";
 
     private final Context context;
 
@@ -84,14 +87,14 @@ public class Message extends SQLiteOpenHelper
     }
     
     public Cursor fetchAllMessages() { 
-          return mDb.query(DATABASE_TABLE, new String[]{KEY_CONVERSATIONID, KEY_USERID, KEY_CONTENT, KEY_MEDIAID, KEY_STATUS, KEY_TIMESTAMP}, null, null, null, KEY_TIMESTAMP + " ASC", null); 
+          return mDb.query(DATABASE_TABLE, new String[]{KEY_CONVERSATIONID, KEY_USERID, KEY_CONTENT, KEY_MEDIAID, KEY_STATUS, KEY_TIMESTAMP}, null, null, null, null, KEY_TIMESTAMP + " ASC"); 
     }
     
     public Cursor fetchMessages(Integer conversationId) throws SQLException { 
           Cursor mCursor = mDb.query(true, DATABASE_TABLE, new String [] 
                {KEY_CONVERSATIONID, KEY_USERID, KEY_CONTENT, KEY_MEDIAID, KEY_STATUS, KEY_TIMESTAMP},
                 KEY_CONVERSATIONID + "=?", 
-                new String[]{"" + conversationId}, null, null, KEY_TIMESTAMP + " ASC", null); 
+                new String[]{"" + conversationId}, null, null, null, KEY_TIMESTAMP + " ASC"); 
           if (mCursor != null) 
           { 
                 mCursor.moveToFirst(); 
@@ -103,7 +106,7 @@ public class Message extends SQLiteOpenHelper
           Cursor mCursor = mDb.query(true, DATABASE_TABLE, new String [] 
                {KEY_CONVERSATIONID, KEY_USERID, KEY_CONTENT, KEY_MEDIAID, KEY_STATUS, KEY_TIMESTAMP},
                 KEY_CONTENT + "=?", 
-                new String[]{content}, null, null, KEY_TIMESTAMP + " ASC", null); 
+                new String[]{content}, null, null, null, KEY_TIMESTAMP + " ASC"); 
           if (mCursor != null) 
           { 
                 mCursor.moveToFirst(); 

@@ -28,7 +28,7 @@ public class MainActivity extends Activity implements ServerResultReceiver.Liste
         final ArrayList<String> list = new ArrayList<String>();
         
         ActiveConversation aC = new ActiveConversation(this);
-        /*
+        
         aC.open();
         
         Cursor aCC = aC.fetchAllActiveConversations();
@@ -43,7 +43,6 @@ public class MainActivity extends Activity implements ServerResultReceiver.Liste
         }
         
         aC.close();
-        */
         
         list.add("Carlos");
         list.add("Alberto");

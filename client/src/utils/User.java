@@ -73,7 +73,7 @@ public class User extends SQLiteOpenHelper
     }
     
     public Cursor fetchAllUsers() { 
-          return mDb.query(DATABASE_TABLE, new String[]{KEY_USERID, KEY_NAME, KEY_PHONE, KEY_STATUS}, null, null, null, KEY_USERID + " ASC", null); 
+          return mDb.query(DATABASE_TABLE, new String[]{KEY_USERID, KEY_NAME, KEY_PHONE, KEY_STATUS}, null, null, null, null, KEY_USERID + " ASC"); 
     }
     
     public Cursor fetchUser(Integer userId) throws SQLException { 
