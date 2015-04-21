@@ -5,9 +5,11 @@ extern "C" {
 }
 
 #include <cstdlib>
+#include <cstring>
 
 using std::atoi;
 using std::string;
+using std::strlen;
 
 static const char* CONTENT_TYPES[] = {
 	"application/json", // CONTENT_TYPE_JSON
@@ -84,6 +86,8 @@ string MgConnection::getVarStr(const char* varName, size_t max){
 		default:
 			break;
 	}
+
+	value.resize(strlen(value.data()));
 
 	return value;
 }
