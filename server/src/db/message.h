@@ -50,8 +50,6 @@ class Message {
 		time_t read;
 		uint64_t t;
 		int has_file;
-
-		void unpack(const rocksdb::Slice&);
 };
 
 class Message::MessageIterator {

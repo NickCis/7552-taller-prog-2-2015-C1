@@ -55,10 +55,9 @@ Status Message::Put(const string& to, const string& from, const string& msg, Mes
 	Message::GetConversationFromUser(keyLast, from, to);
 
 	vector<char> data;
-	Message::Pack(data, mh, from, msg);
 
 	WriteBatch batch;
-	batch.Put(Message::cf.get(), Slice(key.data(), key.size()), Slice(data.data(), data.size()));
+	batch.Put(Message::cf.get(), Slice(key.data(), key.size()), Message::Pack(data, mh, from, msg));
 	batch.Put(Message::cf.get(), Slice(keyLast.data(), keyLast.size()), Slice((char*) &a.t, sizeof(uint64_t)));
 
 	return Message::db->Write(WriteOptions(), &batch);
