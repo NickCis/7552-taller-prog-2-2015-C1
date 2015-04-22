@@ -19,7 +19,12 @@ std::string bin2hex(T first, T last){
 
 template <typename T>
 std::string bin2hex(T first, size_t size){
-	return bin2hex(first, first+size);
+	return bin2hex((char*) first, ((char*)first)+size);
+}
+
+template <typename T>
+std::string bin2hex(T first){
+	return bin2hex(&first, sizeof(T));
 }
 
 #endif

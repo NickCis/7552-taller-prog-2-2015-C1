@@ -1,14 +1,9 @@
 #include "messages_node.h"
-
-
-#include <iostream>
 #include <string>
 
 #include "../db/message.h"
-#include "../util/bin2hex.h"
 
-using std::cout;
-using std::endl;
+using std::stoi;
 using std::string;
 
 using rocksdb::Status;
@@ -17,10 +12,23 @@ MessagesNode::MessagesNode() : WAMethodAuthNode("messages") {
 }
 
 void MessagesNode::executeGet(MgConnection& conn, const char* url){
-	cout << "messages: estoy ejecutando!" << endl;
-	conn.sendStatus(MgConnection::STATUS_CODE_CREATED);
+	string user = conn.getParameter("user");
+	string loggedUser = conn.getParameter("logged_user");
+	auto it = Message::NewIterator();
+
+	// TODO: hacer limite dinamico
+	//int limit = stoi(conn.getParameter("limit"));
+	int limit = 20;
+
+	conn.sendStatus(MgConnection::STATUS_CODE_OK);
 	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
-	conn.printfData("{ \"result\": %d }", 1);
+	conn.printfData("{\"next\":\"algun dia sera\",[");
+	bool first = true;
+
+	for(it->seekToLast(user, loggedUser); it->valid() && limit-- > 0 ; it->prev())
+		conn.printfData("%s%s", first ? "" : ",", it->value().toJson().c_str());
+
+	conn.printfData("]}");
 }
 
 void MessagesNode::executePost(MgConnection& conn, const char* url){
@@ -36,5 +44,5 @@ void MessagesNode::executePost(MgConnection& conn, const char* url){
 
 	conn.sendStatus(MgConnection::STATUS_CODE_CREATED);
 	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
-	conn.printfData("{ \"id\": \"%s\", \"time\": %d }", 1, bin2hex(&msg.getTime(), sizeof(uint64_t)).c_str(), msg.getTime()/1000000);
+	conn.printfData("{ \"id\": \"%s\", \"time\": %d }", msg.getId().c_str(), msg.getTime()/1000000);
 }

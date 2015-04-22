@@ -6,22 +6,27 @@
 #include <memory>
 #include <rocksdb/db.h>
 #include <rocksdb/status.h>
+#include <rocksdb/iterator.h>
 
 class Message {
 	public:
+		class MessageIterator;
+
 		Message();
 
 		static rocksdb::Status Put(const std::string& to, const std::string& from, const std::string& msg, Message& a);
 		static rocksdb::Status Get(const std::string& to, const std::string& from, const uint64_t& tv, Message& a);
 
+		static std::shared_ptr<Message::MessageIterator> NewIterator();
 		static void SetDB(std::shared_ptr<rocksdb::DB> &db, std::shared_ptr<rocksdb::ColumnFamilyHandle> &cf);
 
-		const std::string& getFrom();
-		const std::string& getTo();
-		const std::string& getMsg();
-		const uint64_t& getTime();
+		const std::string& getFrom() const;
+		const std::string& getTo() const;
+		const std::string& getMsg() const;
+		const uint64_t& getTime() const;
+		std::string getId() const;
+		std::string toJson() const;
 
-		std::string toJson();
 	protected:
 		typedef struct MessageHeader {
 			time_t arrived;
@@ -46,6 +51,22 @@ class Message {
 		int has_file;
 
 		void unpack(const rocksdb::Slice&);
+};
+
+class Message::MessageIterator {
+	public:
+		rocksdb::Status seekToLast(const std::string& to, const std::string& from);
+		void prev();
+		//rocksdb::Slice key() const;
+		//rocksdb::Slice value() const;
+		const Message& value() const;
+		rocksdb::Status status() const;
+		bool valid() const;
+		MessageIterator(rocksdb::Iterator*);
+
+	protected:
+		std::shared_ptr<rocksdb::Iterator> it;
+		Message msg;
 };
 
 #endif

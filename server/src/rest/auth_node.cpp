@@ -1,13 +1,10 @@
 #include "auth_node.h"
 
-#include <iostream>
 #include <string>
 
 #include "../db/user.h"
 #include "../db/access_token.h"
 
-using std::cout;
-using std::endl;
 using std::string;
 
 using rocksdb::Status;
@@ -20,7 +17,6 @@ void AuthNode::executePost(MgConnection& conn, const char* url){
 	string p = conn.getVarStr("pass");
 	User user;
 	Status s = User::Get(u, user);
-
 
 	if(s.ok()){
 		if(p == user.getPassword()){
