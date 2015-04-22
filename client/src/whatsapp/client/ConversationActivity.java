@@ -15,6 +15,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import model.ServerResultReceiver;
+import utils.Conversation;
+import utils.ConversationEntity;
+import utils.Message;
+import utils.MessageEntity;
 
 /**
  *
@@ -30,12 +34,15 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
         
         final ListView listview = (ListView) findViewById(R.id.conversationListview);
         
-        String[] values = new String[] { "Mensaje1", "Mensaje2", "etc", "etc"
-        , "etc", "etc", "etc", "etc", "etc", "etc", "etc", "etc", "etc", "etc", "etc"};
+        Bundle bundle = savedInstanceState.getBundle("whatsapp.client.MainActivity.data");
+        
+        Message message = new Message(this);
 
         final ArrayList<String> list = new ArrayList<String>();
-        for (int i = 0; i < values.length; ++i) {
-            list.add(values[i]);
+        
+        for(MessageEntity mE : message.fetchMessages(new ConversationEntity(bundle.getInt("conversationId"))))
+        {
+            list.add(mE.getContent());
         }
 
         final StableArrayAdapter adapter = new StableArrayAdapter(this, android.R.layout.simple_list_item_1, list);

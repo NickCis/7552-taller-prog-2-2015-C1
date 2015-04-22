@@ -10,7 +10,9 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  *
@@ -44,9 +46,8 @@ public class User extends SQLiteOpenHelper
         this.context = context;
     }
     
-    public User open() throws SQLException {
+    private void open() throws SQLException {
         this.mDb = this.getWritableDatabase();
-        return this;
     }
 
     @Override
@@ -59,40 +60,79 @@ public class User extends SQLiteOpenHelper
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
-    public long createUser(Integer phone, String name, Short status) {
-          ContentValues values = new ContentValues(); 
-          values.put(KEY_NAME, name);
-          values.put(KEY_PHONE, phone);
-          values.put(KEY_STATUS, status);
-          
-          return mDb.insert(DATABASE_TABLE, null, values); 
+    public UserEntity createUser(Integer phone, String name, Short status) {
+        ContentValues values = new ContentValues(); 
+        values.put(KEY_NAME, name);
+        values.put(KEY_PHONE, phone);
+        values.put(KEY_STATUS, status);
+        this.open();
+        long userId = mDb.insert(DATABASE_TABLE, null, values); 
+        this.close();
+        return new UserEntity((int)userId, name, phone, status);
     }
     
-    public boolean deleteUser(Integer userId) { 
-          return  mDb.delete(DATABASE_TABLE, KEY_USERID + "=?",new String[]{"" + userId}) > 0; 
+    public boolean deleteUser(Integer userId) {
+        this.open();
+        boolean result = mDb.delete(DATABASE_TABLE, KEY_USERID + "=?",new String[]{"" + userId}) > 0; 
+        this.close();
+        return result;
     }
     
-    public Cursor fetchAllUsers() { 
-          return mDb.query(DATABASE_TABLE, new String[]{KEY_USERID, KEY_NAME, KEY_PHONE, KEY_STATUS}, null, null, null, null, KEY_USERID + " ASC"); 
+    public boolean deleteUser(UserEntity user) {
+        this.open();
+        boolean result = mDb.delete(DATABASE_TABLE, KEY_USERID + "=?",new String[]{"" + user.getUserId()}) > 0;
+        this.close();
+        return result;
     }
     
-    public Cursor fetchUser(Integer userId) throws SQLException { 
-          Cursor mCursor = mDb.query(true, DATABASE_TABLE, new String [] 
-               {KEY_USERID, KEY_NAME, KEY_PHONE, KEY_STATUS}, KEY_USERID + 
-               "=?", new String[]{"" + userId}, null, null, null, null); 
-          if (mCursor != null) 
-          { 
-                mCursor.moveToFirst(); 
-          } 
-          return mCursor;
+    public List<UserEntity> fetchAllUsers() {
+        this.open();
+        Cursor cursor = mDb.query(DATABASE_TABLE, new String[]{KEY_USERID, KEY_NAME, KEY_PHONE, KEY_STATUS}, null, null, null, null, KEY_USERID + " ASC");
+        this.close();
+        List<UserEntity> list = null;
+        if (cursor != null)
+        {
+            list = new ArrayList<UserEntity>();
+            cursor.moveToFirst();
+            do
+            {
+                UserEntity uE = new UserEntity(cursor.getInt(cursor.getColumnIndex(this.KEY_USERID)),
+                        cursor.getString(cursor.getColumnIndex(this.KEY_NAME)),
+                        cursor.getInt(cursor.getColumnIndex(this.KEY_PHONE)),
+                        cursor.getShort(cursor.getColumnIndex(this.KEY_STATUS)));
+                list.add(uE);
+            } while (cursor.moveToNext());
+        }
+        return list;
     }
     
-    public boolean updateUser(Integer userId, Integer phone, String name, Short status) { 
-          ContentValues values = new ContentValues(); 
-          values.put(KEY_PHONE, phone); 
-          values.put(KEY_NAME, name);
-          values.put(KEY_STATUS, status);
-          
-          return  mDb.update(DATABASE_TABLE, values, KEY_USERID + "=?", new String[]{"" + userId}) > 0; 
+    public UserEntity fetchUser(Integer userId) throws SQLException {
+        this.open();
+        Cursor cursor = mDb.query(true, DATABASE_TABLE, new String [] 
+             {KEY_USERID, KEY_NAME, KEY_PHONE, KEY_STATUS}, KEY_USERID + 
+             "=?", new String[]{"" + userId}, null, null, null, null); 
+        this.close();
+        UserEntity uE = null;
+        if (cursor != null) 
+        { 
+            cursor.moveToFirst();
+            uE = new UserEntity(userId,
+                    cursor.getString(cursor.getColumnIndex(this.KEY_NAME)),
+                    cursor.getInt(cursor.getColumnIndex(this.KEY_PHONE)),
+                    cursor.getShort(cursor.getColumnIndex(this.KEY_STATUS)));
+            
+        } 
+        return uE;
+    }
+    
+    public boolean updateUser(UserEntity user) { 
+        ContentValues values = new ContentValues(); 
+        values.put(KEY_PHONE, user.getPhone()); 
+        values.put(KEY_NAME, user.getName());
+        values.put(KEY_STATUS, user.getStatus());
+        this.open();
+        boolean result = mDb.update(DATABASE_TABLE, values, KEY_USERID + "=?", new String[]{"" + user.getUserId()}) > 0; 
+        this.close();
+        return result;
     }
 }
