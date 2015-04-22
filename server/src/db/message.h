@@ -23,7 +23,8 @@ class Message {
 		const std::string& getFrom() const;
 		const std::string& getTo() const;
 		const std::string& getMsg() const;
-		const uint64_t& getTime() const;
+		time_t getTime() const;
+		const uint64_t& getUTime() const;
 		std::string getId() const;
 		std::string toJson() const;
 
@@ -67,6 +68,7 @@ class Message::MessageIterator {
 	protected:
 		std::shared_ptr<rocksdb::Iterator> it;
 		Message msg;
+		void unPack();
 };
 
 #endif

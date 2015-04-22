@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <algorithm>
 
-#include <iostream>
+#include <rocksdb/write_batch.h>
 
 extern "C" {
 	#include <sys/time.h>
@@ -22,6 +22,7 @@ using rocksdb::DB;
 using rocksdb::Slice;
 using rocksdb::Status;
 using rocksdb::Iterator;
+using rocksdb::WriteBatch;
 using rocksdb::ReadOptions;
 using rocksdb::WriteOptions;
 using rocksdb::ColumnFamilyHandle;
@@ -48,19 +49,19 @@ Status Message::Put(const string& to, const string& from, const string& msg, Mes
 	memset(&mh, 0, sizeof(Message::MessageHeader));
 
 	vector<char> key;
+	vector<char> keyLast;
+
 	Message::GetKeyFromUser(key, from, to, a.t);
+	Message::GetConversationFromUser(keyLast, from, to);
 
 	vector<char> data;
 	Message::Pack(data, mh, from, msg);
 
-	Status s = Message::db->Put(WriteOptions(), Message::cf.get(), Slice(key.data(), key.size()), Slice(data.data(), data.size()));
-	if(s.ok()){
-		Message::GetConversationFromUser(key, from, to);
-		s = Message::db->Put(WriteOptions(), Message::cf.get(), Slice(key.data(), key.size()), Slice((char*) &a.t, sizeof(uint64_t)));
-		//TODO: crear notificaciones!
-	}
+	WriteBatch batch;
+	batch.Put(Message::cf.get(), Slice(key.data(), key.size()), Slice(data.data(), data.size()));
+	batch.Put(Message::cf.get(), Slice(keyLast.data(), keyLast.size()), Slice((char*) &a.t, sizeof(uint64_t)));
 
-	return s;
+	return Message::db->Write(WriteOptions(), &batch);
 }
 
 Status Message::Get(const string& to, const string& from, const uint64_t& t, Message& a){
@@ -171,8 +172,12 @@ const string& Message::getMsg() const {
 	return this->msg;
 }
 
-const uint64_t& Message::getTime() const {
+const uint64_t& Message::getUTime() const {
 	return this->t;
+}
+
+time_t Message::getTime() const {
+	return this->t / 1000000;
 }
 
 string Message::getId() const {
@@ -181,7 +186,12 @@ string Message::getId() const {
 
 string Message::toJson() const {
 	stringstream ss;
-	ss << "{\"id\":\"" << this->getId() << "\",\"from\":\"" << this->from << "\",\"message\":\"" << this->msg << "\"}";
+	ss << "{\"id\":\"" << this->getId() << "\",\"from\":\"" << this->from << "\",\"message\":\"" << this->msg << "\",\"arrived\":" << this->arrived << ",\"read\":" << this->read << ",\"time\":" << this->getTime();
+
+	if(this->has_file) // TODO: 
+		ss << ",\"file\":\"proximamente\",\"file_type\":\"proximamente\"";
+
+	ss << "}";
 	return ss.str();
 }
 
@@ -201,25 +211,23 @@ Status Message::MessageIterator::seekToLast(const string& to, const string& from
 	if(s.ok()){
 		Message::GetKeyFromUser(key, from, to, *((uint64_t*) data.data()));
 		this->it->Seek(Slice(key.data(), key.size()));
-		if(this->it->Valid()){
-			string key = this->it->key().ToString();
-			std::cout << "key : " << bin2hex(key.begin(), key.end()) << std::endl;
-			Message::UnPack(this->it->value().ToString(), this->msg);
-			auto keyIt = this->it->key().ToString().end();
-			copy(keyIt-sizeof(uint64_t), keyIt, (char*) &this->msg.t);
-		}
+		if(this->it->Valid())
+			this->unPack();
 	}
 
 	return s;
 }
 
+void Message::MessageIterator::unPack(){
+	Message::UnPack(this->it->value().ToString(), this->msg);
+	auto keyIt = this->it->key().ToString().end();
+	copy(keyIt-sizeof(uint64_t), keyIt, (char*) &this->msg.t);
+}
+
 void Message::MessageIterator::prev(){
 	this->it->Prev();
-	if(this->it->Valid()){
-		Message::UnPack(this->it->value().ToString(), this->msg);
-		auto keyIt = this->it->key().ToString().end();
-		copy(keyIt-sizeof(uint64_t), keyIt, (char*) &this->msg.t);
-	}
+	if(this->it->Valid())
+		this->unPack();
 }
 
 //Slice Message::MessageIterator::key() const{

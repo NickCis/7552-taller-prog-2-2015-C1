@@ -44,5 +44,5 @@ void MessagesNode::executePost(MgConnection& conn, const char* url){
 
 	conn.sendStatus(MgConnection::STATUS_CODE_CREATED);
 	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
-	conn.printfData("{ \"id\": \"%s\", \"time\": %d }", msg.getId().c_str(), msg.getTime()/1000000);
+	conn.printfData("{ \"id\": \"%s\", \"time\": %d }", msg.getId().c_str(), msg.getTime());
 }
