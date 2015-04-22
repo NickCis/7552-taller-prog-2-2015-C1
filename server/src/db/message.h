@@ -21,7 +21,7 @@ class Message {
 		static void SetDB(std::shared_ptr<rocksdb::DB> &db, std::shared_ptr<rocksdb::ColumnFamilyHandle> &cf);
 
 		const std::string& getFrom() const;
-		const std::string& getTo() const;
+		//const std::string& getTo() const;
 		const std::string& getMsg() const;
 		time_t getTime() const;
 		const uint64_t& getUTime() const;
@@ -43,7 +43,7 @@ class Message {
 		static rocksdb::Slice Pack(std::vector<char>& data, const Message::MessageHeader&, const std::string& from, const std::string& msg);
 		static bool UnPack(const std::string& data, Message& m);
 
-		std::string to;
+		//std::string to;
 		std::string from;
 		std::string msg;
 		time_t arrived;

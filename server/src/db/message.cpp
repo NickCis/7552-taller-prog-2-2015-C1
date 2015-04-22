@@ -74,7 +74,7 @@ Status Message::Get(const string& to, const string& from, const uint64_t& t, Mes
 		return Status::InvalidArgument(Slice("Error en la informacion guardada"));
 
 	//a.from = from;
-	a.to = to;
+	//a.to = to;
 	a.t = t;
 	return s;
 }
@@ -164,9 +164,9 @@ const string& Message::getFrom() const {
 	return this->from;
 }
 
-const string& Message::getTo() const {
+/*const string& Message::getTo() const {
 	return this->to;
-}
+}*/
 
 const string& Message::getMsg() const {
 	return this->msg;
