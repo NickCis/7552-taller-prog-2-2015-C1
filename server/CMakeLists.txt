@@ -10,7 +10,7 @@ set (SERVER_VERSION_MAJOR 0)
 set (SERVER_VERSION_MINOR 1)
 
 file( GLOB WA_FILES src/wa_server.cpp src/node/wa_node.cpp src/node/wa_str_node.cpp src/node/wa_method_node.cpp src/node/wa_parent_node.cpp)
-file( GLOB DB_FILES src/db/db_manager.cpp src/db/user.cpp src/db/access_token.cpp src/db/message.cpp src/db/notification.cpp)
+file( GLOB DB_FILES src/db/db_manager.cpp src/db/user.cpp src/db/access_token.cpp src/db/message.cpp src/db/notification.cpp src/db/db_comparator.cpp)
 file( GLOB REST_FILES src/rest/root_node.cpp src/rest/signup_node.cpp src/rest/wa_method_auth_node.cpp src/rest/not_found_node.cpp src/rest/user_node.cpp src/rest/messages_node.cpp src/rest/auth_node.cpp)
 file( GLOB UTILS_FILES src/util/bin2hex.cpp src/util/md5.cpp src/util/random_number.cpp)
 file( GLOB MONGOOSE_FILES src/mg/mg_server.cpp src/mg/mg_connection.cpp src/mg/mongoose/mongoose.c)

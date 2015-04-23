@@ -202,19 +202,33 @@ Message::MessageIterator::MessageIterator(Iterator* i) : it(i) {
 }
 
 Status Message::MessageIterator::seekToLast(const string& to, const string& from){
-	vector<char> key;
-	Message::GetConversationFromUser(key, from, to);
+	Message::GetConversationFromUser(this->prefix, from, to);
 	string data;
-	Status s = Message::db->Get(ReadOptions(), Message::cf.get(), Slice(key.data(), key.size()), &data);;
+	Status s = Message::db->Get(ReadOptions(), Message::cf.get(), Slice(this->prefix.data(), this->prefix.size()), &data);
 
 	if(s.ok()){
-		Message::GetKeyFromUser(key, from, to, *((uint64_t*) data.data()));
-		this->it->Seek(Slice(key.data(), key.size()));
-		if(this->it->Valid())
+		Message::GetKeyFromUser(this->prefix, from, to, *((uint64_t*) data.data()));
+		this->it->Seek(Slice(this->prefix.data(), this->prefix.size()));
+		this->prefix.resize(this->prefix.size() - sizeof(uint64_t));
+		if(this->valid())
 			this->unPack();
 	}
 
 	return s;
+}
+
+void Message::MessageIterator::seekToFirst(){
+	this->it->SeekToFirst();
+	if(this->valid())
+		this->unPack();
+}
+
+void Message::MessageIterator::seek(const string& to, const string& from){
+	Message::GetConversationFromUser(this->prefix, from, to);
+	this->it->Seek(Slice(this->prefix.data(), this->prefix.size()));
+
+	if(this->valid())
+		this->unPack();
 }
 
 void Message::MessageIterator::unPack(){
@@ -225,7 +239,13 @@ void Message::MessageIterator::unPack(){
 
 void Message::MessageIterator::prev(){
 	this->it->Prev();
-	if(this->it->Valid())
+	if(this->valid())
+		this->unPack();
+}
+
+void Message::MessageIterator::next(){
+	this->it->Next();
+	if(this->valid())
 		this->unPack();
 }
 
@@ -246,5 +266,6 @@ Status Message::MessageIterator::status() const{
 }
 
 bool Message::MessageIterator::valid() const {
-	return this->it->Valid();
+	return this->it->Valid() && ( this->prefix.size() ? this->it->key().starts_with(Slice(this->prefix.data(), this->prefix.size())) : true);
+	//return this->it->Valid();
 }

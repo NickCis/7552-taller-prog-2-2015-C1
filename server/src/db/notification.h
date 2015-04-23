@@ -55,6 +55,7 @@ class Notification::NotificationIterator {
 		std::shared_ptr<rocksdb::Iterator> it;
 		Notification notif;
 		void unPack();
+		std::string prefix;
 };
 
 #endif

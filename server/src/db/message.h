@@ -54,8 +54,11 @@ class Message {
 
 class Message::MessageIterator {
 	public:
+		void seek(const std::string& to, const std::string& from);
+		void seekToFirst();
 		rocksdb::Status seekToLast(const std::string& to, const std::string& from);
 		void prev();
+		void next();
 		//rocksdb::Slice key() const;
 		//rocksdb::Slice value() const;
 		const Message& value() const;
@@ -67,6 +70,7 @@ class Message::MessageIterator {
 		std::shared_ptr<rocksdb::Iterator> it;
 		Message msg;
 		void unPack();
+		std::vector<char> prefix;
 };
 
 #endif

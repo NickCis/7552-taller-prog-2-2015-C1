@@ -109,7 +109,11 @@ Notification::NotificationIterator::NotificationIterator(Iterator* i) : it(i) {
 }
 
 void Notification::NotificationIterator::seek(const string& from){
-	this->it->Seek(Slice(from));
+	this->prefix = from+"/";
+	this->it->Seek(Slice(this->prefix));
+
+	if(this->valid())
+		this->unPack();
 }
 
 void Notification::NotificationIterator::unPack(){
@@ -120,7 +124,7 @@ void Notification::NotificationIterator::unPack(){
 
 void Notification::NotificationIterator::next(){
 	this->it->Next();
-	if(this->it->Valid())
+	if(this->valid())
 		this->unPack();
 }
 
@@ -133,5 +137,5 @@ Status Notification::NotificationIterator::status() const{
 }
 
 bool Notification::NotificationIterator::valid() const {
-	return this->it->Valid();
+	return this->it->Valid() && ( this->prefix.size() ? this->it->key().starts_with(Slice(this->prefix)) : true);
 }

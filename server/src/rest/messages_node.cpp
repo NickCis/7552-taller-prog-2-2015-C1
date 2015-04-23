@@ -22,10 +22,12 @@ void MessagesNode::executeGet(MgConnection& conn, const char* url){
 
 	conn.sendStatus(MgConnection::STATUS_CODE_OK);
 	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
-	conn.printfData("{\"next\":\"algun dia sera\",[");
+	conn.printfData("{\"next\":\"algun dia sera\",\"messages\":[");
 	bool first = true;
 
-	for(it->seekToLast(user, loggedUser); it->valid() && limit-- > 0 ; it->prev())
+	//for(it->seekToLast(user, loggedUser); it->valid() && limit-- > 0 ; it->prev(), first = false)
+	//for(it->seekToFirst(); it->valid(); it->next(), first = false)
+	for(it->seek(user, loggedUser); it->valid(); it->next(), first = false)
 		conn.printfData("%s%s", first ? "" : ",", it->value().toJson().c_str());
 
 	conn.printfData("]}");

@@ -8,6 +8,8 @@
 #include <rocksdb/db.h>
 #include <rocksdb/status.h>
 
+#include "db_comparator.h"
+
 class DBManager {
 	public:
 		typedef enum ColumnFamilies {
@@ -28,6 +30,7 @@ class DBManager {
 		std::string path;
 		std::shared_ptr<rocksdb::DB> db;
 		std::vector < std::shared_ptr < rocksdb::ColumnFamilyHandle > > cfs;
+		DbComparator comparator;
 
 		void create(rocksdb::Status& s);
 		void open(rocksdb::Status& s);
