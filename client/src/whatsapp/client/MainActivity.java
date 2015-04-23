@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -15,10 +14,8 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import utils.Conversation;
 import utils.ConversationEntity;
-import utils.Message;
-import utils.User;
+import utils.DatabaseHelper;
 import utils.UserEntity;
 
 public class MainActivity extends Activity implements ServerResultReceiver.Listener{
@@ -27,14 +24,14 @@ public class MainActivity extends Activity implements ServerResultReceiver.Liste
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        DatabaseHelper dbH = new DatabaseHelper(this);
+        dbH.open();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if(!prefs.getBoolean("firstTime", false)) {
-            User user = new User(this);
-            UserEntity uE = user.createUser(1511111111, "WhatsApp Info", User.NORMAL);
-            Conversation conversation = new Conversation(this);
-            ConversationEntity cE = conversation.createConversation(uE);
-            Message message = new Message(this);
-            message.createMessage(cE, uE, null, cE.getLast_message_time(), "Bienvenido a Whatsapp", Message.NOT_SEEN);
+            UserEntity uE = dbH.createUser(1511111111, "WhatsApp Info", DatabaseHelper.NORMAL);
+            dbH.createUser(1511111112, "WhatsApp Lalala", DatabaseHelper.NORMAL);
+            ConversationEntity cE = dbH.createConversation(uE);
+            dbH.createMessage(cE, uE, null, cE.getLast_message_time(), "Bienvenido a Whatsapp", dbH.NOT_SEEN);
             SharedPreferences.Editor editor = prefs.edit();
             editor.putBoolean("firstTime", true);
             editor.commit();
@@ -44,12 +41,11 @@ public class MainActivity extends Activity implements ServerResultReceiver.Liste
         final ListView listview = (ListView) findViewById(R.id.mainListview);
         final ArrayList<String> list = new ArrayList<String>();
         
-        Conversation conversation = new Conversation(this);
-        for (ConversationEntity cE : conversation.fetchAllConversations())
+        for (ConversationEntity cE : dbH.fetchAllConversations())
         {
             list.add(cE.getUser(0).getName());
         }
-        
+        dbH.close();
         final StableArrayAdapter adapter = new StableArrayAdapter(this, android.R.layout.simple_list_item_1, list);
         listview.setAdapter(adapter);
 
@@ -70,8 +66,10 @@ public class MainActivity extends Activity implements ServerResultReceiver.Liste
         }
 
         public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-            Conversation conversation = new Conversation(this.context);
-            List<ConversationEntity> list = conversation.fetchAllConversations();
+            DatabaseHelper dbH = new DatabaseHelper(this.context);
+            dbH.open();
+            List<ConversationEntity> list = dbH.fetchAllConversations();
+            dbH.close();
             final int conversationID = list.get(position).getConversationId();
             view.animate().setDuration(2000).alpha(0).withEndAction(new Runnable() {
                 @Override

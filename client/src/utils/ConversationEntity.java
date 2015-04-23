@@ -4,7 +4,10 @@
  */
 package utils;
 
-import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -40,7 +43,13 @@ public class ConversationEntity {
     {
         this.conversationId = conversationId;
         Calendar cal = Calendar.getInstance();
-        cal.setTime(Date.valueOf(lastMessageTime));
+        try
+        {
+            cal.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(lastMessageTime));
+        }catch (ParseException pE)
+        {
+            System.out.println(pE.getCause().getMessage());
+        }
         this.last_message_time = cal;
         this.users = new ArrayList<UserEntity>();
     }
