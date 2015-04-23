@@ -15,7 +15,7 @@ class Message {
 		Message();
 
 		static rocksdb::Status Put(const std::string& to, const std::string& from, const std::string& msg, Message& a);
-		static rocksdb::Status Get(const std::string& to, const std::string& from, const uint64_t& tv, Message& a);
+		static rocksdb::Status Get(const std::string& to, const std::string& from, const uint64_t& id, Message& a);
 
 		static std::shared_ptr<Message::MessageIterator> NewIterator();
 		static void SetDB(std::shared_ptr<rocksdb::DB> &db, std::shared_ptr<rocksdb::ColumnFamilyHandle> &cf);
@@ -23,9 +23,9 @@ class Message {
 		const std::string& getFrom() const;
 		//const std::string& getTo() const;
 		const std::string& getMsg() const;
-		time_t getTime() const;
-		const uint64_t& getUTime() const;
+		const time_t& getTime() const;
 		std::string getId() const;
+		//const uint64_t& getId() const;
 		std::string toJson() const;
 
 	protected:
@@ -38,7 +38,7 @@ class Message {
 		static std::shared_ptr<rocksdb::DB> db;
 		static std::shared_ptr<rocksdb::ColumnFamilyHandle> cf;
 		static void GetConversationFromUser(std::vector<char>& data, const std::string& to, const std::string& from);
-		static void GetKeyFromUser(std::vector<char>& data, const std::string& to, const std::string& from, const uint64_t& tv);
+		static void GetKeyFromUser(std::vector<char>& data, const std::string& to, const std::string& from, const uint64_t& id);
 
 		static rocksdb::Slice Pack(std::vector<char>& data, const Message::MessageHeader&, const std::string& from, const std::string& msg);
 		static bool UnPack(const std::string& data, Message& m);
@@ -48,7 +48,8 @@ class Message {
 		std::string msg;
 		time_t arrived;
 		time_t read;
-		uint64_t t;
+		time_t t;
+		uint64_t id;
 		int has_file;
 };
 

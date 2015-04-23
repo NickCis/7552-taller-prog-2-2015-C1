@@ -7,6 +7,9 @@
 
 #include <rocksdb/write_batch.h>
 
+#define _BSD_SOURCE
+#include <endian.h>
+
 extern "C" {
 	#include <sys/time.h>
 }
@@ -43,29 +46,30 @@ Message::Message(){
 Status Message::Put(const string& to, const string& from, const string& msg, Message& a){
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
-	a.t = tv.tv_sec * (uint64_t)1000000 + tv.tv_usec;
+	a.t = tv.tv_sec;
+	a.id = htobe64(tv.tv_sec * (uint64_t)1000000 + tv.tv_usec);
 
 	Message::MessageHeader mh;
 	memset(&mh, 0, sizeof(Message::MessageHeader));
 
 	vector<char> key;
-	vector<char> keyLast;
+	//vector<char> keyLast;
 
-	Message::GetKeyFromUser(key, from, to, a.t);
-	Message::GetConversationFromUser(keyLast, from, to);
+	Message::GetKeyFromUser(key, from, to, a.id);
+	//Message::GetConversationFromUser(keyLast, from, to);
 
 	vector<char> data;
 
 	WriteBatch batch;
 	batch.Put(Message::cf.get(), Slice(key.data(), key.size()), Message::Pack(data, mh, from, msg));
-	batch.Put(Message::cf.get(), Slice(keyLast.data(), keyLast.size()), Slice((char*) &a.t, sizeof(uint64_t)));
+	//batch.Put(Message::cf.get(), Slice(keyLast.data(), keyLast.size()), Slice((char*) &a.t, sizeof(uint64_t)));
 
 	return Message::db->Write(WriteOptions(), &batch);
 }
 
-Status Message::Get(const string& to, const string& from, const uint64_t& t, Message& a){
+Status Message::Get(const string& to, const string& from, const uint64_t& id, Message& a){
 	vector<char> key;
-	Message::GetKeyFromUser(key, from, to, t);
+	Message::GetKeyFromUser(key, from, to, id);
 
 	string data;
 	Status s = Message::db->Get(ReadOptions(), Message::cf.get(), Slice(key.data(), key.size()), &data);
@@ -74,7 +78,8 @@ Status Message::Get(const string& to, const string& from, const uint64_t& t, Mes
 
 	//a.from = from;
 	//a.to = to;
-	a.t = t;
+	a.id = id;
+	a.t = be64toh(id) / 1000000;
 	return s;
 }
 
@@ -98,14 +103,14 @@ void Message::GetConversationFromUser(vector<char>& data, const string& to, cons
 	copy(second.begin(), second.end(), it);
 }
 
-void Message::GetKeyFromUser(vector<char>& data, const string& to, const string& from, const uint64_t& tv){
+void Message::GetKeyFromUser(vector<char>& data, const string& to, const string& from, const uint64_t& id){
 	// XXX: Esto es un ascoo!
 	Message::GetConversationFromUser(data, to, from);
 
 	size_t end = data.size();
 	data.resize(end+1+sizeof(uint64_t));
 	*(data.begin()+end) = '/';
-	copy((char*) &tv, ((char*) &tv)+sizeof(uint64_t), data.begin()+end+1);
+	copy((char*) &id, ((char*) &id)+sizeof(uint64_t), data.begin()+end+1);
 }
 
 Slice Message::Pack(vector<char>& data, const Message::MessageHeader& mh, const string& from, const string& msg){
@@ -171,13 +176,13 @@ const string& Message::getMsg() const {
 	return this->msg;
 }
 
-const uint64_t& Message::getUTime() const {
+const time_t& Message::getTime() const {
 	return this->t;
 }
 
-time_t Message::getTime() const {
-	return this->t / 1000000;
-}
+//const uint64_t& Message::getId() const {
+//	return this->id;
+//}
 
 string Message::getId() const {
 	return bin2hex(this->t);
@@ -234,7 +239,8 @@ void Message::MessageIterator::seek(const string& to, const string& from){
 void Message::MessageIterator::unPack(){
 	Message::UnPack(this->it->value().ToString(), this->msg);
 	auto keyIt = this->it->key().ToString().end();
-	copy(keyIt-sizeof(uint64_t), keyIt, (char*) &this->msg.t);
+	copy(keyIt-sizeof(uint64_t), keyIt, (char*) &this->msg.id);
+	this->msg.t = be64toh(this->msg.id) / 1000000;
 }
 
 void Message::MessageIterator::prev(){
