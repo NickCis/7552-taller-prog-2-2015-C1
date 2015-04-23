@@ -67,7 +67,7 @@ public class MainActivity extends Activity implements ServerResultReceiver.Liste
 
         public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
             final String item = (String) parent.getItemAtPosition(position);
-            view.animate().setDuration(2000).alpha(0).withEndAction(new Runnable() {
+            view.animate().setDuration(500).alpha(0).withEndAction(new Runnable() {
                 @Override
                 public void run() {
                     view.setAlpha(1);

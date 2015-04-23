@@ -5,15 +5,13 @@
 package whatsapp.client;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import de.svenjacobs.loremipsum.LoremIpsum;
+import java.util.Random;
 import model.ServerResultReceiver;
 
 /**
@@ -21,66 +19,61 @@ import model.ServerResultReceiver;
  * @author umm194
  */
 public class ConversationActivity extends Activity implements ServerResultReceiver.Listener{
+	private DiscussArrayAdapter adapter;
+	private ListView lv;
+	private LoremIpsum ipsum;
+	private EditText editText1;
+	private static Random random;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+	@Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.conversation);
-        
-        final ListView listview = (ListView) findViewById(R.id.conversationListview);
-        
-        String[] values = new String[] { "Mensaje1", "Mensaje2", "etc", "etc"
-        , "etc", "etc", "etc", "etc", "etc", "etc", "etc", "etc", "etc", "etc", "etc"};
-
-        final ArrayList<String> list = new ArrayList<String>();
-        for (int i = 0; i < values.length; ++i) {
-            list.add(values[i]);
-        }
-
-        final StableArrayAdapter adapter = new StableArrayAdapter(this, android.R.layout.simple_list_item_1, list);
-        listview.setAdapter(adapter);
-        
-        listview.setOnItemClickListener(new ClickListener(this)); // Para seleccionar y copiar mensajes
+        setContentView(R.layout.activity_discuss);
+        random = new Random();
+        //TODO: esto tendria que venir del server o de almacenamiento interno ni bien entro
+        ipsum = new LoremIpsum();
+        lv = (ListView) findViewById(R.id.listView1);
+        adapter = new DiscussArrayAdapter(getApplicationContext(), R.layout.listitem_discuss);
+        lv.setAdapter(adapter);
+        editText1 = (EditText) findViewById(R.id.editText1);
+        editText1.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View arg0, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    adapter.add(new OneComment(false, editText1.getText().toString()));
+                    editText1.setText("");
+                    return true;
+                }
+                return false;
+            }
+        });
+        addItems();
     }
+
+    //TODO: MOCK, tendria q salir del servidor tmb
+	private void addItems() {
+		adapter.add(new OneComment(true, "Hello bubbles!"));
+		for (int i = 0; i < 4; i++) {
+			boolean left = getRandomInteger(0, 1) == 0 ? true : false;
+			int word = getRandomInteger(1, 10);
+			int start = getRandomInteger(1, 40);
+			String words = ipsum.getWords(word, start);
+
+			adapter.add(new OneComment(left, words));
+		}
+	}
+
+	private static int getRandomInteger(int aStart, int aEnd) {
+		if (aStart > aEnd) {
+			throw new IllegalArgumentException("Start cannot exceed End.");
+		}
+		long range = (long) aEnd - (long) aStart + 1;
+		long fraction = (long) (range * random.nextDouble());
+		int randomNumber = (int) (fraction + aStart);
+		return randomNumber;
+	}
 
     public void onReceiveResult(int resultCode, Bundle resultData) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    private class ClickListener implements AdapterView.OnItemClickListener
-    {
-        private Context context;
-        
-        public ClickListener (Context context)
-        {
-            this.context = context;
-        }
 
-        public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-        }
-    }
-        
-    private class StableArrayAdapter extends ArrayAdapter<String> {
-
-        HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
-
-        public StableArrayAdapter(Context context, int textViewResourceId, List<String> objects) {
-            super(context, textViewResourceId, objects);
-            for (int i = 0; i < objects.size(); ++i) {
-                mIdMap.put(objects.get(i), i);
-            }
-        }
-
-        @Override
-        public long getItemId(int position) {
-            String item = getItem(position);
-            return mIdMap.get(item);
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return true;
-        }
-    }
 }
