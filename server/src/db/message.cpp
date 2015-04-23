@@ -1,7 +1,11 @@
 #include "message.h"
+#include "../util/bin2hex.h"
 
-#include <algorithm>
+#include <sstream>
 #include <cstdlib>
+#include <algorithm>
+
+#include <rocksdb/write_batch.h>
 
 extern "C" {
 	#include <sys/time.h>
@@ -17,6 +21,8 @@ using std::stringstream;
 using rocksdb::DB;
 using rocksdb::Slice;
 using rocksdb::Status;
+using rocksdb::Iterator;
+using rocksdb::WriteBatch;
 using rocksdb::ReadOptions;
 using rocksdb::WriteOptions;
 using rocksdb::ColumnFamilyHandle;
@@ -43,12 +49,18 @@ Status Message::Put(const string& to, const string& from, const string& msg, Mes
 	memset(&mh, 0, sizeof(Message::MessageHeader));
 
 	vector<char> key;
+	vector<char> keyLast;
+
 	Message::GetKeyFromUser(key, from, to, a.t);
+	Message::GetConversationFromUser(keyLast, from, to);
 
 	vector<char> data;
-	Message::Pack(data, mh, from, msg);
 
-	return Message::db->Put(WriteOptions(), Message::cf.get(), Slice(key.data(), key.size()), Slice(data.data(), data.size()));
+	WriteBatch batch;
+	batch.Put(Message::cf.get(), Slice(key.data(), key.size()), Message::Pack(data, mh, from, msg));
+	batch.Put(Message::cf.get(), Slice(keyLast.data(), keyLast.size()), Slice((char*) &a.t, sizeof(uint64_t)));
+
+	return Message::db->Write(WriteOptions(), &batch);
 }
 
 Status Message::Get(const string& to, const string& from, const uint64_t& t, Message& a){
@@ -60,8 +72,8 @@ Status Message::Get(const string& to, const string& from, const uint64_t& t, Mes
 	if(!Message::UnPack(data, a)) // TODO: arreglar error de salida
 		return Status::InvalidArgument(Slice("Error en la informacion guardada"));
 
-	a.from = from;
-	a.to = to;
+	//a.from = from;
+	//a.to = to;
 	a.t = t;
 	return s;
 }
@@ -93,7 +105,7 @@ void Message::GetKeyFromUser(vector<char>& data, const string& to, const string&
 	size_t end = data.size();
 	data.resize(end+1+sizeof(uint64_t));
 	*(data.begin()+end) = '/';
-	copy(&tv, &tv+sizeof(uint64_t), data.begin()+end+1);
+	copy((char*) &tv, ((char*) &tv)+sizeof(uint64_t), data.begin()+end+1);
 }
 
 Slice Message::Pack(vector<char>& data, const Message::MessageHeader& mh, const string& from, const string& msg){
@@ -107,16 +119,16 @@ Slice Message::Pack(vector<char>& data, const Message::MessageHeader& mh, const 
 	copy((char*) &mh, ((char*) (&mh))+size, it);
 	it += size;
 
-	/* // Pack: From
+	// Pack: From
 	size = from.size();
-	copy(&size, &size + sizeof(size_t), it);
+	copy(&size, &size + 1, it);
 	it += sizeof(size_t);
-	copy(to.begin(), to.end(), it);
-	it += size; */
+	copy(from.begin(), from.end(), it);
+	it += size;
 
 	// Pack: Message
 	size = msg.size();
-	copy(&size, &size + sizeof(size_t), it);
+	copy(&size, &size + 1, it);
 	it += sizeof(size_t);
 	copy(msg.begin(), msg.end(), it);
 	it += size;
@@ -136,29 +148,124 @@ bool Message::UnPack(const string& data, Message& msg){
 	msg.read = mh.read;
 	msg.has_file = mh.has_file;
 
-	/*UNPACK(&size, sizeof(size_t), it, data_size);
+	UNPACK((char*) &size, sizeof(size_t), it, data_size);
 	msg.from.resize(size);
-	UNPACK(msg.from.begin(), size, it, data_size);*/
+	UNPACK(msg.from.begin(), size, it, data_size);
 
-	UNPACK(&size, sizeof(size_t), it, data_size);
+	UNPACK((char*) &size, sizeof(size_t), it, data_size);
 	msg.msg.resize(size);
 	UNPACK(msg.msg.begin(), size, it, data_size);
 
 	return true;
 }
 
-const string& Message::getFrom(){
+const string& Message::getFrom() const {
 	return this->from;
 }
 
-const string& Message::getTo(){
+/*const string& Message::getTo() const {
 	return this->to;
-}
+}*/
 
-const string& Message::getMsg(){
+const string& Message::getMsg() const {
 	return this->msg;
 }
 
-const uint64_t& Message::getTime(){
+const uint64_t& Message::getUTime() const {
 	return this->t;
+}
+
+time_t Message::getTime() const {
+	return this->t / 1000000;
+}
+
+string Message::getId() const {
+	return bin2hex(this->t);
+}
+
+string Message::toJson() const {
+	stringstream ss;
+	ss << "{\"id\":\"" << this->getId() << "\",\"from\":\"" << this->from << "\",\"message\":\"" << this->msg << "\",\"arrived\":" << this->arrived << ",\"read\":" << this->read << ",\"time\":" << this->getTime();
+
+	if(this->has_file) // TODO: 
+		ss << ",\"file\":\"proximamente\",\"file_type\":\"proximamente\"";
+
+	ss << "}";
+	return ss.str();
+}
+
+shared_ptr<Message::MessageIterator> Message::NewIterator(){
+	return shared_ptr<Message::MessageIterator>(new Message::MessageIterator(Message::db->NewIterator(ReadOptions(), Message::cf.get())));
+}
+
+Message::MessageIterator::MessageIterator(Iterator* i) : it(i) {
+}
+
+Status Message::MessageIterator::seekToLast(const string& to, const string& from){
+	Message::GetConversationFromUser(this->prefix, from, to);
+	string data;
+	Status s = Message::db->Get(ReadOptions(), Message::cf.get(), Slice(this->prefix.data(), this->prefix.size()), &data);
+
+	if(s.ok()){
+		Message::GetKeyFromUser(this->prefix, from, to, *((uint64_t*) data.data()));
+		this->it->Seek(Slice(this->prefix.data(), this->prefix.size()));
+		this->prefix.resize(this->prefix.size() - sizeof(uint64_t));
+		if(this->valid())
+			this->unPack();
+	}
+
+	return s;
+}
+
+void Message::MessageIterator::seekToFirst(){
+	this->it->SeekToFirst();
+	if(this->valid())
+		this->unPack();
+}
+
+void Message::MessageIterator::seek(const string& to, const string& from){
+	Message::GetConversationFromUser(this->prefix, from, to);
+	this->it->Seek(Slice(this->prefix.data(), this->prefix.size()));
+
+	if(this->valid())
+		this->unPack();
+}
+
+void Message::MessageIterator::unPack(){
+	Message::UnPack(this->it->value().ToString(), this->msg);
+	auto keyIt = this->it->key().ToString().end();
+	copy(keyIt-sizeof(uint64_t), keyIt, (char*) &this->msg.t);
+}
+
+void Message::MessageIterator::prev(){
+	this->it->Prev();
+	if(this->valid())
+		this->unPack();
+}
+
+void Message::MessageIterator::next(){
+	this->it->Next();
+	if(this->valid())
+		this->unPack();
+}
+
+//Slice Message::MessageIterator::key() const{
+//	return this->it->key();
+//}
+
+//Slice Message::MessageIterator::value() const{
+//	return this->it->value();
+//}
+
+const Message& Message::MessageIterator::value() const{
+	return this->msg;
+}
+
+Status Message::MessageIterator::status() const{
+	return this->it->status();
+}
+
+bool Message::MessageIterator::valid() const {
+	return this->it->Valid() && ( this->prefix.size() ? this->it->key().starts_with(Slice(this->prefix.data(), this->prefix.size())) : true);
+	//return this->it->Valid();
 }

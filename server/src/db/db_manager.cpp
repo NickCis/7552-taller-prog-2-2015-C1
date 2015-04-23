@@ -1,11 +1,16 @@
 #include "db_manager.h"
-#include <rocksdb/options.h>
-
 #include "user.h"
 #include "access_token.h"
 #include "message.h"
 
+#include <cstring>
+
+#include <rocksdb/options.h>
+
+#include <iostream>
+
 using std::string;
+using std::strcmp;
 using std::vector;
 using std::shared_ptr;
 
@@ -41,7 +46,11 @@ void DBManager::create(Status& s){
 	if(s.ok()){
 		ColumnFamilyHandle* cf;
 		for(int i=0; HANDLES[i]; i++){
-			s = _db->CreateColumnFamily(ColumnFamilyOptions(), HANDLES[i], &cf);
+			ColumnFamilyOptions cfo;
+			if(strcmp(HANDLES[i], "messages") == 0)
+				cfo.comparator = &this->comparator;
+
+			s = _db->CreateColumnFamily(cfo, HANDLES[i], &cf);
 			delete cf;
 			if(!s.ok())
 				break;
@@ -59,11 +68,18 @@ void DBManager::open(Status& s){
 	column_families.push_back(ColumnFamilyDescriptor(kDefaultColumnFamilyName, ColumnFamilyOptions()));
 
 	for(int i=0; HANDLES[i]; i++){
-		column_families.push_back(ColumnFamilyDescriptor(HANDLES[i], ColumnFamilyOptions()));
+		ColumnFamilyOptions cfo;
+		if(strcmp(HANDLES[i], "messages") == 0)
+			cfo.comparator = &this->comparator;
+		column_families.push_back(ColumnFamilyDescriptor(HANDLES[i], cfo));
 	}
 
 	std::vector<ColumnFamilyHandle*> handles;
-	s = DB::Open(DBOptions(), this->path, column_families, &handles, &_db);
+	Options options;
+	options.comparator = &this->comparator;
+	s = DB::Open(DBOptions(options), this->path, column_families, &handles, &_db);
+	if(!s.ok())
+		std::cout << "ESTA MIERDA NO ANDA " << s.ToString() << std::endl;
 
 	this->db = shared_ptr<DB>(_db);
 	for(auto h : handles)
