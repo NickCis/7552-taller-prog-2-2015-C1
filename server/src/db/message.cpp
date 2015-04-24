@@ -207,7 +207,7 @@ Message::MessageIterator::MessageIterator(Iterator* i) : it(i) {
 }
 
 Status Message::MessageIterator::seekToLast(const string& to, const string& from){
-	Message::GetConversationFromUser(this->prefix, from, to);
+	Message::GetKeyFromUser(this->prefix, from, to, 0);
 	string data;
 	Status s = Message::db->Get(ReadOptions(), Message::cf.get(), Slice(this->prefix.data(), this->prefix.size()), &data);
 

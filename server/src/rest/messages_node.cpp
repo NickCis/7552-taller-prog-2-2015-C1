@@ -25,9 +25,9 @@ void MessagesNode::executeGet(MgConnection& conn, const char* url){
 	conn.printfData("{\"next\":\"algun dia sera\",\"messages\":[");
 	bool first = true;
 
-	//for(it->seekToLast(user, loggedUser); it->valid() && limit-- > 0 ; it->prev(), first = false)
+	for(it->seekToLast(user, loggedUser); it->valid() && limit-- > 0 ; it->prev(), first = false)
 	//for(it->seekToFirst(); it->valid(); it->next(), first = false)
-	for(it->seek(user, loggedUser); it->valid(); it->next(), first = false)
+	//for(it->seek(user, loggedUser); it->valid(); it->next(), first = false)
 		conn.printfData("%s%s", first ? "" : ",", it->value().toJson().c_str());
 
 	conn.printfData("]}");
