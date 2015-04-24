@@ -77,4 +77,28 @@ public class UserEntity {
     public void setStatus(Short status) {
         this.status = status;
     }
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        if(obj == null)
+            return false;
+        if(!(obj instanceof UserEntity))
+            return false;
+
+        UserEntity other = (UserEntity) obj;
+        if(!this.userId.equals(other.userId)) return false;
+        if(!this.name.equals(other.name)) return false;
+        if(!this.phone.equals(other.phone)) return false;
+        if(!this.status.equals(other.status)) return false;
+        
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 89 * hash + (this.userId != null ? this.userId.hashCode() : 0);
+        return hash;
+    }
 }

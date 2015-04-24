@@ -70,9 +70,6 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
     }
 
     public void onReceiveResult(int resultCode, Bundle resultData) {
-        TextView tv = (TextView) findViewById(R.id.title);
-        String text = resultData.getString("data");
-        tv.setText(text);
         registerUser();
         startActivity(new Intent(this, MainActivity.class));
     }
