@@ -234,6 +234,25 @@ void Message::MessageIterator::seekToFirst(){
 	}
 }
 
+void Message::MessageIterator::seek(const string& to, const string& from, const string& id_str){
+	uint64_t id;
+	vector<char> id_data = hex2bin(id_str);
+	copy(id_data.begin(), id_data.begin()+sizeof(uint64_t), (char*) &id);
+	Message::MessageIterator::seek(to, from, id);
+
+}
+void Message::MessageIterator::seek(const string& to, const string& from, const uint64_t& id){
+	Message::GetKeyFromUser(this->prefix, from, to, id);
+	this->it->Seek(Slice(this->prefix.data(), this->prefix.size()));
+	this->prefix.resize(this->prefix.size() - sizeof(uint64_t));
+
+	if(this->_valid()){
+		this->unPack();
+		if(this->msg.t == 0)
+			this->next();
+	}
+}
+
 void Message::MessageIterator::seek(const string& to, const string& from){
 	Message::GetConversationFromUser(this->prefix, from, to);
 	this->it->Seek(Slice(this->prefix.data(), this->prefix.size()));

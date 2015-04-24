@@ -56,6 +56,8 @@ class Message {
 class Message::MessageIterator {
 	public:
 		void seek(const std::string& to, const std::string& from);
+		void seek(const std::string& to, const std::string& from, const std::string& id);
+		void seek(const std::string& to, const std::string& from, const uint64_t& id);
 		void seekToFirst();
 		rocksdb::Status seekToLast(const std::string& to, const std::string& from);
 		void prev();

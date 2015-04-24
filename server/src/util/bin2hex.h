@@ -27,4 +27,6 @@ std::string bin2hex(T first){
 	return bin2hex(&first, sizeof(T));
 }
 
+std::vector<char> hex2bin(const std::string &hex);
+
 #endif
