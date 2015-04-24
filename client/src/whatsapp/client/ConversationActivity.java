@@ -13,6 +13,8 @@ import android.widget.ListView;
 import de.svenjacobs.loremipsum.LoremIpsum;
 import java.util.Random;
 import model.ServerResultReceiver;
+import utils.ConversationEntity;
+import utils.MessageEntity;
 
 /**
  *
