@@ -1,9 +1,10 @@
 #include "messages_node.h"
 #include <string>
+#include <cstdlib>
 
 #include "../db/message.h"
 
-using std::stoi;
+using std::atoi;
 using std::string;
 
 using rocksdb::Status;
@@ -16,9 +17,9 @@ void MessagesNode::executeGet(MgConnection& conn, const char* url){
 	string loggedUser = conn.getParameter("logged_user");
 	auto it = Message::NewIterator();
 
-	// TODO: hacer limite dinamico
-	//int limit = stoi(conn.getParameter("limit"));
-	int limit = 20;
+	int limit = atoi(conn.getVarStr("limit").c_str());
+	if(!limit)
+		limit = 20;
 
 	conn.sendStatus(MgConnection::STATUS_CODE_OK);
 	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
