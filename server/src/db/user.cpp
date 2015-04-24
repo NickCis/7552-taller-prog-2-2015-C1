@@ -49,7 +49,7 @@ bool User::IsUsernameValid(const string& username){
 		return false;
 
 	for(auto it=username.begin(); it != username.end(); it++){
-		if('a' <= *it && *it <= 'z'){
+		if(('a' <= *it && *it <= 'z') || ('0' <= *it && *it <= '9'){
 			continue;
 		}
 
@@ -58,7 +58,6 @@ bool User::IsUsernameValid(const string& username){
 			case ',':
 			case '-':
 			case '_':
-			case 0:
 				continue;
 				break;
 
