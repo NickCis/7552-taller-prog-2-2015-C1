@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include <algorithm>
 
+#include <iostream>
+
 #include <rocksdb/write_batch.h>
 
 #define _BSD_SOURCE
@@ -49,6 +51,8 @@ Status Message::Put(const string& to, const string& from, const string& msg, Mes
 	a.t = tv.tv_sec;
 	a.id = htobe64(tv.tv_sec * (uint64_t)1000000 + tv.tv_usec);
 
+	std::cout << "id: " << bin2hex(a.id) << std::endl;
+
 	Message::MessageHeader mh;
 	memset(&mh, 0, sizeof(Message::MessageHeader));
 
@@ -63,6 +67,8 @@ Status Message::Put(const string& to, const string& from, const string& msg, Mes
 	WriteBatch batch;
 	batch.Put(Message::cf.get(), Slice(key.data(), key.size()), Message::Pack(data, mh, from, msg));
 	//batch.Put(Message::cf.get(), Slice(keyLast.data(), keyLast.size()), Slice((char*) &a.t, sizeof(uint64_t)));
+
+	std::cout << "key -> " << bin2hex(key.begin(), key.end()) << std::endl;
 
 	return Message::db->Write(WriteOptions(), &batch);
 }
@@ -185,7 +191,7 @@ const time_t& Message::getTime() const {
 //}
 
 string Message::getId() const {
-	return bin2hex(this->t);
+	return bin2hex(this->id);
 }
 
 string Message::toJson() const {
@@ -241,6 +247,7 @@ void Message::MessageIterator::unPack(){
 	auto keyIt = this->it->key().ToString().end();
 	copy(keyIt-sizeof(uint64_t), keyIt, (char*) &this->msg.id);
 	this->msg.t = be64toh(this->msg.id) / 1000000;
+	std::cout << "key: " << this->it->key().ToString() << " id: " << bin2hex(this->msg.id) << std::endl;
 }
 
 void Message::MessageIterator::prev(){
