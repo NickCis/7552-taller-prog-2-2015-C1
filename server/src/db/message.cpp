@@ -51,24 +51,18 @@ Status Message::Put(const string& to, const string& from, const string& msg, Mes
 	a.t = tv.tv_sec;
 	a.id = htobe64(tv.tv_sec * (uint64_t)1000000 + tv.tv_usec);
 
-	std::cout << "id: " << bin2hex(a.id) << std::endl;
-
 	Message::MessageHeader mh;
 	memset(&mh, 0, sizeof(Message::MessageHeader));
 
 	vector<char> key;
-	//vector<char> keyLast;
-
-	Message::GetKeyFromUser(key, from, to, a.id);
-	//Message::GetConversationFromUser(keyLast, from, to);
-
 	vector<char> data;
+	Message::GetKeyFromUser(key, from, to, a.id);
 
 	WriteBatch batch;
 	batch.Put(Message::cf.get(), Slice(key.data(), key.size()), Message::Pack(data, mh, from, msg));
-	//batch.Put(Message::cf.get(), Slice(keyLast.data(), keyLast.size()), Slice((char*) &a.t, sizeof(uint64_t)));
 
-	std::cout << "key -> " << bin2hex(key.begin(), key.end()) << std::endl;
+	fill(key.end()-sizeof(uint64_t), key.end(), 0);
+	batch.Put(Message::cf.get(), Slice(key.data(), key.size()), Slice((char*) &a.id, sizeof(uint64_t)));
 
 	return Message::db->Write(WriteOptions(), &batch);
 }
@@ -221,8 +215,11 @@ Status Message::MessageIterator::seekToLast(const string& to, const string& from
 		Message::GetKeyFromUser(this->prefix, from, to, *((uint64_t*) data.data()));
 		this->it->Seek(Slice(this->prefix.data(), this->prefix.size()));
 		this->prefix.resize(this->prefix.size() - sizeof(uint64_t));
-		if(this->valid())
+		if(this->_valid()){
 			this->unPack();
+			if(this->msg.t == 0)
+				this->prev();
+		}
 	}
 
 	return s;
@@ -230,16 +227,22 @@ Status Message::MessageIterator::seekToLast(const string& to, const string& from
 
 void Message::MessageIterator::seekToFirst(){
 	this->it->SeekToFirst();
-	if(this->valid())
+	if(this->_valid()){
 		this->unPack();
+		if(this->msg.t == 0)
+			this->next();
+	}
 }
 
 void Message::MessageIterator::seek(const string& to, const string& from){
 	Message::GetConversationFromUser(this->prefix, from, to);
 	this->it->Seek(Slice(this->prefix.data(), this->prefix.size()));
 
-	if(this->valid())
+	if(this->_valid()){
 		this->unPack();
+		if(this->msg.t == 0)
+			this->next();
+	}
 }
 
 void Message::MessageIterator::unPack(){
@@ -247,19 +250,24 @@ void Message::MessageIterator::unPack(){
 	auto keyIt = this->it->key().ToString().end();
 	copy(keyIt-sizeof(uint64_t), keyIt, (char*) &this->msg.id);
 	this->msg.t = be64toh(this->msg.id) / 1000000;
-	std::cout << "key: " << this->it->key().ToString() << " id: " << bin2hex(this->msg.id) << std::endl;
 }
 
 void Message::MessageIterator::prev(){
 	this->it->Prev();
-	if(this->valid())
+	if(this->_valid()){
 		this->unPack();
+		if(this->msg.t == 0)
+			this->prev();
+	}
 }
 
 void Message::MessageIterator::next(){
 	this->it->Next();
-	if(this->valid())
+	if(this->_valid()){
 		this->unPack();
+		if(this->msg.t == 0)
+			this->next();
+	}
 }
 
 //Slice Message::MessageIterator::key() const{
@@ -279,6 +287,10 @@ Status Message::MessageIterator::status() const{
 }
 
 bool Message::MessageIterator::valid() const {
+	return this->_valid() && this->msg.t;
+}
+
+bool Message::MessageIterator::_valid() const {
 	return this->it->Valid() && ( this->prefix.size() ? this->it->key().starts_with(Slice(this->prefix.data(), this->prefix.size())) : true);
 	//return this->it->Valid();
 }

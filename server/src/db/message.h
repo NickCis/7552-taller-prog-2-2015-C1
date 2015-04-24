@@ -72,6 +72,7 @@ class Message::MessageIterator {
 		Message msg;
 		void unPack();
 		std::vector<char> prefix;
+		bool _valid() const;
 };
 
 #endif
