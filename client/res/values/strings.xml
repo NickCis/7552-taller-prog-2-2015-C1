@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">WhatsAppTaller</string>
+    <string name="URI"> http://192.168.1.40:8000/</string>
     <string name="USER">user</string>
     <string name="PW">password</string>
     <string name="INFO">info</string>
