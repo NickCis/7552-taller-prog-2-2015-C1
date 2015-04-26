@@ -69,11 +69,8 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 	private final boolean isUserRegistered() {
 		SharedPreferences data = getSharedPreferences(REGISTERED, 0);
 		return data.getBoolean(REGISTERED, false);
-		//SharedPreferences.Editor editor = data.edit();
-		//editor.
-
 	}
-
+	
 	/**
 	 * Setea un flag de que el usuario ya fue registrado
 	 */
@@ -89,6 +86,7 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 //			registerUser();
 //		}
 //		registerUser();
+		
 		InfoDialog.disposeDialog();
 		if (resultCode==0)
 			startActivity(new Intent(this, MainActivity.class));
