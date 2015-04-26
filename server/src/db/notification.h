@@ -22,11 +22,15 @@ class Notification {
 		static std::shared_ptr<Notification::NotificationIterator> NewIterator();
 		static void SetDB(std::shared_ptr<rocksdb::DB> &db, std::shared_ptr<rocksdb::ColumnFamilyHandle> &cf);
 
+		const uint64_t& getIdBin() const;
 		std::string getId() const;
 		const time_t& getTime() const;
 		std::string toJson() const;
 
 		static std::string TypeToStr(const NotificationType& type);
+
+		static rocksdb::Status DeleteUpTo(const std::string& from, const std::string& id);
+		static rocksdb::Status DeleteUpTo(const std::string& from, const uint64_t& id);
 
 	protected:
 		static std::shared_ptr<rocksdb::DB> db;
@@ -48,6 +52,7 @@ class Notification::NotificationIterator {
 		//rocksdb::Slice key() const;
 		//rocksdb::Slice value() const;
 		const Notification& value() const;
+		rocksdb::Slice key() const;
 		rocksdb::Status status() const;
 		bool valid() const;
 		NotificationIterator(rocksdb::Iterator*);

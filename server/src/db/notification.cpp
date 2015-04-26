@@ -3,6 +3,7 @@
 
 #include <sstream>
 #include <cstdlib>
+#include <cstring>
 #include <algorithm>
 
 #include <rocksdb/write_batch.h>
@@ -12,6 +13,7 @@ extern "C" {
 }
 
 using std::copy;
+using std::memcmp;
 using std::vector;
 using std::string;
 using std::to_string;
@@ -97,6 +99,10 @@ string Notification::getId() const {
 	return bin2hex(this->id);
 }
 
+const uint64_t& Notification::getIdBin() const {
+	return this->id;
+}
+
 const time_t& Notification::getTime() const {
 	return this->t;
 }
@@ -117,6 +123,21 @@ string Notification::TypeToStr(const NotificationType& type){
 		default:
 			return "unknown";
 	}
+}
+
+Status Notification::DeleteUpTo(const std::string& from, const uint64_t& id){
+	auto it = Notification::NewIterator();
+	WriteBatch batch;
+
+	for(it->seek(from); it->valid() && memcmp((char*) &id, (char*) &(it->value().getIdBin()), sizeof(uint64_t)) >= 0; it->next())
+		batch.Delete(Notification::cf.get(), it->key());
+
+	return Notification::db->Write(WriteOptions(), &batch);
+}
+
+Status Notification::DeleteUpTo(const std::string& from, const string& id){
+	vector<char> data = hex2bin(id);
+	return Notification::DeleteUpTo(from, *( (uint64_t*) data.data()));
 }
 
 Notification::NotificationIterator::NotificationIterator(Iterator* i) : it(i) {
@@ -145,6 +166,10 @@ void Notification::NotificationIterator::next(){
 
 const Notification& Notification::NotificationIterator::value() const{
 	return this->notif;
+}
+
+Slice Notification::NotificationIterator::key() const{
+	return this->it->key();
 }
 
 Status Notification::NotificationIterator::status() const{

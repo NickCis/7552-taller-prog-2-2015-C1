@@ -19,7 +19,11 @@ class MgConnection {
 			STATUS_CODE_UNAUTHORIZED=401,
 			STATUS_CODE_FORBIDDEN=403,
 			STATUS_CODE_NOT_FOUND=404,
-			STATUS_CODE_METHOD_NOT_ALLOWED=405
+			STATUS_CODE_METHOD_NOT_ALLOWED=405,
+
+			// 5xx Errores de Servidor
+			STATUS_CODE_INTERNAL_ERROR=500
+
 		} StatusCodes;
 
 		typedef enum ContentTypes {
