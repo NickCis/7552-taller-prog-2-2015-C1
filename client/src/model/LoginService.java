@@ -41,18 +41,17 @@ public class LoginService extends IntentService{
 
 
     public LoginService() {
-        super("asdasdadsasdasdad");
+		super("LoginService");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
 		
 		final Bundle data = (Bundle)intent.getParcelableExtra("info");
-		final String endPoint = data.getString("endpoint");
 		final String usr = data.getString("username");
         final String pw = data.getString("password");
         //final String URI = String.format("http://httpbin.org/get?param1=%1$s","hello");
-        final String URI = "http://192.168.1.40:8000/"+endPoint	;
+        final String URI = data.getString("URI");
         final ResultReceiver rec = (ResultReceiver) intent.getParcelableExtra("rec");
 
 		Log.d("SERVER URI------------------------------------------------------", URI);

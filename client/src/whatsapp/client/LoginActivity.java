@@ -39,9 +39,14 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 		Bundle bundle = new Bundle();
 		EditText userNameField = (EditText) findViewById(R.id.username);
 		EditText passwordField = (EditText) findViewById(R.id.userpassword);
+
 		bundle.putString("username", userNameField.getText().toString());
 		bundle.putString("password", passwordField.getText().toString());
-		bundle.putString("endpoint", "auth");
+		final String URI = getIP() + ":" + getPort() + "/" + "signup";
+		bundle.putString("URI", URI);
+		//TODO: esto es auth
+		bundle.putString("endpoint", "signup");
+
 		InfoDialog.createProgressDialog(this, "Registrando... por favor espere");
 		startService(createCallingIntent(bundle));
 	}
@@ -64,12 +69,11 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 	private final boolean isUserRegistered() {
 		SharedPreferences data = getSharedPreferences(REGISTERED, 0);
 		return data.getBoolean(REGISTERED, false);
-        //SharedPreferences.Editor editor = data.edit();
+		//SharedPreferences.Editor editor = data.edit();
 		//editor.
 
 	}
 
-	
 	/**
 	 * Setea un flag de que el usuario ya fue registrado
 	 */
@@ -81,11 +85,34 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 
 	public void onReceiveResult(int resultCode, Bundle resultData) {
 		//Si fue correcto:
-		if (resultCode == 0) {
-			registerUser();
-		}
-		registerUser();
+//		if (resultCode == 0) {
+//			registerUser();
+//		}
+//		registerUser();
 		InfoDialog.disposeDialog();
-		startActivity(new Intent(this, MainActivity.class));
+		if (resultCode==0)
+			startActivity(new Intent(this, MainActivity.class));
+		else
+			startActivity(new Intent(this,LoginActivity.class));
+	}
+
+	private String getIP() {
+		String IP = getResources().getString(R.string.IP);
+		EditText edit = (EditText) findViewById(R.id.ipEditText);
+		String newIp = edit.getText().toString();
+		if (!newIp.equalsIgnoreCase(IP)) {
+			return newIp;
+		}
+		return IP;
+	}
+
+	private String getPort() {
+		String port = getResources().getString(R.string.PORT);
+		EditText edit = (EditText) findViewById(R.id.portEditText);
+		String newPort = edit.getText().toString();
+		if (!newPort.equalsIgnoreCase(port)) {
+			return newPort;
+		}
+		return port;
 	}
 }

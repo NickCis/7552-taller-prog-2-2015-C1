@@ -48,16 +48,17 @@
     
     
     <RelativeLayout
+        android:id="@+id/bloque1"
         android:layout_below="@id/title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/URI"
+            android:text="@string/IP"
             android:inputType="number"
-           android:layout_alignParentLeft="true"
-            android:id="@+id/editText2"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/ipEditText"
             android:layout_gravity="center"
         />
         <TextView
@@ -66,12 +67,44 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:text=":Server IP:PORT"
+            android:text=":IP"
             android:textSize="18sp"
             android:layout_marginRight="10dp"
             android:textColor="#808080"
         />
     </RelativeLayout>
+    
+    
+    
+    
+    <RelativeLayout
+        android:id="@+id/bloque2"
+        android:layout_below="@id/bloque1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/PORT"
+            android:inputType="number"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/portEditText"
+            android:layout_gravity="center"
+        />
+        <TextView
+            android:id="@+id/text_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text=":PORT"
+            android:textSize="18sp"
+            android:layout_marginRight="10dp"
+            android:textColor="#808080"
+        />
+    </RelativeLayout>
+    
+    
     
     
     <EditText
