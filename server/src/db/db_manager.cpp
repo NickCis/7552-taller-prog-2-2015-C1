@@ -2,6 +2,7 @@
 #include "user.h"
 #include "access_token.h"
 #include "message.h"
+#include "notification.h"
 
 #include <cstring>
 
@@ -115,4 +116,5 @@ void DBManager::setEnviroment(){
 	User::SetDB(this->db, this->cfs[DBManager::COLUMN_FAMILY_USERS]);
 	AccessToken::SetDB(this->db, this->cfs[DBManager::COLUMN_FAMILY_ACCESS_TOKENS]);
 	Message::SetDB(this->db, this->cfs[DBManager::COLUMN_FAMILY_MESSAGES]);
+	Notification::SetDB(this->db, this->cfs[DBManager::COLUMN_FAMILY_NOTIFICATIONS]);
 }
