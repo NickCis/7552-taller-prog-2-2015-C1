@@ -11,23 +11,26 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import de.svenjacobs.loremipsum.LoremIpsum;
+import java.util.List;
 import java.util.Random;
 import model.ServerResultReceiver;
 import utils.ConversationEntity;
+import utils.DatabaseHelper;
 import utils.MessageEntity;
+import utils.UserEntity;
 
 /**
  *
  * @author umm194
  */
 public class ConversationActivity extends Activity implements ServerResultReceiver.Listener{
-	private DiscussArrayAdapter adapter;
-	private ListView lv;
-	private LoremIpsum ipsum;
-	private EditText editText1;
-	private static Random random;
+    private DiscussArrayAdapter adapter;
+    private ListView lv;
+    private LoremIpsum ipsum;
+    private EditText editText1;
+    private static Random random;
 
-	@Override
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discuss);
@@ -48,31 +51,25 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
                 return false;
             }
         });
-        addItems();
+        
+        DatabaseHelper dbH = new DatabaseHelper(this);
+        dbH.open();
+        addItems(dbH.fetchMessages(new ConversationEntity(getIntent().getExtras().getBundle("whatsapp.client.MainActivity.data").getInt("conversationId"))));
+        dbH.close();
     }
 
     //TODO: MOCK, tendria q salir del servidor tmb
-	private void addItems() {
-		adapter.add(new OneComment(true, "Hello bubbles!"));
-		for (int i = 0; i < 4; i++) {
-			boolean left = getRandomInteger(0, 1) == 0 ? true : false;
-			int word = getRandomInteger(1, 10);
-			int start = getRandomInteger(1, 40);
-			String words = ipsum.getWords(word, start);
+    private void addItems(List<MessageEntity> listaMensajes)
+    {
+        DatabaseHelper dbH = new DatabaseHelper(this);
+        dbH.open();
+        UserEntity uEMe = dbH.fetchUser(DatabaseHelper.USERID_ME);
 
-			adapter.add(new OneComment(left, words));
-		}
-	}
-
-	private static int getRandomInteger(int aStart, int aEnd) {
-		if (aStart > aEnd) {
-			throw new IllegalArgumentException("Start cannot exceed End.");
-		}
-		long range = (long) aEnd - (long) aStart + 1;
-		long fraction = (long) (range * random.nextDouble());
-		int randomNumber = (int) (fraction + aStart);
-		return randomNumber;
-	}
+        for (MessageEntity mE : listaMensajes)
+        {
+            adapter.add(new OneComment(mE.getUser().equals(uEMe), mE.getContent()));
+        }
+    }
 
     public void onReceiveResult(int resultCode, Bundle resultData) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

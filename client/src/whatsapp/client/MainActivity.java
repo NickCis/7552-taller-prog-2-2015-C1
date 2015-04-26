@@ -28,10 +28,13 @@ public class MainActivity extends Activity implements ServerResultReceiver.Liste
         dbH.open();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if(!prefs.getBoolean("firstTime", false)) {
+            UserEntity uEMe = dbH.createUser(1554587629, "Me", DatabaseHelper.NORMAL);
             UserEntity uE = dbH.createUser(1511111111, "WhatsApp Info", DatabaseHelper.NORMAL);
-            dbH.createUser(1511111112, "WhatsApp Lalala", DatabaseHelper.NORMAL);
             ConversationEntity cE = dbH.createConversation(uE);
-            dbH.createMessage(cE, uE, null, cE.getLast_message_time(), "Bienvenido a Whatsapp", dbH.NOT_SEEN);
+            dbH.createMessage(cE, uE, null, null, "Bienvenido a Whatsapp", dbH.NOT_SEEN);
+            dbH.createMessage(cE, uEMe, null, null, "Hola!!!", dbH.NOT_SEEN);
+            dbH.createMessage(cE, uEMe, null, null, "Como estas?", dbH.NOT_SEEN);
+            dbH.createMessage(cE, uE, null, null, "Bien, y vos?", dbH.NOT_SEEN);
             SharedPreferences.Editor editor = prefs.edit();
             editor.putBoolean("firstTime", true);
             editor.commit();
@@ -71,7 +74,7 @@ public class MainActivity extends Activity implements ServerResultReceiver.Liste
             List<ConversationEntity> list = dbH.fetchAllConversations();
             dbH.close();
             final int conversationID = list.get(position).getConversationId();
-            view.animate().setDuration(2000).alpha(0).withEndAction(new Runnable() {
+            view.animate().setDuration(500).alpha(0).withEndAction(new Runnable() {
                 @Override
                 public void run() {
                     view.setAlpha(1);

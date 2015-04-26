@@ -10,6 +10,8 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -47,6 +49,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
     
     public static final short NORMAL = 0;
     public static final short BLOKED = NORMAL + 1;
+    
+    public static final int USERID_ME = 1;
 
     private SQLiteDatabase mDb;
     private static final String DATABASE_USER_CREATE = "CREATE TABLE " + DATABASE_USER_TABLE + " ("
@@ -126,7 +130,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public List<UserEntity> fetchAllUsers() {
         Cursor cursor = mDb.query(DATABASE_USER_TABLE, new String[]{KEY_USERID, KEY_NAME, KEY_PHONE, KEY_STATUS}, null, null, null, null, KEY_USERID + " ASC");
         List<UserEntity> list = null;
-        if (cursor != null)
+        if (cursor != null && cursor.getCount() > 0)
         {
             list = new ArrayList<UserEntity>();
             cursor.moveToFirst();
@@ -147,7 +151,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
              {KEY_USERID, KEY_NAME, KEY_PHONE, KEY_STATUS}, KEY_USERID + 
              "=?", new String[]{"" + userId}, null, null, null, null); 
         UserEntity uE = null;
-        if (cursor != null) 
+        if (cursor != null && cursor.getCount() > 0) 
         { 
             cursor.moveToFirst();
             uE = new UserEntity(userId,
@@ -179,6 +183,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         {
             result = new ConversationEntity(this.fetchLastConversationId(),date);
             result.addUser(user);
+            result.addUser(this.fetchUser(USERID_ME));
             ContentValues initialValues = new ContentValues(); 
             initialValues.put(KEY_USERID, user.getUserId());
             if (date != null)
@@ -186,6 +191,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 initialValues.put(KEY_DATE, date.getTime().toString());
             }
             initialValues.put(KEY_CONVERSATIONID, result.getConversationId());
+            mDb.insert(DATABASE_CONVERSATION_TABLE, null, initialValues);
+            initialValues.remove(KEY_USERID);
+            initialValues.put(KEY_USERID, USERID_ME);
             mDb.insert(DATABASE_CONVERSATION_TABLE, null, initialValues);
         }
         
@@ -201,6 +209,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
         initialValues.put(KEY_USERID, user.getUserId()); 
         initialValues.put(KEY_DATE, date.getTime().toString());
         mDb.insert(DATABASE_CONVERSATION_TABLE, null, initialValues);
+        initialValues.remove(KEY_USERID);
+        initialValues.put(KEY_USERID, USERID_ME);
+        mDb.insert(DATABASE_CONVERSATION_TABLE, null, initialValues);
         return conversation;
     }
     
@@ -212,7 +223,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public List<ConversationEntity> fetchAllConversations() {
         Cursor cursor = mDb.query(DATABASE_CONVERSATION_TABLE, new String[]{KEY_CONVERSATIONID, KEY_USERID, KEY_DATE}, null, null, null, null, KEY_DATE + " DESC");
         List<ConversationEntity> list = new ArrayList<ConversationEntity>();
-        if (cursor != null)
+        if (cursor != null && cursor.getCount() > 0)
         {
             cursor.moveToFirst();
             Integer conversationIndex = cursor.getInt(cursor.getColumnIndex(this.KEY_CONVERSATIONID));
@@ -230,6 +241,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 }
                 cE.addUser(this.fetchUser(cursor.getInt(cursor.getColumnIndex(this.KEY_USERID))));
             } while (cursor.moveToNext());
+            list.add(cE);
         }
         return list;
     }
@@ -237,16 +249,15 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public ConversationEntity fetchConversation(ConversationEntity conversation) throws SQLException {
         Cursor cursor = mDb.query(true, DATABASE_CONVERSATION_TABLE, new String [] 
              {KEY_CONVERSATIONID, KEY_USERID, KEY_DATE}, KEY_CONVERSATIONID + 
-             "=?", new String[]{"" + conversation.getConversationId()}, null, null, null, KEY_DATE + " DESC"); 
+             "=?", new String[]{"" + conversation.getConversationId()}, null, null, KEY_DATE + " DESC", null); 
         ConversationEntity cE = null;
-        if (cursor != null) 
+        if (cursor != null && cursor.getCount() > 0) 
         {
-            cE = new ConversationEntity(conversation.getConversationId(), cursor.getString(cursor.getColumnIndex(this.KEY_DATE)));
             cursor.moveToFirst();
+            cE = new ConversationEntity(conversation.getConversationId(), cursor.getString(cursor.getColumnIndex(KEY_DATE)));
             do
             {
-                DatabaseHelper user = new DatabaseHelper(this.context);
-                cE.addUser(user.fetchUser(cursor.getInt(cursor.getColumnIndex(this.KEY_USERID))));
+                cE.addUser(this.fetchUser(cursor.getInt(cursor.getColumnIndex(KEY_USERID))));
             }while (cursor.moveToNext());
         } 
         return cE;
@@ -299,7 +310,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public List<MediaEntity> fetchAllMedia() { 
         Cursor cursor = mDb.query(DATABASE_MEDIA_TABLE, new String[]{KEY_MEDIAID, KEY_LOCATION, KEY_TYPE}, null, null, null, null, KEY_MEDIAID + " ASC"); 
         List<MediaEntity> list = new ArrayList<MediaEntity>();
-        if (cursor != null)
+        if (cursor != null && cursor.getCount() > 0)
         {
             cursor.moveToFirst();
             do
@@ -308,7 +319,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                         cursor.getString(cursor.getColumnIndex(this.KEY_LOCATION)),
                         cursor.getShort(cursor.getColumnIndex(this.KEY_TYPE)));
                 list.add(mE);
-            } while (!cursor.moveToNext());
+            } while (cursor.moveToNext());
         }
         return list;
     }
@@ -318,7 +329,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             {KEY_MEDIAID, KEY_LOCATION, KEY_TYPE}, KEY_MEDIAID + 
             "=?", new String[]{"" + mediaId}, null, null, null, null); 
         MediaEntity mE = null;
-        if (cursor != null) 
+        if (cursor != null && cursor.getCount() > 0) 
         { 
             cursor.moveToFirst(); 
             mE = new MediaEntity(cursor.getInt(cursor.getColumnIndex(this.KEY_MEDIAID)),
@@ -378,21 +389,26 @@ public class DatabaseHelper extends SQLiteOpenHelper
         Cursor cursor = this.mDb.query(true, DATABASE_MESSAGE_TABLE, new String [] 
              {KEY_CONVERSATIONID, KEY_USERID, KEY_CONTENT, KEY_MEDIAID, KEY_STATUS, KEY_TIMESTAMP},
               KEY_CONVERSATIONID + "=?", 
-              new String[]{"" + conversation.getConversationId()}, null, null, null, KEY_TIMESTAMP + " ASC");
+              new String[]{"" + conversation.getConversationId()}, null, null, KEY_TIMESTAMP + " ASC", null);
         List<MessageEntity> list = new ArrayList<MessageEntity>();
-        if (cursor != null) 
+        if (cursor != null && cursor.getCount() > 0)
         { 
             cursor.moveToFirst(); 
             do
             {
                 ConversationEntity cE = this.fetchConversation(conversation);
-                DatabaseHelper user = new DatabaseHelper(this.context);
-                UserEntity uE = user.fetchUser(cursor.getInt(cursor.getColumnIndex(KEY_USERID)));
+                UserEntity uE = this.fetchUser(cursor.getInt(cursor.getColumnIndex(KEY_USERID)));
                 MediaEntity mE = this.fetchMedia(cursor.getInt(cursor.getColumnIndex(KEY_MEDIAID)));
-                Calendar date = Calendar.getInstance();
-                date.setTime(new Date(cursor.getString(cursor.getColumnIndex(KEY_TIMESTAMP))));
-                list.add(new MessageEntity(cE, uE, mE, date, cursor.getString(cursor.getColumnIndex(KEY_CONTENT)), cursor.getShort(cursor.getColumnIndex(KEY_STATUS))));
-            } while (!cursor.moveToNext());
+                Calendar cal = Calendar.getInstance();
+                try
+                {
+                    cal.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(cursor.getString(cursor.getColumnIndex(KEY_TIMESTAMP))));
+                }catch (ParseException pE)
+                {
+                    System.out.println(pE.getCause().getMessage());
+                }
+                list.add(new MessageEntity(cE, uE, mE, cal, cursor.getString(cursor.getColumnIndex(KEY_CONTENT)), cursor.getShort(cursor.getColumnIndex(KEY_STATUS))));
+            } while (cursor.moveToNext());
         } 
         return list;
     }
@@ -403,14 +419,13 @@ public class DatabaseHelper extends SQLiteOpenHelper
               KEY_CONTENT + " like '%?%'", 
               new String[]{content}, null, null, null, KEY_TIMESTAMP + " ASC"); 
         List<MessageEntity> list = new ArrayList<MessageEntity>();
-        if (cursor != null) 
+        if (cursor != null && cursor.getCount() > 0) 
         { 
             cursor.moveToFirst();
             do
             {
                 ConversationEntity cE = this.fetchConversation(new ConversationEntity(cursor.getInt(cursor.getColumnIndex(KEY_CONVERSATIONID))));
-                DatabaseHelper user = new DatabaseHelper(this.context);
-                UserEntity uE = user.fetchUser(cursor.getInt(cursor.getColumnIndex(KEY_USERID)));
+                UserEntity uE = this.fetchUser(cursor.getInt(cursor.getColumnIndex(KEY_USERID)));
                 MediaEntity mE = this.fetchMedia(cursor.getInt(cursor.getColumnIndex(KEY_MEDIAID)));
                 Calendar date = Calendar.getInstance();
                 date.setTime(new Date(cursor.getString(cursor.getColumnIndex(KEY_TIMESTAMP))));
