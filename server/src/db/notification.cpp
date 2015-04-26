@@ -45,17 +45,13 @@ void Notification::SetDB(shared_ptr<DB> &db, shared_ptr<ColumnFamilyHandle> &cf)
 Notification::Notification(){}
 
 Status Notification::Put(const string& to, Notification::NotificationType type, const string& data, Notification &n){
+	vector<char> key;
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
-	return Notification::Put(to, type, data, tv.tv_sec * (uint64_t)1000000 + tv.tv_usec, n);
-}
-
-Status Notification::Put(const string& to, Notification::NotificationType type, const string& data, const uint64_t& tv, Notification &n){
-	vector<char> key;
-	Notification::GetKeyFromUser(key, to, n.t);
-	n.t = tv;
+	n.t = tv.tv_sec;
+	n.id = htobe64(tv.tv_sec * (uint64_t)1000000 + tv.tv_usec);
 	n.type = type;
-
+	Notification::GetKeyFromUser(key, to, n.id);
 	return Notification::db->Put(WriteOptions(), Notification::cf.get(), Slice(key.data(), key.size()), Notification::Pack(n.data, type, data));
 }
 
@@ -84,7 +80,7 @@ bool Notification::UnPack(const string& data, Notification& m){
 	size_t data_size = data.size();
 	auto it = data.begin();
 
-	UNPACK(((char*) &m.t), sizeof(Notification::NotificationType), it, data_size);
+	UNPACK(((char*) &m.type), sizeof(Notification::NotificationType), it, data_size);
 
 	size_t size = data.size() - sizeof(Notification::NotificationType);
 	m.data.resize(size);
@@ -97,12 +93,30 @@ shared_ptr<Notification::NotificationIterator> Notification::NewIterator(){
 	return shared_ptr<Notification::NotificationIterator>(new Notification::NotificationIterator(Notification::db->NewIterator(ReadOptions(), Notification::cf.get())));
 }
 
-const uint64_t& Notification::getUTime() const {
+string Notification::getId() const {
+	return bin2hex(this->id);
+}
+
+const time_t& Notification::getTime() const {
 	return this->t;
 }
 
-time_t Notification::getTime() const {
-	return this->t / 1000000;
+string Notification::toJson() const {
+	stringstream ss;
+	ss << "{\"id\":\"" << this->getId() << "\",\"time\":\"" << this->t << "\",\"type\":\"" << Notification::TypeToStr(this->type) << "\",\"data\":" << this->data << "}";
+	return ss.str();
+
+}
+
+string Notification::TypeToStr(const NotificationType& type){
+	switch(type){
+		case NOTIFICATION_MESSAGE:
+			return "message";
+		case NOTIFICATION_ACK:
+			return "ack";
+		default:
+			return "unknown";
+	}
 }
 
 Notification::NotificationIterator::NotificationIterator(Iterator* i) : it(i) {
@@ -119,7 +133,8 @@ void Notification::NotificationIterator::seek(const string& from){
 void Notification::NotificationIterator::unPack(){
 	Notification::UnPack(this->it->value().ToString(), this->notif);
 	auto keyIt = this->it->key().ToString().end();
-	copy(keyIt-sizeof(uint64_t), keyIt, (char*) &this->notif.t);
+	copy(keyIt-sizeof(uint64_t), keyIt, (char*) &this->notif.id);
+	this->notif.t = be64toh(this->notif.id) / 1000000;
 }
 
 void Notification::NotificationIterator::next(){

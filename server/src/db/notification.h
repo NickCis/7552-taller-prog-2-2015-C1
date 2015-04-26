@@ -19,13 +19,14 @@ class Notification {
 		Notification();
 
 		static rocksdb::Status Put(const std::string& to, Notification::NotificationType type, const std::string& data, Notification& n);
-		static rocksdb::Status Put(const std::string& to, Notification::NotificationType type, const std::string& data, const uint64_t& tv, Notification& n);
 		static std::shared_ptr<Notification::NotificationIterator> NewIterator();
 		static void SetDB(std::shared_ptr<rocksdb::DB> &db, std::shared_ptr<rocksdb::ColumnFamilyHandle> &cf);
 
-		const uint64_t& getUTime() const;
-		time_t getTime() const;
+		std::string getId() const;
+		const time_t& getTime() const;
 		std::string toJson() const;
+
+		static std::string TypeToStr(const NotificationType& type);
 
 	protected:
 		static std::shared_ptr<rocksdb::DB> db;
@@ -37,7 +38,8 @@ class Notification {
 
 		std::string data;
 		Notification::NotificationType type;
-		uint64_t t;
+		time_t t;
+		uint64_t id;
 };
 
 class Notification::NotificationIterator {

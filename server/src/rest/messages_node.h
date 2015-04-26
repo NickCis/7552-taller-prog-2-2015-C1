@@ -1,5 +1,5 @@
-#ifndef __SINGUP_NODE_H__
-#define __SINGUP_NODE_H__
+#ifndef __MESSAGES_NODE_H__
+#define __MESSAGES_NODE_H__
 
 #include "wa_method_auth_node.h"
 

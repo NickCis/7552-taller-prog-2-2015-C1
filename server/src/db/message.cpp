@@ -1,4 +1,5 @@
 #include "message.h"
+#include "notification.h"
 #include "../util/bin2hex.h"
 
 #include <sstream>
@@ -50,6 +51,11 @@ Status Message::Put(const string& to, const string& from, const string& msg, Mes
 	gettimeofday(&tv, NULL);
 	a.t = tv.tv_sec;
 	a.id = htobe64(tv.tv_sec * (uint64_t)1000000 + tv.tv_usec);
+	a.from = from;
+	a.msg = msg;
+	a.arrived = 0;
+	a.read = 0;
+	a.has_file = 0;
 
 	Message::MessageHeader mh;
 	memset(&mh, 0, sizeof(Message::MessageHeader));
@@ -63,6 +69,9 @@ Status Message::Put(const string& to, const string& from, const string& msg, Mes
 
 	fill(key.end()-sizeof(uint64_t), key.end(), 0);
 	batch.Put(Message::cf.get(), Slice(key.data(), key.size()), Slice((char*) &a.id, sizeof(uint64_t)));
+
+	Notification n;
+	Notification::Put(to, Notification::NOTIFICATION_MESSAGE, a.toJson(), n);
 
 	return Message::db->Write(WriteOptions(), &batch);
 }
