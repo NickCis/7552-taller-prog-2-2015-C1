@@ -23,12 +23,21 @@ using rocksdb::ColumnFamilyOptions;
 using rocksdb::ColumnFamilyDescriptor;
 using rocksdb::kDefaultColumnFamilyName;
 
-const char* HANDLES[] = {
-	"messages",
-	"users",
-	"notifications",
-	"access_tokens",
-	NULL
+typedef enum Comparator {
+	COMPARATOR_DEFAULT=0,
+	COMPARATOR_DB_COMPARATOR,
+	COMPARATOR_DB_COMPARATOR_REVERSE,
+} Comparator;
+
+const struct {
+	const char* name;
+	const Comparator comparator;
+} HANDLES[] = {
+	{ "messages", COMPARATOR_DEFAULT },
+	{ "users", COMPARATOR_DB_COMPARATOR },
+	{ "notifications", COMPARATOR_DB_COMPARATOR },
+	{ "access_tokens", COMPARATOR_DEFAULT },
+	{ NULL, COMPARATOR_DEFAULT }
 };
 
 DBManager::DBManager(const string& p, Status& s) : path(p){
@@ -45,12 +54,16 @@ void DBManager::create(Status& s){
 
 	if(s.ok()){
 		ColumnFamilyHandle* cf;
-		for(int i=0; HANDLES[i]; i++){
+		for(int i=0; HANDLES[i].name; i++){
 			ColumnFamilyOptions cfo;
-			if(strcmp(HANDLES[i], "messages") == 0)
-				cfo.comparator = &this->comparator;
-
-			s = _db->CreateColumnFamily(cfo, HANDLES[i], &cf);
+			switch(HANDLES[i].comparator){
+				case COMPARATOR_DB_COMPARATOR:
+					cfo.comparator = &this->comparator;
+					break;
+				default:
+					break;
+			}
+			s = _db->CreateColumnFamily(cfo, HANDLES[i].name, &cf);
 			delete cf;
 			if(!s.ok())
 				break;
@@ -67,23 +80,27 @@ void DBManager::open(Status& s){
 	vector<ColumnFamilyDescriptor> column_families;
 	column_families.push_back(ColumnFamilyDescriptor(kDefaultColumnFamilyName, ColumnFamilyOptions()));
 
-	for(int i=0; HANDLES[i]; i++){
+	for(int i=0; HANDLES[i].name; i++){
 		ColumnFamilyOptions cfo;
-		if(strcmp(HANDLES[i], "messages") == 0)
-			cfo.comparator = &this->comparator;
-		column_families.push_back(ColumnFamilyDescriptor(HANDLES[i], cfo));
+		switch(HANDLES[i].comparator){
+			case COMPARATOR_DB_COMPARATOR:
+				cfo.comparator = &this->comparator;
+				break;
+			default:
+				break;
+		}
+		column_families.push_back(ColumnFamilyDescriptor(HANDLES[i].name, cfo));
 	}
 
 	std::vector<ColumnFamilyHandle*> handles;
 	Options options;
 	options.comparator = &this->comparator;
 	s = DB::Open(DBOptions(options), this->path, column_families, &handles, &_db);
-	if(!s.ok())
-		std::cout << "ESTA MIERDA NO ANDA " << s.ToString() << std::endl;
-
-	this->db = shared_ptr<DB>(_db);
-	for(auto h : handles)
-		cfs.push_back(std::shared_ptr<ColumnFamilyHandle>(h));
+	if(s.ok()){
+		this->db = shared_ptr<DB>(_db);
+		for(auto h : handles)
+			cfs.push_back(std::shared_ptr<ColumnFamilyHandle>(h));
+	}
 }
 
 shared_ptr<DB> DBManager::get(){
