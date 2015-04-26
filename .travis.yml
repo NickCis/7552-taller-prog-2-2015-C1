@@ -2,12 +2,8 @@ language: cpp
 
 compiler:
     - gcc
-    # Se remueve clang por que no compila rocksdb
+    # Se remueve clang por qe rocksdb no compila
     #- clang
-
-cache:
-    directories:
-    - deps
 
 before_install:
    # As of this writing (10 May 2014) the Travis build environment is Ubuntu 12.04,
@@ -17,17 +13,16 @@ before_install:
     - sudo apt-get install -y -qq gcc-4.9 g++-4.9 zlib1g-dev libbz2-dev libsnappy-dev
     - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 50
     - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 50
-    - if [ ! -d "deps" ] ; then mkdir deps ; fi
-    - cd deps
-    - if [ ! -f libgflags0_2.0-1_amd64.deb ] ; then wget https://gflags.googlecode.com/files/libgflags0_2.0-1_amd64.deb ; fi
+    - wget https://gflags.googlecode.com/files/libgflags0_2.0-1_amd64.deb
     - sudo dpkg -i libgflags0_2.0-1_amd64.deb
-    - if [ ! -f libgflags-dev_2.0-1_amd64.deb ] ; then wget https://gflags.googlecode.com/files/libgflags-dev_2.0-1_amd64.deb ; fi
+    - wget https://gflags.googlecode.com/files/libgflags-dev_2.0-1_amd64.deb
     - sudo dpkg -i libgflags-dev_2.0-1_amd64.deb
-    - if [ ! -f rocksdb-3.9.1.zip ] ; then wget "https://github.com/facebook/rocksdb/archive/rocksdb-3.9.1.zip" ; fi
-    - if [ ! -d rocksdb-rocksdb-3.9.1 ] ; then unzip rocksdb-3.9.1.zip ; fi
+    - wget "https://github.com/facebook/rocksdb/archive/rocksdb-3.9.1.zip" && unzip rocksdb-3.9.1
+
+install:
     - cd rocksdb-rocksdb-3.9.1
     - make shared_lib && sudo install -d /usr/include && sudo cp -r include/rocksdb /usr/include && sudo install -m755 -D librocksdb.so /usr/lib/librocksdb.so
-    - cd ../../
+    - cd -
 
 before_script:
     - mkdir -p server/build
