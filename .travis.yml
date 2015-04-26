@@ -19,7 +19,7 @@ before_install:
     - wget "https://github.com/facebook/rocksdb/archive/rocksdb-3.9.1.zip" && unzip rocksdb-3.9.1
 
 install:
-    - cd rocksdb-3.9.1
+    - cd rocksdb-rocksdb-3.9.1
     - make shared_lib && sudo install -d /usr/include && sudo cp -r include/rocksdb /usr/include && sudo install -m755 -D librocksdb.so /usr/lib/librocksdb.so
     - cd -
 
