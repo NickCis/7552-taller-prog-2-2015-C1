@@ -5,3 +5,7 @@ Alumnos:
 * [Nicolas Cisco](https://github.com/NickCis/) 94173
 * [Rodrigo Burdet](https://github.com/rburdet) 93440
 * [Matias Manzano](https://github.com/MatSebMan) 83425
+
+
+## Servidor
+[![Build Status](https://travis-ci.org/NickCis/7552-taller-prog-2-2015-C1.svg?branch=master)](https://travis-ci.org/NickCis/7552-taller-prog-2-2015-C1)
