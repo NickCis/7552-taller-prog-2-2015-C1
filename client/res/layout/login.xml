@@ -33,20 +33,6 @@
         android:textColor="#FFFFFF"
         android:id="@+id/title"/>
 
-    <EditText
-        android:hint="USUARIO"
-        android:layout_centerHorizontal="true"
-        android:gravity="center_horizontal"
-        android:layout_centerVertical="true"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:singleLine="true"
-        android:imeOptions="actionNext"
-        android:id="@+id/username"
-    />
-    
-    
     <RelativeLayout
         android:id="@+id/bloque1"
         android:layout_below="@id/title"
@@ -104,7 +90,18 @@
         />
     </RelativeLayout>
     
-    
+    <EditText
+        android:hint="USUARIO"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:layout_centerVertical="true"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:singleLine="true"
+        android:imeOptions="actionNext"
+        android:id="@+id/username"
+    />
     
     
     <EditText
