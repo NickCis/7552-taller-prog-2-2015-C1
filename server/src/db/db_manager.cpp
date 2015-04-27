@@ -30,7 +30,7 @@ typedef enum Comparator {
 	COMPARATOR_DB_COMPARATOR_REVERSE,
 } Comparator;
 
-const struct {
+static const struct {
 	const char* name;
 	const Comparator comparator;
 } HANDLES[] = {

@@ -18,13 +18,10 @@ shared_ptr<ColumnFamilyHandle> User::cf = NULL;
 User::User() : username(""), password(""){
 }
 
-Status User::Get(const string& username, User& u, bool check){
+Status User::Get(const string& username, User& u){
 	u.username = username;
 	u.password = "";
-	if(check)
-		return User::db->Get(ReadOptions(), User::cf.get(), Slice(u.username), &u.password);
-
-	return rocksdb::Status::OK();
+	return User::db->Get(ReadOptions(), User::cf.get(), Slice(u.username), &u.password);
 }
 
 Status User::Put(const string& u, const string p, bool check){
@@ -80,11 +77,11 @@ void User::SetDB(shared_ptr<DB> &db, shared_ptr<ColumnFamilyHandle> &cf){
 }
 
 
-string& User::getUsername(){
+const string& User::getUsername() const{
 	return this->username;
 }
 
-string& User::getPassword(bool forceFetch){
+const string& User::getPassword(bool forceFetch){
 	if(forceFetch || this->password == "")
 		User::db->Get(ReadOptions(), User::cf.get(), Slice(this->username), &this->password);
 
