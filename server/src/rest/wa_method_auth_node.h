@@ -3,6 +3,8 @@
 
 #include "../node/wa_method_node.h"
 
+/** Nodo que implementa chequeo de login
+ */
 class WAMethodAuthNode : public WAMethodNode {
 	public:
 		WAMethodAuthNode(const std::string &str);

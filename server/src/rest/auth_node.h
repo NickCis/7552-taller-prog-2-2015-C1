@@ -3,6 +3,8 @@
 
 #include "../node/wa_method_node.h"
 
+/** Nodo de autenticacion -> /auth
+ */
 class AuthNode : public WAMethodNode {
 	public:
 		AuthNode();

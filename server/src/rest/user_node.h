@@ -3,6 +3,9 @@
 
 #include "../node/wa_parent_node.h"
 
+/** Nodo que representa el endpoint user  -> /user
+ * Contiene a subnodos para despachar las demas acciones
+ */
 class UserNode : public WAParentNode {
 	public:
 		UserNode();
