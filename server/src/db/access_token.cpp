@@ -48,11 +48,11 @@ std::string AccessToken::CreateToken(const string& username){
 	return out;
 }
 
-const string& AccessToken::getToken(){
+const string& AccessToken::getToken() const{
 	return token;
 }
 
-const string& AccessToken::getUsername(){
+const string& AccessToken::getUsername() const{
 	return username;
 }
 
