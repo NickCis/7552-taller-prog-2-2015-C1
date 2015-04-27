@@ -179,3 +179,9 @@ Status Notification::NotificationIterator::status() const{
 bool Notification::NotificationIterator::valid() const {
 	return this->it->Valid() && ( this->prefix.size() ? this->it->key().starts_with(Slice(this->prefix)) : true);
 }
+
+void Notification::NotificationIterator::seekToFirst(){
+	this->it->SeekToFirst();
+	if(this->valid())
+		this->unPack();
+}

@@ -51,6 +51,7 @@ class Notification::NotificationIterator {
 		void next();
 		//rocksdb::Slice key() const;
 		//rocksdb::Slice value() const;
+		void seekToFirst();
 		const Notification& value() const;
 		rocksdb::Slice key() const;
 		rocksdb::Status status() const;
