@@ -29,4 +29,4 @@ before_install:
 before_script:
     - mkdir build test_build
 
-script: cd build && cmake ../server && make && cd ../test_build && cmake ../server/test && make && make test && cat Testing/Temporary/LastTest.log
+script: cd build && cmake ../server && make && cd ../test_build && cmake ../server/test && make && CTEST_OUTPUT_ON_FAILURE=1 make test
