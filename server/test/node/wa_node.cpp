@@ -20,7 +20,7 @@ class MockWaNode : public WANode {
 		}
 };
 
-TEST_CASE( "Comprobar el funcionamiento de NotFoundNode", "[NotFoundNode]" ) {
+TEST_CASE( "Comprobar el funcionamiento de WANode", "[WANode]" ) {
 	MockWaNode waNode;
 	MgConnection conn(NULL);
 
