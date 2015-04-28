@@ -6,11 +6,13 @@ extern "C" {
 
 #include <iostream>
 #include <string>
+#include <fstream>
 
 #include "server_config.h"
 #include "wa_server.h"
 
 #include "db/db_manager.h"
+#include "util/log.h"
 
 using std::cout;
 using std::endl;
@@ -94,7 +96,7 @@ int parse_cmd(int argc, char *argv[], Configuration& config){
 
 			case '?':
 			default:
-				printf("Argumento desconocido '%s'\n", optarg);
+				std::cout << "Argumento desconocido '" << optarg << "'" << std::endl;
 				return -1;
 				break;
 		}
@@ -114,18 +116,34 @@ int main(int argc, char* argv[]){
 	signal(SIGKILL, sig_handler);
 	signal(SIGINT, sig_handler);
 
+	Log::setLogLevel(config.logLevel);
+
+	std::ofstream outputLog;
+	if(config.logFile != "-"){
+		outputLog.open(config.logFile);
+		if(outputLog.is_open())
+			Log::setOutput(outputLog);
+		else
+			Log(Log::LogMsgError) << "Error abriendo archivo '" << config.logFile << "'";
+	}
+
 	rocksdb::Status s;
 	DBManager dbm(config.dbPath, s);
 	if(!s.ok()){
-		cout << "error creando db,, mefui :: " << s.ToString() << endl;
+		Log(Log::LogMsgError) << "Error iniciando base de datos: " << s.ToString();
 		return -1;
 	}
 	dbm.setEnviroment();
 
-	cout << "Version: " << SERVER_VERSION_MAJOR << "." << SERVER_VERSION_MINOR << endl;
+	Log(Log::LogMsgInfo) << "Version: " << SERVER_VERSION_MAJOR << "." << SERVER_VERSION_MINOR;
 	//cout << "Mongoose: " << MONGOOSE_VERSION << endl;
 
-	cout << "Run!" << endl;
+	Log(Log::LogMsgInfo) << "Configuracion:";
+	Log(Log::LogMsgInfo) << "\t* port: " << config.port;
+	Log(Log::LogMsgInfo) << "\t* threads: " << config.threads;
+	Log(Log::LogMsgInfo) << "\t* logFile: " << config.logFile;
+	Log(Log::LogMsgInfo) << "\t* logLevel: " << config.logLevel;
+	Log(Log::LogMsgInfo) << "\t* dbPath: " << config.dbPath;
 
 	WAServer server(config.threads);
 	server.setPort(config.port);
@@ -136,6 +154,8 @@ int main(int argc, char* argv[]){
 		sleep(1);
 
 	server.stop();
+
+	Log(Log::LogMsgInfo) << "Saliendo";
 
 	return 0;
 }
