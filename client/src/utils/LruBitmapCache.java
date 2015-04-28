@@ -6,7 +6,7 @@
 package utils;
 
 /**
- *
+ * Clase encargada de cachear bitmaps
  * @author rburdet
  */
 import com.android.volley.toolbox.ImageLoader.ImageCache;

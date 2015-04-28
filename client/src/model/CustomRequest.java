@@ -19,6 +19,10 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.toolbox.HttpHeaderParser;
 
+/**
+ * Clase encagardada de hacer requests al servidor, los parametros son configurados por el servicio que lo use, por lo general servicios get y post
+ * @author rburdet
+ */
 public class CustomRequest extends Request<JSONObject>{
 
       private Listener<JSONObject> listener;

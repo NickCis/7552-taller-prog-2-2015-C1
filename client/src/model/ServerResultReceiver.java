@@ -10,7 +10,7 @@ import android.os.Handler;
 import android.os.ResultReceiver;
 
 /**
- *
+ * Clase encargada de bindear una activity a un servicio
  * @author rburdet
  */
 public class ServerResultReceiver extends ResultReceiver{

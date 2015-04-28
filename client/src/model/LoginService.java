@@ -33,7 +33,7 @@ import org.json.JSONObject;
 import services.AppController;
 
 /**
- *
+ * Servicio encargado de hacer un request POST al servidor
  * @author rburdet
  */
 public class LoginService extends IntentService {
@@ -44,52 +44,15 @@ public class LoginService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-
 		final Bundle data = (Bundle) intent.getParcelableExtra("info");
 		final String usr = data.getString("username");
 		final String pw = data.getString("password");
 		//final String URI = String.format("http://httpbin.org/get?param1=%1$s","hello");
 		final String URI = data.getString("URI");
 		final ResultReceiver rec = (ResultReceiver) intent.getParcelableExtra("rec");
-
-		Log.d("SERVER URI------------------------------------------------------", URI);
-		/*
-		 final StringRequest strReq = new StringRequest(Method.POST, URI, 
-		 new Response.Listener<String>(){
-		 public void onResponse(String t) {
-		 data.putBoolean("SERVICE", true);
-		 data.putString("data",t);
-		 rec.send(0,data);
-		 }
-		 }, new Response.ErrorListener() {
-
-		 public void onErrorResponse(VolleyError ve) {
-		 data.putString("data", "salio todo como el orto");
-		 data.putBoolean("SERVICE", false);
-		 rec.send(1, data);
-		 }
-		 }
-		 ){
-
-		 @Override
-		 protected Map<String, String> getParams() throws AuthFailureError {
-		 Map<String,String> params = new HashMap<String,String>();
-		 params.put("user", usr);
-		 params.put("pass",pw);
-		 return params;
-		 }
-		 };
-		 Log.d("SERVER URI", strReq.getUrl());
-				
-
-
-		 AppController.getInstance().addToRequestQueue(strReq);
-		 */
-
-		Map<String, String> params = new HashMap<String, String>();
+				Map<String, String> params = new HashMap<String, String>();
 		params.put("user", usr);
 		params.put("pass", pw);
-
 		CustomRequest req = new CustomRequest(Method.POST, URI, params,
 				new Response.Listener<JSONObject>() {
 					public void onResponse(JSONObject t) {
@@ -100,7 +63,6 @@ public class LoginService extends IntentService {
 
 				},
 				new Response.ErrorListener() {
-
 					public void onErrorResponse(VolleyError ve) {
 						data.putString("data", "UPS... Algo salio mal");
 						data.putBoolean("SERVICE", false);
@@ -109,7 +71,6 @@ public class LoginService extends IntentService {
 				}
 		);
 		AppController.getInstance().addToRequestQueue(req);
-
 	}
 
 }

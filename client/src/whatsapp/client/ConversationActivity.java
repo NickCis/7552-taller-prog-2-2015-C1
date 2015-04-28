@@ -20,15 +20,13 @@ import utils.MessageEntity;
 import utils.UserEntity;
 
 /**
- *
- * @author umm194
+ * Activity de una conversacion entre clientes
+ * @author rburdet
  */
 public class ConversationActivity extends Activity implements ServerResultReceiver.Listener{
     private DiscussArrayAdapter adapter;
     private ListView lv;
-    private LoremIpsum ipsum;
     private EditText editText1;
-    private static Random random;
     private DatabaseHelper dbH;
     private ConversationEntity cE;
 
@@ -37,9 +35,7 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discuss);
         this.dbH = new DatabaseHelper(this);
-        random = new Random();
         //TODO: esto tendria que venir del server o de almacenamiento interno ni bien entro
-        ipsum = new LoremIpsum();
         lv = (ListView) findViewById(R.id.listView1);
         adapter = new DiscussArrayAdapter(getApplicationContext(), R.layout.listitem_discuss);
         lv.setAdapter(adapter);

@@ -1,5 +1,9 @@
 package whatsapp.client;
 
+/**
+ * POJO para encapsular un mensaje en una vista
+ * @author rburdet
+ */
 public class OneComment {
 	public boolean left;
 	public String comment;
