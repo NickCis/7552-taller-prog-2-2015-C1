@@ -3,7 +3,7 @@ language: cpp
 compiler:
     - gcc
     # Se remueve clang por qe rocksdb no compila
-    #- clang
+    - clang
 
 before_install:
    # As of this writing (10 May 2014) the Travis build environment is Ubuntu 12.04,
@@ -17,12 +17,14 @@ before_install:
     - sudo dpkg -i libgflags0_2.0-1_amd64.deb
     - wget https://gflags.googlecode.com/files/libgflags-dev_2.0-1_amd64.deb
     - sudo dpkg -i libgflags-dev_2.0-1_amd64.deb
-    - wget "https://github.com/facebook/rocksdb/archive/rocksdb-3.9.1.zip" && unzip rocksdb-3.9.1
+    - wget https://github.com/NickCis/rocksdb/releases/download/deb/rocksdb_3.10-0.deb
+    - sudo dpkg -i rocksdb_3.10-0.deb
+    #- wget "https://github.com/facebook/rocksdb/archive/rocksdb-3.9.1.zip" && unzip rocksdb-3.9.1
 
-install:
-    - cd rocksdb-rocksdb-3.9.1
-    - make shared_lib && sudo install -d /usr/include && sudo cp -r include/rocksdb /usr/include && sudo install -m755 -D librocksdb.so /usr/lib/librocksdb.so
-    - cd -
+#install:
+#    - cd rocksdb-rocksdb-3.9.1
+#    - make shared_lib && sudo install -d /usr/include && sudo cp -r include/rocksdb /usr/include && sudo install -m755 -D librocksdb.so /usr/lib/librocksdb.so
+#    - cd -
 
 before_script:
     - mkdir -p server/build
