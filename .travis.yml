@@ -2,8 +2,8 @@ language: cpp
 
 compiler:
     - gcc
-    # Se remueve clang por qe rocksdb no compila
-    - clang
+    # Se remueve clang por qe rocksdb no compila, problemas con c++11
+    # - clang
 
 before_install:
    # As of this writing (10 May 2014) the Travis build environment is Ubuntu 12.04,
