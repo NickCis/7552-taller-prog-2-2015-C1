@@ -1,4 +1,3 @@
-#define CATCH_CONFIG_MAIN
 #include "../catch.hpp"
 #include "../../src/rest/not_found_node.h"
 

@@ -5,7 +5,10 @@ project (Test)
 
 enable_testing()
 
-add_executable(not_found_node rest/not_found_node.cpp ../src/rest/not_found_node.cpp ../src/node/wa_node.cpp)
+file( GLOB MAIN main.cpp)
+
+add_executable(not_found_node ${MAIN} rest/not_found_node.cpp ../src/rest/not_found_node.cpp ../src/node/wa_node.cpp)
+add_executable(wa_node ${MAIN} node/wa_node.cpp ../src/node/wa_node.cpp)
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
@@ -27,4 +30,5 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall")
 include_directories("${PROJECT_BINARY_DIR}")
 
 # Tests
+add_test(WaNode wa_node --force-colour)
 add_test(NotFoundNode not_found_node --force-colour)
