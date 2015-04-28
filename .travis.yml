@@ -27,7 +27,6 @@ before_install:
 #    - cd -
 
 before_script:
-    - mkdir -p server/build
-    - cd server/build
+    - mkdir build test_build
 
-script: cmake ../ && make
+script: cd build && cmake ../server && make && cd ../test_build && cmake ../server/test && make && make test && cat Testing/Temporary/LastTest.log

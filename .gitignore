@@ -27,6 +27,7 @@
 *.out
 *.app
 server/build/
+server/test_build/
 
 # vim
 *.sw*
