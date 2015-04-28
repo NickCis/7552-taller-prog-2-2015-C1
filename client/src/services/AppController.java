@@ -17,6 +17,11 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import utils.LruBitmapCache;
+
+/**
+ * Clase encargada de manejar requests Volley
+ * @author rburdet
+ */
  
 public class AppController extends Application {
  
