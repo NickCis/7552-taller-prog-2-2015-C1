@@ -3,6 +3,7 @@ package whatsapp.client;
 import model.LoginService;
 import model.ServerResultReceiver;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,6 +17,16 @@ import android.widget.TextView;
 public class LoginActivity extends Activity implements ServerResultReceiver.Listener {
 
 	private static final String REGISTERED = "registered";
+	static final String USER_CFG = "user_cfg";
+	static final String SAVED_IP = "IP";
+	static final String SAVED_PORT = "PORT";
+	static final String ACCESS_TOKEN = "access_token";
+
+	static void storeAcessToken(Context ctx, String data) {
+		SharedPreferences store = ctx.getSharedPreferences(LoginActivity.USER_CFG, 0);
+		SharedPreferences.Editor editor = store.edit();
+		editor.putString(LoginActivity.ACCESS_TOKEN, data);
+	}
 
 	/**
 	 * Called when the activity is first created.
@@ -26,12 +37,18 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 		//TODO: Si el usuario ya se registro tendria que recordar ese usuario
 		//if (!isUserRegistered())
 		setContentView(R.layout.login);
-
+		EditText ipEdit = (EditText) findViewById(R.id.ipEditText);
+		ipEdit.setText(getDefaultIP());
+		EditText portEdit = (EditText) findViewById(R.id.portEditText);
+		portEdit.setText(getDefaultPort());
 	}
 
 	public void register(View v) {
+		String newIp = ((EditText) findViewById(R.id.ipEditText)).getText().toString();
+		String newPort = ((EditText) findViewById(R.id.portEditText)).getText().toString();
+		saveData(SAVED_IP, newIp);
+		saveData(SAVED_PORT, newPort);
 		startActivity(new Intent(this, RegisterActivity.class));
-
 	}
 
 	public void login(View v) {
@@ -42,11 +59,9 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 
 		bundle.putString("username", userNameField.getText().toString());
 		bundle.putString("password", passwordField.getText().toString());
-		final String URI = getIP() + ":" + getPort() + "/" + "signup";
+		final String URI = getIP() + ":" + getPort() + "/" + "auth";
 		bundle.putString("URI", URI);
 		//TODO: esto es auth
-		bundle.putString("endpoint", "signup");
-
 		InfoDialog.createProgressDialog(this, "Registrando... por favor espere");
 		startService(createCallingIntent(bundle));
 	}
@@ -66,11 +81,11 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 	 * return true si el usuario no fue registrado, false si ya se registro
 	 * alguna vez
 	 */
-	private final boolean isUserRegistered() {
+	private boolean isUserRegistered() {
 		SharedPreferences data = getSharedPreferences(REGISTERED, 0);
 		return data.getBoolean(REGISTERED, false);
 	}
-	
+
 	/**
 	 * Setea un flag de que el usuario ya fue registrado
 	 */
@@ -86,31 +101,65 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 //			registerUser();
 //		}
 //		registerUser();
-		
+
 		InfoDialog.disposeDialog();
-		if (resultCode==0)
+		if (resultCode == 0) {
+			String dataString = resultData.getString("access_token");
+			LoginActivity.storeAcessToken(this, dataString);
 			startActivity(new Intent(this, MainActivity.class));
-		else
-			startActivity(new Intent(this,LoginActivity.class));
+		} else {
+			InfoDialog.createAlertDialog(this, "Problema ingresando",
+					"Verifique sus datos, en caso de no tener un usuario por favor registrese",
+					LoginActivity.class
+			);
+		}
 	}
 
-	private String getIP() {
+	private String getDefaultIP() {
 		String IP = getResources().getString(R.string.IP);
+		SharedPreferences data = getSharedPreferences(USER_CFG, 0);
+		if (data != null) {
+			IP = data.getString(SAVED_IP, IP);
+		}
+		return IP;
+	}
+
+	public String getIP() {
+		String IP = getDefaultIP();
 		EditText edit = (EditText) findViewById(R.id.ipEditText);
 		String newIp = edit.getText().toString();
 		if (!newIp.equalsIgnoreCase(IP)) {
+			saveData(SAVED_IP, newIp);
 			return newIp;
 		}
 		return IP;
 	}
 
-	private String getPort() {
+	private void saveData(String key, String value) {
+		SharedPreferences data = getSharedPreferences(USER_CFG, 0);
+		SharedPreferences.Editor editor = data.edit();
+		editor.putString(key, value);
+		editor.apply();
+	}
+
+	private String getDefaultPort() {
 		String port = getResources().getString(R.string.PORT);
+		SharedPreferences data = getSharedPreferences(USER_CFG, 0);
+		if (data != null) {
+			port = data.getString(SAVED_PORT, port);
+		}
+		return port;
+	}
+
+	private String getPort() {
+		String port = getDefaultPort();
 		EditText edit = (EditText) findViewById(R.id.portEditText);
 		String newPort = edit.getText().toString();
 		if (!newPort.equalsIgnoreCase(port)) {
+			saveData(SAVED_PORT, newPort);
 			return newPort;
 		}
 		return port;
 	}
+
 }
