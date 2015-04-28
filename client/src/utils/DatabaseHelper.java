@@ -14,7 +14,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -188,7 +187,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             initialValues.put(KEY_USERID, user.getUserId());
             if (date != null)
             {
-                initialValues.put(KEY_DATE, date.getTime().toString());
+                initialValues.put(KEY_DATE, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").format(date.getTime()));
             }
             initialValues.put(KEY_CONVERSATIONID, result.getConversationId());
             mDb.insert(DATABASE_CONVERSATION_TABLE, null, initialValues);
@@ -207,7 +206,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         ContentValues initialValues = new ContentValues(); 
         initialValues.put(KEY_CONVERSATIONID, conversation.getConversationId());
         initialValues.put(KEY_USERID, user.getUserId()); 
-        initialValues.put(KEY_DATE, date.getTime().toString());
+        initialValues.put(KEY_DATE, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").format(date.getTime()));
         mDb.insert(DATABASE_CONVERSATION_TABLE, null, initialValues);
         initialValues.remove(KEY_USERID);
         initialValues.put(KEY_USERID, USERID_ME);
@@ -284,7 +283,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         {
             ContentValues args = new ContentValues(); 
             args.put(KEY_USERID, user.getUserId()); 
-            args.put(KEY_DATE, conversation.getLast_message_time().getTime().toString());
+            args.put(KEY_DATE, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").format(conversation.getLast_message_time().getTime()));
             boolean result = mDb.update(DATABASE_CONVERSATION_TABLE, args, KEY_CONVERSATIONID + "=" + conversation.getConversationId(), null) > 0;
             if (!result) 
             {
@@ -353,7 +352,11 @@ public class DatabaseHelper extends SQLiteOpenHelper
           values.put(KEY_USERID, user.getUserId()); 
           if (date != null)
           {
-              values.put(KEY_TIMESTAMP, date.getTime().toString());
+              values.put(KEY_TIMESTAMP, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss::SS").format(date.getTime()));
+          }
+          else
+          {
+              values.put(KEY_TIMESTAMP, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").format(Calendar.getInstance().getTime()));
           }
           if (media != null)
           {
@@ -402,10 +405,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 Calendar cal = Calendar.getInstance();
                 try
                 {
-                    cal.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(cursor.getString(cursor.getColumnIndex(KEY_TIMESTAMP))));
+                    cal.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").parse(cursor.getString(cursor.getColumnIndex(KEY_TIMESTAMP))));
                 }catch (ParseException pE)
                 {
-                    System.out.println(pE.getCause().getMessage());
+                    System.out.println(pE.getMessage());
                 }
                 list.add(new MessageEntity(cE, uE, mE, cal, cursor.getString(cursor.getColumnIndex(KEY_CONTENT)), cursor.getShort(cursor.getColumnIndex(KEY_STATUS))));
             } while (cursor.moveToNext());
@@ -427,9 +430,15 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 ConversationEntity cE = this.fetchConversation(new ConversationEntity(cursor.getInt(cursor.getColumnIndex(KEY_CONVERSATIONID))));
                 UserEntity uE = this.fetchUser(cursor.getInt(cursor.getColumnIndex(KEY_USERID)));
                 MediaEntity mE = this.fetchMedia(cursor.getInt(cursor.getColumnIndex(KEY_MEDIAID)));
-                Calendar date = Calendar.getInstance();
-                date.setTime(new Date(cursor.getString(cursor.getColumnIndex(KEY_TIMESTAMP))));
-                list.add(new MessageEntity(cE, uE, mE, date, cursor.getString(cursor.getColumnIndex(KEY_CONTENT)), cursor.getShort(cursor.getColumnIndex(KEY_STATUS))));
+                Calendar cal = Calendar.getInstance();
+                try
+                {
+                    cal.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").parse(cursor.getString(cursor.getColumnIndex(KEY_TIMESTAMP))));
+                }catch (ParseException pE)
+                {
+                    System.out.println(pE.getMessage());
+                }
+                list.add(new MessageEntity(cE, uE, mE, cal, cursor.getString(cursor.getColumnIndex(KEY_CONTENT)), cursor.getShort(cursor.getColumnIndex(KEY_STATUS))));
             } while (cursor.moveToNext());
         } 
         return list;

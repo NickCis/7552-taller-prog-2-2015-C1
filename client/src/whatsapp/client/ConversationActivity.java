@@ -29,11 +29,14 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
     private LoremIpsum ipsum;
     private EditText editText1;
     private static Random random;
+    private DatabaseHelper dbH;
+    private ConversationEntity cE;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discuss);
+        this.dbH = new DatabaseHelper(this);
         random = new Random();
         //TODO: esto tendria que venir del server o de almacenamiento interno ni bien entro
         ipsum = new LoremIpsum();
@@ -44,7 +47,9 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
         editText1.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View arg0, int keyCode, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    adapter.add(new OneComment(false, editText1.getText().toString()));
+                    dbH.open();
+                    dbH.createMessage(cE, dbH.fetchUser(DatabaseHelper.USERID_ME), null, null, editText1.getText().toString(), DatabaseHelper.NOT_RECIEVED);
+                    adapter.add(new OneComment(true, editText1.getText().toString()));
                     editText1.setText("");
                     return true;
                 }
@@ -54,7 +59,8 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
         
         DatabaseHelper dbH = new DatabaseHelper(this);
         dbH.open();
-        addItems(dbH.fetchMessages(new ConversationEntity(getIntent().getExtras().getBundle("whatsapp.client.MainActivity.data").getInt("conversationId"))));
+        this.cE = dbH.fetchConversation(new ConversationEntity(getIntent().getExtras().getBundle("whatsapp.client.MainActivity.data").getInt("conversationId")));
+        addItems(dbH.fetchMessages(this.cE));
         dbH.close();
     }
 
