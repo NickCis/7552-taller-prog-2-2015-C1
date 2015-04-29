@@ -26,13 +26,13 @@ public class MainActivity extends TabActivity {
         TabHost tabHost = getTabHost();
         TabSpec activeConversationSpec = tabHost.newTabSpec("ActiveConversations");
         // setting Title and Icon for the Tab
-        activeConversationSpec.setIndicator("ActiveConversations", getResources().getDrawable(R.drawable.active_conversations_tab));
+        activeConversationSpec.setIndicator("", getResources().getDrawable(R.drawable.active_conversations_tab));
         Intent activeConversationsIntent = new Intent(this, ActiveConversationsActivity.class);
         activeConversationSpec.setContent(activeConversationsIntent);
         
         TabSpec usersSpec=  tabHost.newTabSpec("Users");
         // setting Title and Icon for the Tab
-        usersSpec.setIndicator("Users", getResources().getDrawable(R.drawable.users_tab));
+        usersSpec.setIndicator("", getResources().getDrawable(R.drawable.users_tab));
         Intent usersIntent = new Intent(this, UsersActivity.class);
         usersSpec.setContent(usersIntent);
         
