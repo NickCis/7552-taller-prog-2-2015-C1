@@ -1,0 +1,51 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package model;
+
+import android.app.IntentService;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.ResultReceiver;
+import com.android.volley.Request.Method;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import java.util.Map;
+import static model.ServerService.URI;
+import org.json.JSONObject;
+import services.AppController;
+
+/**
+ * Servicio encargado de hacer un request GET al servidor
+ *
+ * @author rburdet
+ */
+public class GETService extends ServerService {
+
+	public GETService() {
+		super();
+	}
+
+	@Override
+	protected void onHandleIntent(Intent intent) {
+		super.onHandleIntent(intent);
+		Map<String, String> params = (Map<String, String>) data.getSerializable("params");
+		if (params !=null)
+			URI = formGETUri(params);
+		req = new CustomRequest(Method.GET, URI, null, createSuccessListener(), createErrorListener());
+		AppController.getInstance().addToRequestQueue(req);
+	}
+
+	private String formGETUri(Map<String, String> params) {
+		Uri.Builder builder = new Uri.Builder();
+		for (Map.Entry<String, String> entrySet : params.entrySet()) {
+			String key = entrySet.getKey();
+			String value = entrySet.getValue();
+			builder.appendQueryParameter(key, value);
+		}
+		return URI + builder.build().toString();
+	}
+}

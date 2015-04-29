@@ -9,6 +9,7 @@
 	<uses-permission android:name="android.permission.INTERNET"/>
         <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
         <uses-permission android:name="android.permission.WAKE_LOCK"/>
+        
     <application
         android:name="services.AppController"
         android:icon="@drawable/ic_launcher"
@@ -38,7 +39,11 @@
         <activity android:name="UsersActivity"
             android:label="@string/app_name">
         </activity>    
-        <service android:name="model.LoginService" />
+        <service android:name="model.POSTService" />
+        <service android:name="model.GETService" />
+        <service android:name="model.NotificationService" />
+        <receiver android:name="utils.Alarm"/>
+
          
     </application>
 

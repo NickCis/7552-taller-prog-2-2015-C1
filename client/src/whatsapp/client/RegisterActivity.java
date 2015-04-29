@@ -14,7 +14,7 @@ import android.view.View;
 import android.widget.EditText;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.LoginService;
+import model.POSTService;
 import model.ServerResultReceiver;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,7 +61,7 @@ public class RegisterActivity extends Activity implements ServerResultReceiver.L
 	}
 
 	private Intent createCallingIntent(Bundle bundle) {
-		Intent intent = new Intent(this, LoginService.class);
+		Intent intent = new Intent(this, POSTService.class);
 		ServerResultReceiver receiver = new ServerResultReceiver(new Handler());
 		receiver.setListener(this);
 		intent.putExtra("rec", receiver);

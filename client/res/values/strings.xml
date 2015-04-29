@@ -5,6 +5,8 @@
     <string name="PORT"> 8000 </string>
     <string name="USER">user</string>
     <string name="PW">password</string>
+    <string name="USER_CFG">user_cfg</string>
+    <string name="SAVED_PORT">PORT</string>
     <string name="INFO">info</string>
     <string name="RECEIVER">receiver</string>
 
