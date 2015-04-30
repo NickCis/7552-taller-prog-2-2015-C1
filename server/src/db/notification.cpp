@@ -36,10 +36,10 @@ using rocksdb::ColumnFamilyHandle;
 	SRC_SIZE -= SIZE; \
 	SRC += SIZE
 
-shared_ptr<DB> Notification::db = NULL;
-shared_ptr<ColumnFamilyHandle> Notification::cf = NULL;
+DB* Notification::db = NULL;
+ColumnFamilyHandle* Notification::cf = NULL;
 
-void Notification::SetDB(shared_ptr<DB> &db, shared_ptr<ColumnFamilyHandle> &cf){
+void Notification::SetDB(DB* db, ColumnFamilyHandle* cf){
 	Notification::db = db;
 	Notification::cf = cf;
 }
@@ -54,7 +54,7 @@ Status Notification::Put(const string& to, Notification::NotificationType type, 
 	n.id = htobe64(tv.tv_sec * (uint64_t)1000000 + tv.tv_usec);
 	n.type = type;
 	Notification::GetKeyFromUser(key, to, n.id);
-	return Notification::db->Put(WriteOptions(), Notification::cf.get(), Slice(key.data(), key.size()), Notification::Pack(n.data, type, data));
+	return Notification::db->Put(WriteOptions(), Notification::cf, Slice(key.data(), key.size()), Notification::Pack(n.data, type, data));
 }
 
 void Notification::GetKeyFromUser(vector<char>& data, const string& from, const uint64_t& tv){
@@ -92,7 +92,7 @@ bool Notification::UnPack(const string& data, Notification& m){
 }
 
 shared_ptr<Notification::NotificationIterator> Notification::NewIterator(){
-	return shared_ptr<Notification::NotificationIterator>(new Notification::NotificationIterator(Notification::db->NewIterator(ReadOptions(), Notification::cf.get())));
+	return shared_ptr<Notification::NotificationIterator>(new Notification::NotificationIterator(Notification::db->NewIterator(ReadOptions(), Notification::cf)));
 }
 
 string Notification::getId() const {
@@ -130,7 +130,7 @@ Status Notification::DeleteUpTo(const std::string& from, const uint64_t& id){
 	WriteBatch batch;
 
 	for(it->seek(from); it->valid() && memcmp((char*) &id, (char*) &(it->value().getIdBin()), sizeof(uint64_t)) >= 0; it->next())
-		batch.Delete(Notification::cf.get(), it->key());
+		batch.Delete(Notification::cf, it->key());
 
 	return Notification::db->Write(WriteOptions(), &batch);
 }

@@ -33,8 +33,8 @@ using rocksdb::ReadOptions;
 using rocksdb::WriteOptions;
 using rocksdb::ColumnFamilyHandle;
 
-shared_ptr<DB> Message::db = NULL;
-shared_ptr<ColumnFamilyHandle> Message::cf = NULL;
+DB* Message::db = NULL;
+ColumnFamilyHandle* Message::cf = NULL;
 
 #define UNPACK(DST, SIZE, SRC, SRC_SIZE) \
 	if(SRC_SIZE < SIZE) \
@@ -65,10 +65,10 @@ Status Message::Put(const string& to, const string& from, const string& msg, Mes
 	Message::GetKeyFromUser(key, from, to, a.id);
 
 	WriteBatch batch;
-	batch.Put(Message::cf.get(), Slice(key.data(), key.size()), Message::Pack(data, mh, from, msg));
+	batch.Put(Message::cf, Slice(key.data(), key.size()), Message::Pack(data, mh, from, msg));
 
 	fill(key.end()-sizeof(uint64_t), key.end(), 0);
-	batch.Put(Message::cf.get(), Slice(key.data(), key.size()), Slice((char*) &a.id, sizeof(uint64_t)));
+	batch.Put(Message::cf, Slice(key.data(), key.size()), Slice((char*) &a.id, sizeof(uint64_t)));
 
 	Notification n;
 	Notification::Put(to, Notification::NOTIFICATION_MESSAGE, a.toJson(), n);
@@ -81,7 +81,7 @@ Status Message::Get(const string& to, const string& from, const uint64_t& id, Me
 	Message::GetKeyFromUser(key, from, to, id);
 
 	string data;
-	Status s = Message::db->Get(ReadOptions(), Message::cf.get(), Slice(key.data(), key.size()), &data);
+	Status s = Message::db->Get(ReadOptions(), Message::cf, Slice(key.data(), key.size()), &data);
 	if(!Message::UnPack(data, a)) // TODO: arreglar error de salida
 		return Status::InvalidArgument(Slice("Error en la informacion guardada"));
 
@@ -92,7 +92,7 @@ Status Message::Get(const string& to, const string& from, const uint64_t& id, Me
 	return s;
 }
 
-void Message::SetDB(shared_ptr<DB> &db, shared_ptr<ColumnFamilyHandle> &cf){
+void Message::SetDB(DB* db, ColumnFamilyHandle* cf){
 	Message::db = db;
 	Message::cf = cf;
 }
@@ -209,7 +209,7 @@ string Message::toJson() const {
 }
 
 shared_ptr<Message::MessageIterator> Message::NewIterator(){
-	return shared_ptr<Message::MessageIterator>(new Message::MessageIterator(Message::db->NewIterator(ReadOptions(), Message::cf.get())));
+	return shared_ptr<Message::MessageIterator>(new Message::MessageIterator(Message::db->NewIterator(ReadOptions(), Message::cf)));
 }
 
 Message::MessageIterator::MessageIterator(Iterator* i) : it(i) {
@@ -218,7 +218,7 @@ Message::MessageIterator::MessageIterator(Iterator* i) : it(i) {
 Status Message::MessageIterator::seekToLast(const string& to, const string& from){
 	Message::GetKeyFromUser(this->prefix, from, to, 0);
 	string data;
-	Status s = Message::db->Get(ReadOptions(), Message::cf.get(), Slice(this->prefix.data(), this->prefix.size()), &data);
+	Status s = Message::db->Get(ReadOptions(), Message::cf, Slice(this->prefix.data(), this->prefix.size()), &data);
 
 	if(s.ok()){
 		Message::GetKeyFromUser(this->prefix, from, to, *((uint64_t*) data.data()));

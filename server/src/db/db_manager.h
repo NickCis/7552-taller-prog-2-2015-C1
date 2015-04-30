@@ -34,13 +34,13 @@ class DBManager {
 		/** Devuelve la instancia a la db.
 		 * @param instancia de db
 		 */
-		std::shared_ptr<rocksdb::DB> get();
+		rocksdb::DB* get();
 
 		/** Devuelve un column family.
 		 * @param c[in]: Tipo de column family que se desea obtener
 		 * @return column family
 		 */
-		std::shared_ptr<rocksdb::ColumnFamilyHandle> getColumnFamily(DBManager::ColumnFamilies c);
+		rocksdb::ColumnFamilyHandle* getColumnFamily(DBManager::ColumnFamilies c);
 
 		/** Inicializa todas las entidades relacionadas con la db
 		 */
@@ -48,8 +48,8 @@ class DBManager {
 
 	protected:
 		std::string path; ///< Path a la db
-		std::shared_ptr<rocksdb::DB> db; ///< Instancia de la db
-		std::vector < std::shared_ptr < rocksdb::ColumnFamilyHandle > > cfs; ///< vector con todas las instancias de column families
+		std::unique_ptr<rocksdb::DB> db; ///< Instancia de la db
+		std::vector < std::unique_ptr < rocksdb::ColumnFamilyHandle > > cfs; ///< vector con todas las instancias de column families
 		DbComparator comparator; //< Clase comparadora
 
 		/** Crea la db.

@@ -7,7 +7,6 @@
 #include <sstream>
 
 using std::string;
-using std::shared_ptr;
 using std::stringstream;
 
 using rocksdb::DB;
@@ -17,25 +16,25 @@ using rocksdb::ReadOptions;
 using rocksdb::WriteOptions;
 using rocksdb::ColumnFamilyHandle;
 
-shared_ptr<DB> AccessToken::db = NULL;
-shared_ptr<ColumnFamilyHandle> AccessToken::cf = NULL;
+DB* AccessToken::db = NULL;
+ColumnFamilyHandle* AccessToken::cf = NULL;
 
 AccessToken::AccessToken() : token(""), username("") {
 }
 
 Status AccessToken::Get(const string& token, AccessToken& a){
 	a.token = token;
-	return AccessToken::db->Get(ReadOptions(), AccessToken::cf.get(), Slice(token), &a.username);
+	return AccessToken::db->Get(ReadOptions(), AccessToken::cf, Slice(token), &a.username);
 }
 
 Status AccessToken::Put(const string& u, AccessToken& a){
 	a.username = u;
 	a.token = AccessToken::CreateToken(u);
-	return AccessToken::db->Put(WriteOptions(), AccessToken::cf.get(), Slice(a.token), Slice(u));
+	return AccessToken::db->Put(WriteOptions(), AccessToken::cf, Slice(a.token), Slice(u));
 }
 
 
-void AccessToken::SetDB(shared_ptr<DB> &db, shared_ptr<ColumnFamilyHandle> &cf){
+void AccessToken::SetDB(DB* db, ColumnFamilyHandle* cf){
 	AccessToken::db = db;
 	AccessToken::cf = cf;
 }

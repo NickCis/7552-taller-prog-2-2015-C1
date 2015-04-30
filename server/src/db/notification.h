@@ -44,7 +44,7 @@ class Notification {
 		 * @param db[in]: Instancia a la base de datos a usar
 		 * @param cf[in]: instancia a la column family a usar
 		 */
-		static void SetDB(std::shared_ptr<rocksdb::DB> &db, std::shared_ptr<rocksdb::ColumnFamilyHandle> &cf);
+		static void SetDB(rocksdb::DB* db, rocksdb::ColumnFamilyHandle* cf);
 
 		const uint64_t& getIdBin() const; ///< Id en formato binario
 		std::string getId() const; ///< id en formato hexa
@@ -70,8 +70,8 @@ class Notification {
 		static rocksdb::Status DeleteUpTo(const std::string& from, const uint64_t& id);
 
 	protected:
-		static std::shared_ptr<rocksdb::DB> db; ///< Instancia db
-		static std::shared_ptr<rocksdb::ColumnFamilyHandle> cf; ///< Instancia column family
+		static rocksdb::DB* db; ///< Instancia db
+		static rocksdb::ColumnFamilyHandle* cf; ///< Instancia column family
 
 		/** Genera Key (completa) de la db apartir de usuario e id.
 		 * salida del tipo: usuario/id

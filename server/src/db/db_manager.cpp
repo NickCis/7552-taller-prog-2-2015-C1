@@ -13,7 +13,7 @@
 using std::string;
 using std::strcmp;
 using std::vector;
-using std::shared_ptr;
+using std::unique_ptr;
 
 using rocksdb::DB;
 using rocksdb::Status;
@@ -98,23 +98,23 @@ void DBManager::open(Status& s){
 	options.comparator = &this->comparator;
 	s = DB::Open(DBOptions(options), this->path, column_families, &handles, &_db);
 	if(s.ok()){
-		this->db = shared_ptr<DB>(_db);
+		this->db = unique_ptr<DB>(_db);
 		for(auto h : handles)
-			cfs.push_back(std::shared_ptr<ColumnFamilyHandle>(h));
+			cfs.push_back(unique_ptr<ColumnFamilyHandle>(h));
 	}
 }
 
-shared_ptr<DB> DBManager::get(){
-	return this->db;
+DB* DBManager::get(){
+	return this->db.get();
 }
 
-shared_ptr<ColumnFamilyHandle> DBManager::getColumnFamily(DBManager::ColumnFamilies c){
-	return this->cfs[c];
+ColumnFamilyHandle* DBManager::getColumnFamily(DBManager::ColumnFamilies c){
+	return this->cfs[c].get();
 }
 
 void DBManager::setEnviroment(){
-	User::SetDB(this->db, this->cfs[DBManager::COLUMN_FAMILY_USERS]);
-	AccessToken::SetDB(this->db, this->cfs[DBManager::COLUMN_FAMILY_ACCESS_TOKENS]);
-	Message::SetDB(this->db, this->cfs[DBManager::COLUMN_FAMILY_MESSAGES]);
-	Notification::SetDB(this->db, this->cfs[DBManager::COLUMN_FAMILY_NOTIFICATIONS]);
+	User::SetDB(this->db.get(), this->cfs[DBManager::COLUMN_FAMILY_USERS].get());
+	AccessToken::SetDB(this->db.get(), this->cfs[DBManager::COLUMN_FAMILY_ACCESS_TOKENS].get());
+	Message::SetDB(this->db.get(), this->cfs[DBManager::COLUMN_FAMILY_MESSAGES].get());
+	Notification::SetDB(this->db.get(), this->cfs[DBManager::COLUMN_FAMILY_NOTIFICATIONS].get());
 }

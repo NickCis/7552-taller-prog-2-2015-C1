@@ -46,7 +46,7 @@ class Message {
 		 * @param db[in]: Instancia a la base de datos a usar
 		 * @param cf[in]: instancia a la column family a usar
 		 */
-		static void SetDB(std::shared_ptr<rocksdb::DB> &db, std::shared_ptr<rocksdb::ColumnFamilyHandle> &cf);
+		static void SetDB(rocksdb::DB* db, rocksdb::ColumnFamilyHandle* cf);
 
 		const std::string& getFrom() const; ///< Emisor del mensaje
 		//const std::string& getTo() const;
@@ -65,8 +65,8 @@ class Message {
 			int has_file; ///< flag que especifica si el msje tiene un attachment
 		} MessageHeader;
 
-		static std::shared_ptr<rocksdb::DB> db; ///< Instacia de la db
-		static std::shared_ptr<rocksdb::ColumnFamilyHandle> cf; ///< instancia de la column family
+		static rocksdb::DB* db; ///< Instacia de la db
+		static rocksdb::ColumnFamilyHandle* cf; ///< instancia de la column family
 
 		/** Genera Key (incompleta) de la db apartir de emisor y receptor. 
 		 * salida del tipo: emisor/receptor/

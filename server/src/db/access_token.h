@@ -2,7 +2,6 @@
 #define __ACCESS_TOKEN_H__
 
 #include <string>
-#include <memory>
 #include <rocksdb/db.h>
 #include <rocksdb/status.h>
 
@@ -46,7 +45,7 @@ class AccessToken {
 		 * @param db[in]: Instancia a la base de datos a usar
 		 * @param cf[in]: instancia a la column family a usar
 		 */
-		static void SetDB(std::shared_ptr<rocksdb::DB> &db, std::shared_ptr<rocksdb::ColumnFamilyHandle> &cf);
+		static void SetDB(rocksdb::DB* db, rocksdb::ColumnFamilyHandle* cf);
 
 	protected:
 		std::string token; ///< Representacion en string del token
@@ -58,8 +57,8 @@ class AccessToken {
 		 */
 		static std::string CreateToken(const std::string& username);
 
-		static std::shared_ptr<rocksdb::DB> db; ///< Instancia de la db
-		static std::shared_ptr<rocksdb::ColumnFamilyHandle> cf; ///< Instancia de la column family
+		static rocksdb::DB* db; ///< Instancia de la db
+		static rocksdb::ColumnFamilyHandle* cf; ///< Instancia de la column family
 };
 
 #endif
