@@ -6,22 +6,34 @@
 package utils;
 
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import static android.content.Context.NOTIFICATION_SERVICE;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.DELETEService;
 import model.GETService;
 import model.ServerResultReceiver;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import whatsapp.client.ConversationActivity;
+import whatsapp.client.LoginActivity;
+import whatsapp.client.R;
 
 /**
  *
@@ -30,6 +42,9 @@ import org.json.JSONObject;
 public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Listener {
 
 	NotificationManager notificationManager;
+	private Context context;
+
+	String idDelUltimo;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -38,28 +53,9 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 		wl.acquire();
 
 		// Put here YOUR code.
-		startService(context);
+		//TODO: sacarlo de aca
+		startService(this.context = context);
 
-		/*
-		 Intent notificationIntent = new Intent(context, LoginActivity.class);
-		 PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-
-		 Notification.Builder builder = new Notification.Builder(context);
-		 builder.setSmallIcon(R.drawable.notification_icon);
-		 builder.setContentIntent(pendingIntent);
-		 builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.notification_icon));
-		 builder.setTicker("SOY UN TICKER");
-		 builder.setWhen(System.currentTimeMillis());
-		 builder.setAutoCancel(true);
-		 builder.setContentTitle("titulo");
-		 builder.setContentText("texto content");
-
-		 Notification n = builder.build();
-
-		 notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-		 notificationManager.notify(1, n);
-		 //Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_SHORT).show(); // For example
-		 */
 		wl.release();
 	}
 
@@ -88,12 +84,13 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 	}
 
 	public void onReceiveResult(int resultCode, Bundle resultData) {
-		Log.d("ALARM", "ESTOY EN LA VUELTA DEL GET DE NOTIFICATION-*******************************************************************************************");
+		JSONObject data = null;
 		try {
-			JSONObject data = new JSONObject(resultData.getString("data"));
+			data = new JSONObject(resultData.getString("data"));
 		} catch (JSONException ex) {
 			Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
 		}
+		processNotifications(data);
 	}
 
 	private Bundle createBundle(Context context) {
@@ -102,7 +99,7 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 		String access_token = ConfigurationManager.getInstance().getString(context, ConfigurationManager.ACCESS_TOKEN);
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("access_token", access_token);
-		
+
 		String ip = ConfigurationManager.getInstance().getString(context, ConfigurationManager.SAVED_IP);
 		String port = ConfigurationManager.getInstance().getString(context, ConfigurationManager.SAVED_PORT);
 		final String URI = ip + ":" + port + "/" + "notification";
@@ -111,4 +108,129 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 
 		return bundle;
 	}
+
+	private void processNotifications(JSONObject data) {
+		JSONArray notifications;
+		if (data.has("notifications")) {
+			try {
+				notifications = data.getJSONArray("notifications");
+				for (int i = 0; i < notifications.length(); i++) {
+					processNotification(notifications.getJSONObject(i));
+				}
+				startServiceDelete(context);
+
+			} catch (JSONException ex) {
+				Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
+			}
+
+		}
+	}
+
+	private void processNotification(JSONObject data) {
+		String type = null;
+		try {
+			type = data.getString("type");
+			idDelUltimo = data.getString("id");
+
+		} catch (JSONException ex) {
+		}
+		if (type.equals("message")) {
+			processMessage(data);
+		} else if (type.equals("ack")) {
+			processAck(data);
+		}
+	}
+
+	private void processAck(JSONObject data) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	private void processMessage(JSONObject data) {
+		if (ConversationActivity.isShowing()) {
+			try {
+				write(data.getJSONObject("data"));
+				ConversationActivity.getInstance().addMsgs();
+			} catch (JSONException ex) {
+				Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
+			}
+
+		} else {
+			sendNotification(data);
+		}
+	}
+
+	private void sendNotification(JSONObject data) {
+		String from = "";
+		String txt = "";
+		try {
+			from = data.getJSONObject("data").getString("from");
+			txt = data.getJSONObject("data").getString("message");
+			write(data.getJSONObject("data"));
+
+		} catch (JSONException ex) {
+			Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		Intent notificationIntent = new Intent(context, ConversationActivity.class);
+		notificationIntent.putExtra("id", from);
+		notificationIntent.putExtra("msg", txt);
+		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+		Notification.Builder builder = new Notification.Builder(context);
+		builder.setSmallIcon(R.drawable.notification_icon);
+		builder.setContentIntent(pendingIntent);
+		builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.notification_icon));
+		builder.setTicker("Mensaje de: " + from);
+		builder.setWhen(System.currentTimeMillis());
+		builder.setAutoCancel(true);
+		builder.setContentTitle("WAZAP");
+		builder.setContentText(from + ": " + txt);
+
+		Notification n = builder.build();
+
+		notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+		notificationManager.notify(1, n);
+		//Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_SHORT).show(); // For example
+
+	}
+
+	private void write(JSONObject data) {
+		try {
+			SharedPreferences store = context.getSharedPreferences("pepe", 0);
+			SharedPreferences.Editor editor = store.edit();
+
+			Set<String> set = store.getStringSet("messages", new LinkedHashSet<String>());
+			set.add(data.getString("message"));
+			/*editor.putString("from", data.getString("from"));
+			 editor.putString("id", data.getString("id"));
+			 editor.putString("time",data.getString("time"));
+			 */
+			editor.putStringSet("messages", set);
+			editor.apply();
+		} catch (JSONException ex) {
+			Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
+		}
+	}
+
+	private void startServiceDelete(Context context) {
+		Intent intent = new Intent(context, DELETEService.class);
+		ServerResultReceiver receiver = new ServerResultReceiver(new Handler());
+		receiver.setListener(this);
+
+		Bundle bundle = new Bundle();
+		String access_token = ConfigurationManager.getInstance().getString(context, ConfigurationManager.ACCESS_TOKEN);
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("access_token", access_token);
+		params.put("id", idDelUltimo);
+
+		String ip = ConfigurationManager.getInstance().getString(context, ConfigurationManager.SAVED_IP);
+		String port = ConfigurationManager.getInstance().getString(context, ConfigurationManager.SAVED_PORT);
+		final String URI = ip + ":" + port + "/" + "notification";
+		bundle.putString("URI", URI);
+		bundle.putSerializable("params", params);
+
+		intent.putExtra("rec", receiver);
+		intent.putExtra("info", bundle);
+		context.startService(intent);
+	}
+
 }

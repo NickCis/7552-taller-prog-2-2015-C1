@@ -41,6 +41,7 @@
         </activity>    
         <service android:name="model.POSTService" />
         <service android:name="model.GETService" />
+        <service android:name="model.DELETEService" />
         <service android:name="model.NotificationService" />
         <receiver android:name="utils.Alarm"/>
 

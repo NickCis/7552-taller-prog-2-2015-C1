@@ -348,7 +348,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     
     public MessageEntity createMessage(ConversationEntity conversation, UserEntity user, MediaEntity media, Calendar date, String content, Short status) { 
           ContentValues values = new ContentValues(); 
-          values.put(KEY_CONVERSATIONID, conversation.getConversationId());
+          //values.put(KEY_CONVERSATIONID, conversation.getConversationId());
           values.put(KEY_USERID, user.getUserId()); 
           if (date != null)
           {
