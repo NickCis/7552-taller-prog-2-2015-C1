@@ -18,8 +18,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -32,7 +30,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import whatsapp.client.ConversationActivity;
-import whatsapp.client.LoginActivity;
 import whatsapp.client.R;
 
 /**
@@ -111,18 +108,22 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 
 	private void processNotifications(JSONObject data) {
 		JSONArray notifications;
-		if (data.has("notifications")) {
-			try {
-				notifications = data.getJSONArray("notifications");
-				for (int i = 0; i < notifications.length(); i++) {
-					processNotification(notifications.getJSONObject(i));
+		if (data != null) {
+			if (data.has("notifications")) {
+				try {
+					notifications = data.getJSONArray("notifications");
+					if (notifications.length() != 0) {
+						for (int i = 0; i < notifications.length(); i++) {
+							processNotification(notifications.getJSONObject(i));
+						}
+						startServiceDelete(context);
+					}
+
+				} catch (JSONException ex) {
+					Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
 				}
-				startServiceDelete(context);
 
-			} catch (JSONException ex) {
-				Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
 			}
-
 		}
 	}
 

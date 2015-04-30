@@ -38,7 +38,8 @@ public abstract class ServerService extends IntentService {
 			public void onResponse(JSONObject t) {
 				data.putBoolean("SERVICE", true);
 				data.putString("data", t.toString());
-				rec.send(0, data);
+				if (rec!=null)
+					rec.send(0, data);
 			}
 		};
 	}
@@ -48,7 +49,8 @@ public abstract class ServerService extends IntentService {
 			public void onErrorResponse(VolleyError ve) {
 				data.putString("data", "UPS... Algo salio mal");
 				data.putBoolean("SERVICE", false);
-				rec.send(1, data);
+				if (rec!=null)
+					rec.send(1, data);
 			}
 		};
 	}

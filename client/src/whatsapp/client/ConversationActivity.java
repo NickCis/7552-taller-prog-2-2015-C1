@@ -5,19 +5,24 @@
 package whatsapp.client;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import de.svenjacobs.loremipsum.LoremIpsum;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import model.POSTService;
 import model.ServerResultReceiver;
+import utils.ConfigurationManager;
 import utils.ConversationEntity;
 import utils.DatabaseHelper;
 import utils.MessageEntity;
@@ -29,6 +34,7 @@ import utils.UserEntity;
  * @author rburdet
  */
 public class ConversationActivity extends Activity implements ServerResultReceiver.Listener {
+
 	private static ConversationActivity INSTANCE;
 
 	private DiscussArrayAdapter adapter;
@@ -38,17 +44,20 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 	private ConversationEntity cE;
 	private String contact;
 	private static boolean showing;
+	private boolean shouldAdd = true;
 
 	public static boolean isShowing() {
 		return showing;
 	}
 
-	public static ConversationActivity getInstance(){
+	public static ConversationActivity getInstance() {
 		return INSTANCE;
 	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		shouldAdd = true;
 		INSTANCE = this;
 		showing = true;
 		setContentView(R.layout.activity_discuss);
@@ -63,8 +72,11 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 				if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
 					dbH.open();
 					dbH.createMessage(cE, dbH.fetchUser(DatabaseHelper.USERID_ME), null, null, editText1.getText().toString(), DatabaseHelper.NOT_RECIEVED);
-					adapter.add(new OneComment(true, editText1.getText().toString()));
+					String msg;
+					adapter.add(new OneComment(true, msg = editText1.getText().toString()));
+					send(msg);
 					editText1.setText("");
+					shouldAdd = false;
 					return true;
 				}
 				return false;
@@ -80,8 +92,28 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 		 addItems(dbH.fetchMessages(this.cE));
 		 dbH.close();
 		 */
-		addMsgs();
+		if (shouldAdd)
+			addMsgs();
 
+	}
+
+	void send(String msg) {
+		Bundle bundle = new Bundle();
+		HashMap<String, String> params = new HashMap<String, String>();
+		String access_token = ConfigurationManager.getInstance().getString(this,ConfigurationManager.ACCESS_TOKEN);
+		params.put("access_token", access_token);
+		params.put("message",msg);
+		bundle.putSerializable("params", params);
+		String ip = ConfigurationManager.getInstance().getString(this, ConfigurationManager.SAVED_IP);
+		String port = ConfigurationManager.getInstance().getString(this, ConfigurationManager.SAVED_PORT);
+		//TODO: Manejar bien esto
+		String URI = ip + ":" + port + "/" + "user/pepe/messages";
+		bundle.putString("URI", URI);
+		bundle.putSerializable("params", params);
+		Intent intent = new Intent(this, POSTService.class);
+		//TODO: Se le tiene q asociar un listener para q vuelva ? 
+		intent.putExtra("info", bundle);
+		startService(intent);
 	}
 
 	//TODO: MOCK, tendria q salir del servidor tmb
@@ -109,6 +141,7 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 	protected void onDestroy() {
 		showing = false;
 		Log.d("ConversationActivity", "DESTRUYENDO ACTIVITY****************************");
+		super.onDestroy();
 	}
 
 	@Override
@@ -123,9 +156,9 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 		if (set.size() != 0) {
 			for (String set1 : set) {
 				adapter.add(new OneComment(false, set1));
-				set.remove(set1);
 			}
 		}
+		set.clear();
 	}
 
 }
