@@ -18,6 +18,9 @@ shared_ptr<ColumnFamilyHandle> User::cf = NULL;
 User::User() : username(""), password(""){
 }
 
+User::User(const string& u) : username(u), password(""){
+}
+
 Status User::Get(const string& username, User& u){
 	u.username = username;
 	u.password = "";

@@ -26,8 +26,11 @@
 *.exe
 *.out
 *.app
-server/build/
-server/test_build/
 
 # vim
 *.sw*
+
+# carpetas build
+server/doc/
+server/build/
+server/test_build/

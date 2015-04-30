@@ -13,6 +13,7 @@ class User {
 		/** Constructor vacio
 		 */
 		User();
+		User(const std::string& username);
 
 		/** Obtiene un usuario
 		 * @param username[in]: nombre de usuario
