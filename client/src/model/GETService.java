@@ -5,17 +5,11 @@
  */
 package model;
 
-import android.app.IntentService;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
-import android.os.ResultReceiver;
 import com.android.volley.Request.Method;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import java.util.Map;
 import static model.ServerService.URI;
-import org.json.JSONObject;
 import services.AppController;
 
 /**

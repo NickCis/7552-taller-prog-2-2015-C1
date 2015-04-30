@@ -17,7 +17,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.NotificationService;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class LoginActivity extends Activity implements ServerResultReceiver.Listener {
 
@@ -27,10 +31,11 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 	static final String SAVED_PORT = "PORT";
 	static final String ACCESS_TOKEN = "access_token";
 
-	static void storeAcessToken(Context ctx, String data) {
+	static void storeAccessToken(Context ctx, String data) {
 		SharedPreferences store = ctx.getSharedPreferences(LoginActivity.USER_CFG, 0);
 		SharedPreferences.Editor editor = store.edit();
 		editor.putString(LoginActivity.ACCESS_TOKEN, data);
+		editor.apply();
 	}
 
 	/**
@@ -46,14 +51,13 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 		ipEdit.setText(getDefaultIP());
 		EditText portEdit = (EditText) findViewById(R.id.portEditText);
 		portEdit.setText(getDefaultPort());
-	
 
-		startService(new Intent(this,NotificationService.class));
+		//startService(new Intent(this,NotificationService.class));
 	}
 
 	public void register(View v) {
-		String newIp = ((EditText) findViewById(R.id.ipEditText)).getText().toString();
-		String newPort = ((EditText) findViewById(R.id.portEditText)).getText().toString();
+		String newIp = getIP();
+		String newPort = getPort();
 		saveData(SAVED_IP, newIp);
 		saveData(SAVED_PORT, newPort);
 		startActivity(new Intent(this, RegisterActivity.class));
@@ -62,11 +66,13 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 	public void login(View v) {
 		//TODO: verificar campos
 		Bundle bundle = new Bundle();
+		saveData(SAVED_IP, getIP());
+		saveData(SAVED_PORT, getPort());
 		EditText userNameField = (EditText) findViewById(R.id.username);
 		EditText passwordField = (EditText) findViewById(R.id.userpassword);
 		HashMap<String, String> params = new HashMap<String, String>();
-		
-		params.put("user",userNameField.getText().toString());
+
+		params.put("user", userNameField.getText().toString());
 		params.put("pass", passwordField.getText().toString());
 		bundle.putSerializable("params", params);
 		final String URI = getIP() + ":" + getPort() + "/" + "auth";
@@ -114,8 +120,14 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 
 		InfoDialog.disposeDialog();
 		if (resultCode == 0) {
-			String dataString = resultData.getString("access_token");
-			LoginActivity.storeAcessToken(this, dataString);
+			JSONObject data = null;
+			try {
+				data = new JSONObject(resultData.getString("data"));
+				String dataString = data.getString("access_token");
+				LoginActivity.storeAccessToken(this, dataString);
+			} catch (JSONException ex) {
+				Logger.getLogger(LoginActivity.class.getName()).log(Level.SEVERE, null, ex);
+			}
 			startActivity(new Intent(this, MainActivity.class));
 		} else {
 			InfoDialog.createAlertDialog(this, "Problema ingresando",

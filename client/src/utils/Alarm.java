@@ -6,30 +6,28 @@
 package utils;
 
 import android.app.AlarmManager;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import static android.content.Context.NOTIFICATION_SERVICE;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.util.Log;
-import android.widget.Toast;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.GETService;
-import model.POSTService;
 import model.ServerResultReceiver;
-import whatsapp.client.LoginActivity;
-import whatsapp.client.R;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
  * @author rburdet
  */
-public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Listener{
+public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Listener {
 
 	NotificationManager notificationManager;
 
@@ -43,25 +41,25 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 		startService(context);
 
 		/*
-		Intent notificationIntent = new Intent(context, LoginActivity.class);
-		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+		 Intent notificationIntent = new Intent(context, LoginActivity.class);
+		 PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
-		Notification.Builder builder = new Notification.Builder(context);
-		builder.setSmallIcon(R.drawable.notification_icon);
-		builder.setContentIntent(pendingIntent);
-		builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.notification_icon));
-		builder.setTicker("SOY UN TICKER");
-		builder.setWhen(System.currentTimeMillis());
-		builder.setAutoCancel(true);
-		builder.setContentTitle("titulo");
-		builder.setContentText("texto content");
+		 Notification.Builder builder = new Notification.Builder(context);
+		 builder.setSmallIcon(R.drawable.notification_icon);
+		 builder.setContentIntent(pendingIntent);
+		 builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.notification_icon));
+		 builder.setTicker("SOY UN TICKER");
+		 builder.setWhen(System.currentTimeMillis());
+		 builder.setAutoCancel(true);
+		 builder.setContentTitle("titulo");
+		 builder.setContentText("texto content");
 
-		Notification n = builder.build();
+		 Notification n = builder.build();
 
-		notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-		notificationManager.notify(1, n);
-		//Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_SHORT).show(); // For example
-*/
+		 notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+		 notificationManager.notify(1, n);
+		 //Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_SHORT).show(); // For example
+		 */
 		wl.release();
 	}
 
@@ -91,14 +89,26 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 
 	public void onReceiveResult(int resultCode, Bundle resultData) {
 		Log.d("ALARM", "ESTOY EN LA VUELTA DEL GET DE NOTIFICATION-*******************************************************************************************");
+		try {
+			JSONObject data = new JSONObject(resultData.getString("data"));
+		} catch (JSONException ex) {
+			Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
+		}
 	}
 
 	private Bundle createBundle(Context context) {
 		Bundle bundle = new Bundle();
+
+		String access_token = ConfigurationManager.getInstance().getString(context, ConfigurationManager.ACCESS_TOKEN);
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("access_token", access_token);
+		
 		String ip = ConfigurationManager.getInstance().getString(context, ConfigurationManager.SAVED_IP);
 		String port = ConfigurationManager.getInstance().getString(context, ConfigurationManager.SAVED_PORT);
-		final String URI = ip+ ":" + port + "/" + "notification";
+		final String URI = ip + ":" + port + "/" + "notification";
 		bundle.putString("URI", URI);
+		bundle.putSerializable("params", params);
+
 		return bundle;
 	}
 }
