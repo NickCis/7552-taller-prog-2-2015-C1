@@ -34,3 +34,5 @@
 server/doc/
 server/build/
 server/test_build/
+
+client/doc/
