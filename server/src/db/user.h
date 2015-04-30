@@ -26,7 +26,7 @@ class User {
 		 * @param db[in]: Instancia a la base de datos a usar
 		 * @param cf[in]: instancia a la column family a usar
 		 */
-		static void SetDB(std::shared_ptr<rocksdb::DB> &db, std::shared_ptr<rocksdb::ColumnFamilyHandle> &cf);
+		static void SetDB(rocksdb::DB* db, rocksdb::ColumnFamilyHandle* cf);
 
 		/** Escribe usuario en la db
 		 * @param u: nombre de usuario
@@ -54,8 +54,8 @@ class User {
 		std::string username; ///< usuario
 		std::string password; ///< contrase~na
 
-		static std::shared_ptr<rocksdb::DB> db; ///< instancia db
-		static std::shared_ptr<rocksdb::ColumnFamilyHandle> cf; ///< instancia column family
+		static rocksdb::DB* db; ///< instancia db
+		static rocksdb::ColumnFamilyHandle* cf; ///< instancia column family
 
 		static bool IsUsernameValid(const std::string& username); ///< Valida nombre de usuario
 		static bool IsPasswordValid(const std::string& password); ///< Valida contrase~na
