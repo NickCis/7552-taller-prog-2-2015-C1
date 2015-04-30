@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.6"/>
+<title>MensajerO: Fichero Fuente rest/signup_node.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() { searchBox.OnSelectItem(0); });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">MensajerO
+   &#160;<span id="projectnumber">0.1</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generado por Doxygen 1.8.6 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li><a href="pages.html"><span>Páginas&#160;relacionadas</span></a></li>
+      <li><a href="annotated.html"><span>Clases</span></a></li>
+      <li class="current"><a href="files.html"><span>Archivos</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Lista&#160;de&#160;archivos</span></a></li>
+    </ul>
+  </div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>Todo</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Clases</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Funciones</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>&apos;typedefs&apos;</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumeraciones</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Valores de enumeraciones</a></div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_f22ae342685db2a55da996d10a47cfe8.html">rest</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">signup_node.cpp</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &quot;signup_node.h&quot;</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;../db/user.h&quot;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">using</span> std::cout;</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">using</span> std::endl;</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">using</span> std::string;</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">using</span> rocksdb::Status;</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;SignupNode::SignupNode() : <a class="code" href="classWAMethodNode.html">WAMethodNode</a>(<span class="stringliteral">&quot;signup&quot;</span>) {</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;}</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="classSignupNode.html#a5c39430301435761f41d76ed05ffcb26">   17</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classSignupNode.html#a5c39430301435761f41d76ed05ffcb26">SignupNode::executePost</a>(<a class="code" href="classMgConnection.html">MgConnection</a>&amp; conn, <span class="keyword">const</span> <span class="keywordtype">char</span>* url){</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keywordtype">string</span> u = conn.<a class="code" href="classMgConnection.html#abafa1da744337e0199c31f6697ee862f">getVarStr</a>(<span class="stringliteral">&quot;user&quot;</span>);</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordtype">string</span> p = conn.<a class="code" href="classMgConnection.html#abafa1da744337e0199c31f6697ee862f">getVarStr</a>(<span class="stringliteral">&quot;pass&quot;</span>);</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    Status s = <a class="code" href="classUser.html#a1fb9ddb4261c0237548a050c3d426e12">User::Put</a>(u, p);</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordflow">if</span>(s.ok()){</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        conn.<a class="code" href="classMgConnection.html#a1bc73121b1d69483ef0127676f645576">sendStatus</a>(<a class="code" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffbac88f4f52d8ed7e2f7851a5e7483e6002">MgConnection::STATUS_CODE_CREATED</a>);</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        conn.<a class="code" href="classMgConnection.html#a79f1e546aa877d0fc9a3edb7b0add499">sendContentType</a>(<a class="code" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225aace675124114daa6397554ca5f4b7aee">MgConnection::CONTENT_TYPE_JSON</a>);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        conn.<a class="code" href="classMgConnection.html#aa1324f4f27c4fe055e39242a1151e017">printfData</a>(<span class="stringliteral">&quot;{ \&quot;success\&quot;: true }&quot;</span>);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    }<span class="keywordflow">else</span>{</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        conn.<a class="code" href="classMgConnection.html#a1bc73121b1d69483ef0127676f645576">sendStatus</a>(<a class="code" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba0ed9817af2a00c571a62006f73130e7b">MgConnection::STATUS_CODE_BAD_REQUEST</a>);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        conn.<a class="code" href="classMgConnection.html#a79f1e546aa877d0fc9a3edb7b0add499">sendContentType</a>(<a class="code" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225aace675124114daa6397554ca5f4b7aee">MgConnection::CONTENT_TYPE_JSON</a>);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        conn.<a class="code" href="classMgConnection.html#aa1324f4f27c4fe055e39242a1151e017">printfData</a>(<span class="stringliteral">&quot;{ \&quot;message\&quot;: \&quot;%s\&quot;,  \&quot;error_user_msg\&quot;: \&quot;Problemas registrandose\&quot;}&quot;</span>, s.ToString().c_str());</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    }</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;}</div>
+<div class="ttc" id="classUser_html_a1fb9ddb4261c0237548a050c3d426e12"><div class="ttname"><a href="classUser.html#a1fb9ddb4261c0237548a050c3d426e12">User::Put</a></div><div class="ttdeci">static rocksdb::Status Put(const std::string &amp;u, const std::string p, bool check=true)</div><div class="ttdef"><b>Definition:</b> <a href="user_8cpp_source.html#l00027">user.cpp:27</a></div></div>
+<div class="ttc" id="classMgConnection_html_abafa1da744337e0199c31f6697ee862f"><div class="ttname"><a href="classMgConnection.html#abafa1da744337e0199c31f6697ee862f">MgConnection::getVarStr</a></div><div class="ttdeci">std::string getVarStr(const char *varName, size_t max=64)</div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8cpp_source.html#l00073">mg_connection.cpp:73</a></div></div>
+<div class="ttc" id="classMgConnection_html_aa1324f4f27c4fe055e39242a1151e017"><div class="ttname"><a href="classMgConnection.html#aa1324f4f27c4fe055e39242a1151e017">MgConnection::printfData</a></div><div class="ttdeci">size_t printfData(const char *format,...)</div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8cpp_source.html#l00039">mg_connection.cpp:39</a></div></div>
+<div class="ttc" id="classSignupNode_html_a5c39430301435761f41d76ed05ffcb26"><div class="ttname"><a href="classSignupNode.html#a5c39430301435761f41d76ed05ffcb26">SignupNode::executePost</a></div><div class="ttdeci">void executePost(MgConnection &amp;conn, const char *url)</div><div class="ttdef"><b>Definition:</b> <a href="signup__node_8cpp_source.html#l00017">signup_node.cpp:17</a></div></div>
+<div class="ttc" id="classMgConnection_html_a79f1e546aa877d0fc9a3edb7b0add499"><div class="ttname"><a href="classMgConnection.html#a79f1e546aa877d0fc9a3edb7b0add499">MgConnection::sendContentType</a></div><div class="ttdeci">void sendContentType(const std::string &amp;type)</div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8cpp_source.html#l00051">mg_connection.cpp:51</a></div></div>
+<div class="ttc" id="classMgConnection_html_abc7d0ef886d32d6aaab551e484bc6225aace675124114daa6397554ca5f4b7aee"><div class="ttname"><a href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225aace675124114daa6397554ca5f4b7aee">MgConnection::CONTENT_TYPE_JSON</a></div><div class="ttdoc">Se envia un JSON. </div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00040">mg_connection.h:40</a></div></div>
+<div class="ttc" id="classMgConnection_html"><div class="ttname"><a href="classMgConnection.html">MgConnection</a></div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00011">mg_connection.h:11</a></div></div>
+<div class="ttc" id="classMgConnection_html_ae6ce65078cfb6554251e5a09daca0ffba0ed9817af2a00c571a62006f73130e7b"><div class="ttname"><a href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba0ed9817af2a00c571a62006f73130e7b">MgConnection::STATUS_CODE_BAD_REQUEST</a></div><div class="ttdoc">El cliente no paso toda la informacion, request malo. </div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00026">mg_connection.h:26</a></div></div>
+<div class="ttc" id="classMgConnection_html_ae6ce65078cfb6554251e5a09daca0ffbac88f4f52d8ed7e2f7851a5e7483e6002"><div class="ttname"><a href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffbac88f4f52d8ed7e2f7851a5e7483e6002">MgConnection::STATUS_CODE_CREATED</a></div><div class="ttdoc">Se creo algo. </div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00023">mg_connection.h:23</a></div></div>
+<div class="ttc" id="classMgConnection_html_a1bc73121b1d69483ef0127676f645576"><div class="ttname"><a href="classMgConnection.html#a1bc73121b1d69483ef0127676f645576">MgConnection::sendStatus</a></div><div class="ttdeci">void sendStatus(MgConnection::StatusCodes code)</div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8cpp_source.html#l00023">mg_connection.cpp:23</a></div></div>
+<div class="ttc" id="classWAMethodNode_html"><div class="ttname"><a href="classWAMethodNode.html">WAMethodNode</a></div><div class="ttdef"><b>Definition:</b> <a href="wa__method__node_8h_source.html#l00007">wa_method_node.h:7</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generado el Miércoles, 29 de Abril de 2015 22:27:29 para MensajerO por &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.6
+</small></address>
+</body>
+</html>

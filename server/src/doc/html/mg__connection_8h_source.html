@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.6"/>
+<title>MensajerO: Fichero Fuente mg/mg_connection.h</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() { searchBox.OnSelectItem(0); });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">MensajerO
+   &#160;<span id="projectnumber">0.1</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generado por Doxygen 1.8.6 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li><a href="pages.html"><span>Páginas&#160;relacionadas</span></a></li>
+      <li><a href="annotated.html"><span>Clases</span></a></li>
+      <li class="current"><a href="files.html"><span>Archivos</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Lista&#160;de&#160;archivos</span></a></li>
+    </ul>
+  </div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>Todo</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Clases</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Funciones</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>&apos;typedefs&apos;</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumeraciones</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Valores de enumeraciones</a></div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_577cbc5bc6ea9cbab8c4c74d91e1850b.html">mg</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">mg_connection.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef __MG_CONECTION_H__</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define __MG_CONECTION_H__</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;mongoose/mongoose.h&quot;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;map&gt;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;</div>
+<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="classMgConnection.html">   11</a></span>&#160;<span class="keyword">class </span><a class="code" href="classMgConnection.html">MgConnection</a> {</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <a class="code" href="classMgConnection.html#a4d73d63395706afce85eb052080db91e">MgConnection</a>(<span class="keyword">struct</span> <a class="code" href="structmg__connection.html">mg_connection</a> *<a class="code" href="classMgConnection.html#a5f47a7c5d384dbcdde31efb4fe6aa6b2">conn</a>);</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffb">   20</a></span>&#160;        <span class="keyword">typedef</span> <span class="keyword">enum</span> <a class="code" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffb">StatusCodes</a> {</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            <span class="comment">// 2xx Success</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba6e8c4a47dd013efe16b946d01003f0a0">   22</a></span>&#160;            <a class="code" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba6e8c4a47dd013efe16b946d01003f0a0">STATUS_CODE_OK</a>=200, </div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffbac88f4f52d8ed7e2f7851a5e7483e6002">   23</a></span>&#160;            <a class="code" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffbac88f4f52d8ed7e2f7851a5e7483e6002">STATUS_CODE_CREATED</a>=201, </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            <span class="comment">// 4xx Client Error</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba0ed9817af2a00c571a62006f73130e7b">   26</a></span>&#160;            <a class="code" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba0ed9817af2a00c571a62006f73130e7b">STATUS_CODE_BAD_REQUEST</a>=400, </div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba1622f2fb3a60e26402213649f768db8d">   27</a></span>&#160;            <a class="code" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba1622f2fb3a60e26402213649f768db8d">STATUS_CODE_UNAUTHORIZED</a>=401, </div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba6a492b56127bca142c3ca2551ac666d3">   28</a></span>&#160;            <a class="code" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba6a492b56127bca142c3ca2551ac666d3">STATUS_CODE_FORBIDDEN</a>=403, </div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba19ac5ba0f082c365103fdbcfa28918ed">   29</a></span>&#160;            <a class="code" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba19ac5ba0f082c365103fdbcfa28918ed">STATUS_CODE_NOT_FOUND</a>=404, </div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba9504fff2a034bef55a64ac07f1e7a87c">   30</a></span>&#160;            <a class="code" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba9504fff2a034bef55a64ac07f1e7a87c">STATUS_CODE_METHOD_NOT_ALLOWED</a>=405, </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;            <span class="comment">// 5xx Errores de Servidor</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffbaf9e7dbab0800251c684946037ab0170c">   33</a></span>&#160;            <a class="code" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffbaf9e7dbab0800251c684946037ab0170c">STATUS_CODE_INTERNAL_ERROR</a>=500 </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        } <a class="code" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffb">StatusCodes</a>;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225">   39</a></span>&#160;        <span class="keyword">typedef</span> <span class="keyword">enum</span> <a class="code" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225">ContentTypes</a> {</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225aace675124114daa6397554ca5f4b7aee">   40</a></span>&#160;            <a class="code" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225aace675124114daa6397554ca5f4b7aee">CONTENT_TYPE_JSON</a>=0, </div>
+<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225a787f85b93c99ebaaa21e4dfdb977ca55">   41</a></span>&#160;            <a class="code" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225a787f85b93c99ebaaa21e4dfdb977ca55">CONTENT_TYPE_HTML</a>, </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            CONTENT_TYPE_TOTAL</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        } <a class="code" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225">ContentTypes</a>;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classMgConnection.html#a1bc73121b1d69483ef0127676f645576">sendStatus</a>(<a class="code" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffb">MgConnection::StatusCodes</a> code);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classMgConnection.html#a1bc73121b1d69483ef0127676f645576">sendStatus</a>(<span class="keywordtype">int</span> code);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classMgConnection.html#a5caacfb604787d8a7f27a880305c07fa">sendHeader</a>(<span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> std::string&amp; val);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classMgConnection.html#a5caacfb604787d8a7f27a880305c07fa">sendHeader</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keyword">const</span> <span class="keywordtype">char</span>* val);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classMgConnection.html#a79f1e546aa877d0fc9a3edb7b0add499">sendContentType</a>(<span class="keyword">const</span> std::string&amp; type);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classMgConnection.html#a79f1e546aa877d0fc9a3edb7b0add499">sendContentType</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* type);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classMgConnection.html#a79f1e546aa877d0fc9a3edb7b0add499">sendContentType</a>(<a class="code" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225">MgConnection::ContentTypes</a> type);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordtype">size_t</span> <a class="code" href="classMgConnection.html#aa1324f4f27c4fe055e39242a1151e017">printfData</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* format, ...);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="keyword">struct </span><a class="code" href="structmg__connection.html">mg_connection</a>* <a class="code" href="classMgConnection.html#aa1724d917268bc1e3ca59ae57c347c52">operator-&gt;</a>();</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="keyword">const</span> std::string&amp; <a class="code" href="classMgConnection.html#a7dc9ec970bec9fca3c48393a8d3abf30">getParameter</a>(<span class="keyword">const</span> std::string&amp; key);</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classMgConnection.html#ab0fc40563d447132bf19bf53bb821562">setParameter</a>(<span class="keyword">const</span> std::string&amp; key, <span class="keyword">const</span> std::string&amp; value);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        std::string <a class="code" href="classMgConnection.html#abafa1da744337e0199c31f6697ee862f">getVarStr</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* varName, <span class="keywordtype">size_t</span> max=64);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        std::string <a class="code" href="classMgConnection.html#abafa1da744337e0199c31f6697ee862f">getVarStr</a>(<span class="keyword">const</span> std::string&amp; varName, <span class="keywordtype">size_t</span> max=64);</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        <span class="keywordtype">int</span> <a class="code" href="classMgConnection.html#a4e532655d959361d84aa85e2035bbe04">getVarInt</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* varName, <span class="keywordtype">size_t</span> max=64);</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        <span class="keywordtype">int</span> <a class="code" href="classMgConnection.html#a4e532655d959361d84aa85e2035bbe04">getVarInt</a>(<span class="keyword">const</span> std::string&amp; varName, <span class="keywordtype">size_t</span> max=64);</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00105"></a><span class="lineno"><a class="line" href="classMgConnection.html#a5f47a7c5d384dbcdde31efb4fe6aa6b2">  105</a></span>&#160;        <span class="keyword">struct </span><a class="code" href="structmg__connection.html">mg_connection</a> *<a class="code" href="classMgConnection.html#a5f47a7c5d384dbcdde31efb4fe6aa6b2">conn</a>; </div>
+<div class="line"><a name="l00106"></a><span class="lineno"><a class="line" href="classMgConnection.html#ac1e49ad9ce6d00c887dde6f02ea4aaf6">  106</a></span>&#160;        std::map&lt;std::string, std::string&gt; <a class="code" href="classMgConnection.html#ac1e49ad9ce6d00c887dde6f02ea4aaf6">parameters</a>; </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;};</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="classMgConnection_html_ac1e49ad9ce6d00c887dde6f02ea4aaf6"><div class="ttname"><a href="classMgConnection.html#ac1e49ad9ce6d00c887dde6f02ea4aaf6">MgConnection::parameters</a></div><div class="ttdeci">std::map&lt; std::string, std::string &gt; parameters</div><div class="ttdoc">map de los parametros guardados por el usuario </div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00106">mg_connection.h:106</a></div></div>
+<div class="ttc" id="classMgConnection_html_a5caacfb604787d8a7f27a880305c07fa"><div class="ttname"><a href="classMgConnection.html#a5caacfb604787d8a7f27a880305c07fa">MgConnection::sendHeader</a></div><div class="ttdeci">void sendHeader(const std::string &amp;name, const std::string &amp;val)</div></div>
+<div class="ttc" id="classMgConnection_html_a4e532655d959361d84aa85e2035bbe04"><div class="ttname"><a href="classMgConnection.html#a4e532655d959361d84aa85e2035bbe04">MgConnection::getVarInt</a></div><div class="ttdeci">int getVarInt(const char *varName, size_t max=64)</div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8cpp_source.html#l00100">mg_connection.cpp:100</a></div></div>
+<div class="ttc" id="classMgConnection_html_abafa1da744337e0199c31f6697ee862f"><div class="ttname"><a href="classMgConnection.html#abafa1da744337e0199c31f6697ee862f">MgConnection::getVarStr</a></div><div class="ttdeci">std::string getVarStr(const char *varName, size_t max=64)</div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8cpp_source.html#l00073">mg_connection.cpp:73</a></div></div>
+<div class="ttc" id="classMgConnection_html_ae6ce65078cfb6554251e5a09daca0ffba6e8c4a47dd013efe16b946d01003f0a0"><div class="ttname"><a href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba6e8c4a47dd013efe16b946d01003f0a0">MgConnection::STATUS_CODE_OK</a></div><div class="ttdoc">Todo bien. </div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00022">mg_connection.h:22</a></div></div>
+<div class="ttc" id="classMgConnection_html_ae6ce65078cfb6554251e5a09daca0ffba1622f2fb3a60e26402213649f768db8d"><div class="ttname"><a href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba1622f2fb3a60e26402213649f768db8d">MgConnection::STATUS_CODE_UNAUTHORIZED</a></div><div class="ttdoc">Cliente no esta autorizado para lo que quiere hacer. </div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00027">mg_connection.h:27</a></div></div>
+<div class="ttc" id="classMgConnection_html_ae6ce65078cfb6554251e5a09daca0ffba9504fff2a034bef55a64ac07f1e7a87c"><div class="ttname"><a href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba9504fff2a034bef55a64ac07f1e7a87c">MgConnection::STATUS_CODE_METHOD_NOT_ALLOWED</a></div><div class="ttdoc">Se pidio un GET/POST/DELETE y no se implementa ese metodo. </div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00030">mg_connection.h:30</a></div></div>
+<div class="ttc" id="classMgConnection_html_aa1324f4f27c4fe055e39242a1151e017"><div class="ttname"><a href="classMgConnection.html#aa1324f4f27c4fe055e39242a1151e017">MgConnection::printfData</a></div><div class="ttdeci">size_t printfData(const char *format,...)</div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8cpp_source.html#l00039">mg_connection.cpp:39</a></div></div>
+<div class="ttc" id="classMgConnection_html_a4d73d63395706afce85eb052080db91e"><div class="ttname"><a href="classMgConnection.html#a4d73d63395706afce85eb052080db91e">MgConnection::MgConnection</a></div><div class="ttdeci">MgConnection(struct mg_connection *conn)</div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8cpp_source.html#l00019">mg_connection.cpp:19</a></div></div>
+<div class="ttc" id="classMgConnection_html_ae6ce65078cfb6554251e5a09daca0ffbaf9e7dbab0800251c684946037ab0170c"><div class="ttname"><a href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffbaf9e7dbab0800251c684946037ab0170c">MgConnection::STATUS_CODE_INTERNAL_ERROR</a></div><div class="ttdoc">Error del servidor. </div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00033">mg_connection.h:33</a></div></div>
+<div class="ttc" id="classMgConnection_html_a5f47a7c5d384dbcdde31efb4fe6aa6b2"><div class="ttname"><a href="classMgConnection.html#a5f47a7c5d384dbcdde31efb4fe6aa6b2">MgConnection::conn</a></div><div class="ttdeci">struct mg_connection * conn</div><div class="ttdoc">Instacia de mg_connection. </div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00105">mg_connection.h:105</a></div></div>
+<div class="ttc" id="classMgConnection_html_a79f1e546aa877d0fc9a3edb7b0add499"><div class="ttname"><a href="classMgConnection.html#a79f1e546aa877d0fc9a3edb7b0add499">MgConnection::sendContentType</a></div><div class="ttdeci">void sendContentType(const std::string &amp;type)</div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8cpp_source.html#l00051">mg_connection.cpp:51</a></div></div>
+<div class="ttc" id="classMgConnection_html_abc7d0ef886d32d6aaab551e484bc6225aace675124114daa6397554ca5f4b7aee"><div class="ttname"><a href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225aace675124114daa6397554ca5f4b7aee">MgConnection::CONTENT_TYPE_JSON</a></div><div class="ttdoc">Se envia un JSON. </div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00040">mg_connection.h:40</a></div></div>
+<div class="ttc" id="classMgConnection_html"><div class="ttname"><a href="classMgConnection.html">MgConnection</a></div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00011">mg_connection.h:11</a></div></div>
+<div class="ttc" id="classMgConnection_html_abc7d0ef886d32d6aaab551e484bc6225"><div class="ttname"><a href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225">MgConnection::ContentTypes</a></div><div class="ttdeci">ContentTypes</div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00039">mg_connection.h:39</a></div></div>
+<div class="ttc" id="classMgConnection_html_aa1724d917268bc1e3ca59ae57c347c52"><div class="ttname"><a href="classMgConnection.html#aa1724d917268bc1e3ca59ae57c347c52">MgConnection::operator-&gt;</a></div><div class="ttdeci">struct mg_connection * operator-&gt;()</div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8cpp_source.html#l00047">mg_connection.cpp:47</a></div></div>
+<div class="ttc" id="classMgConnection_html_ab0fc40563d447132bf19bf53bb821562"><div class="ttname"><a href="classMgConnection.html#ab0fc40563d447132bf19bf53bb821562">MgConnection::setParameter</a></div><div class="ttdeci">void setParameter(const std::string &amp;key, const std::string &amp;value)</div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8cpp_source.html#l00069">mg_connection.cpp:69</a></div></div>
+<div class="ttc" id="classMgConnection_html_abc7d0ef886d32d6aaab551e484bc6225a787f85b93c99ebaaa21e4dfdb977ca55"><div class="ttname"><a href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225a787f85b93c99ebaaa21e4dfdb977ca55">MgConnection::CONTENT_TYPE_HTML</a></div><div class="ttdoc">Se envia un HTML. </div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00041">mg_connection.h:41</a></div></div>
+<div class="ttc" id="classMgConnection_html_ae6ce65078cfb6554251e5a09daca0ffba6a492b56127bca142c3ca2551ac666d3"><div class="ttname"><a href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba6a492b56127bca142c3ca2551ac666d3">MgConnection::STATUS_CODE_FORBIDDEN</a></div><div class="ttdoc">El cliente tiene prohibido hacer eso (no es un tema de permisos) </div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00028">mg_connection.h:28</a></div></div>
+<div class="ttc" id="structmg__connection_html"><div class="ttname"><a href="structmg__connection.html">mg_connection</a></div><div class="ttdef"><b>Definition:</b> <a href="mongoose_8h_source.html#l00032">mongoose.h:32</a></div></div>
+<div class="ttc" id="classMgConnection_html_ae6ce65078cfb6554251e5a09daca0ffba0ed9817af2a00c571a62006f73130e7b"><div class="ttname"><a href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba0ed9817af2a00c571a62006f73130e7b">MgConnection::STATUS_CODE_BAD_REQUEST</a></div><div class="ttdoc">El cliente no paso toda la informacion, request malo. </div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00026">mg_connection.h:26</a></div></div>
+<div class="ttc" id="classMgConnection_html_ae6ce65078cfb6554251e5a09daca0ffbac88f4f52d8ed7e2f7851a5e7483e6002"><div class="ttname"><a href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffbac88f4f52d8ed7e2f7851a5e7483e6002">MgConnection::STATUS_CODE_CREATED</a></div><div class="ttdoc">Se creo algo. </div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00023">mg_connection.h:23</a></div></div>
+<div class="ttc" id="classMgConnection_html_a1bc73121b1d69483ef0127676f645576"><div class="ttname"><a href="classMgConnection.html#a1bc73121b1d69483ef0127676f645576">MgConnection::sendStatus</a></div><div class="ttdeci">void sendStatus(MgConnection::StatusCodes code)</div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8cpp_source.html#l00023">mg_connection.cpp:23</a></div></div>
+<div class="ttc" id="classMgConnection_html_ae6ce65078cfb6554251e5a09daca0ffba19ac5ba0f082c365103fdbcfa28918ed"><div class="ttname"><a href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba19ac5ba0f082c365103fdbcfa28918ed">MgConnection::STATUS_CODE_NOT_FOUND</a></div><div class="ttdoc">No se encuentro. </div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00029">mg_connection.h:29</a></div></div>
+<div class="ttc" id="classMgConnection_html_a7dc9ec970bec9fca3c48393a8d3abf30"><div class="ttname"><a href="classMgConnection.html#a7dc9ec970bec9fca3c48393a8d3abf30">MgConnection::getParameter</a></div><div class="ttdeci">const std::string &amp; getParameter(const std::string &amp;key)</div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8cpp_source.html#l00065">mg_connection.cpp:65</a></div></div>
+<div class="ttc" id="classMgConnection_html_ae6ce65078cfb6554251e5a09daca0ffb"><div class="ttname"><a href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffb">MgConnection::StatusCodes</a></div><div class="ttdeci">StatusCodes</div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00020">mg_connection.h:20</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generado el Miércoles, 29 de Abril de 2015 22:27:29 para MensajerO por &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.6
+</small></address>
+</body>
+</html>
