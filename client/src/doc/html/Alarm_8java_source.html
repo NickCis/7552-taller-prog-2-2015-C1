@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.6"/>
+<title>MensajerO: Fichero Fuente utils/Alarm.java</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() { searchBox.OnSelectItem(0); });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">MensajerO
+   &#160;<span id="projectnumber">0.1</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generado por Doxygen 1.8.6 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li><a href="annotated.html"><span>Clases</span></a></li>
+      <li class="current"><a href="files.html"><span>Archivos</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Lista&#160;de&#160;archivos</span></a></li>
+    </ul>
+  </div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>Todo</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Clases</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Funciones</a></div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_7880d4c2e471bfba2c55ad2f117905c2.html">utils</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">Alarm.java</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * To change this license header, choose License Headers in Project Properties.</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> * To change this template file, choose Tools | Templates</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * and open the template in the editor.</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">package </span>utils;</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">import</span> android.app.AlarmManager;</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">import</span> android.app.Notification;</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">import</span> android.app.NotificationManager;</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">import</span> android.app.PendingIntent;</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">import</span> android.content.BroadcastReceiver;</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">import</span> android.content.Context;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">import</span> <span class="keyword">static</span> android.content.Context.NOTIFICATION_SERVICE;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">import</span> android.content.Intent;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">import</span> android.graphics.BitmapFactory;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">import</span> android.os.Bundle;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">import</span> android.os.Handler;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">import</span> android.os.PowerManager;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">import</span> android.util.Log;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">import</span> android.widget.Toast;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">import</span> <a class="code" href="classmodel_1_1GETService.html">model.GETService</a>;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">import</span> <a class="code" href="classmodel_1_1POSTService.html">model.POSTService</a>;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">import</span> <a class="code" href="classmodel_1_1ServerResultReceiver.html">model.ServerResultReceiver</a>;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">import</span> <a class="code" href="classwhatsapp_1_1client_1_1LoginActivity.html">whatsapp.client.LoginActivity</a>;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">import</span> whatsapp.client.R;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="classutils_1_1Alarm.html">   32</a></span>&#160;<span class="keyword">public</span> <span class="keyword">class </span><a class="code" href="classutils_1_1Alarm.html">Alarm</a> <span class="keyword">extends</span> BroadcastReceiver implements <a class="code" href="classmodel_1_1ServerResultReceiver.html">ServerResultReceiver</a>.Listener{</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    NotificationManager notificationManager;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    @Override</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keyword">public</span> <span class="keywordtype">void</span> onReceive(Context context, Intent intent) {</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, <span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        wl.acquire();</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="comment">// Put here YOUR code.</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        startService(context);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="comment">/*</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="comment">        Intent notificationIntent = new Intent(context, LoginActivity.class);</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment">        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment">        Notification.Builder builder = new Notification.Builder(context);</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="comment">        builder.setSmallIcon(R.drawable.notification_icon);</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="comment">        builder.setContentIntent(pendingIntent);</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="comment">        builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.notification_icon));</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="comment">        builder.setTicker(&quot;SOY UN TICKER&quot;);</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="comment">        builder.setWhen(System.currentTimeMillis());</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="comment">        builder.setAutoCancel(true);</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="comment">        builder.setContentTitle(&quot;titulo&quot;);</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="comment">        builder.setContentText(&quot;texto content&quot;);</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="comment">        Notification n = builder.build();</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="comment">        notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="comment">        notificationManager.notify(1, n);</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="comment">        //Toast.makeText(context, &quot;Alarm !!!!!!!!!!&quot;, Toast.LENGTH_SHORT).show(); // For example</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="comment">*/</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        wl.release();</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    }</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keyword">public</span> <span class="keywordtype">void</span> setAlarm(Context context) {</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        Intent i = <span class="keyword">new</span> Intent(context, <a class="code" href="classutils_1_1Alarm.html">Alarm</a>.class);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000 * 5, pi); <span class="comment">// Millisec * Second * Minute</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    }</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keyword">public</span> <span class="keywordtype">void</span> cancelAlarm(Context context) {</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        Intent intent = <span class="keyword">new</span> Intent(context, <a class="code" href="classutils_1_1Alarm.html">Alarm</a>.class);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, 0);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        alarmManager.cancel(sender);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    }</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keyword">private</span> <span class="keywordtype">void</span> startService(Context context) {</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        Intent intent = <span class="keyword">new</span> Intent(context, <a class="code" href="classmodel_1_1GETService.html">GETService</a>.class);</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <a class="code" href="classmodel_1_1ServerResultReceiver.html">ServerResultReceiver</a> receiver = <span class="keyword">new</span> <a class="code" href="classmodel_1_1ServerResultReceiver.html">ServerResultReceiver</a>(<span class="keyword">new</span> Handler());</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        receiver.setListener(<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        Bundle bundle = createBundle(context);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        intent.putExtra(<span class="stringliteral">&quot;rec&quot;</span>, receiver);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        intent.putExtra(<span class="stringliteral">&quot;info&quot;</span>, bundle);</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        context.startService(intent);</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    }</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keyword">public</span> <span class="keywordtype">void</span> onReceiveResult(<span class="keywordtype">int</span> resultCode, Bundle resultData) {</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        Log.d(<span class="stringliteral">&quot;ALARM&quot;</span>, <span class="stringliteral">&quot;ESTOY EN LA VUELTA DEL GET DE NOTIFICATION-*******************************************************************************************&quot;</span>);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    }</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keyword">private</span> Bundle createBundle(Context context) {</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        Bundle bundle = <span class="keyword">new</span> Bundle();</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        String ip = ConfigurationManager.getInstance().getString(context, <a class="code" href="classutils_1_1ConfigurationManager.html">ConfigurationManager</a>.SAVED_IP);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        String port = ConfigurationManager.getInstance().getString(context, <a class="code" href="classutils_1_1ConfigurationManager.html">ConfigurationManager</a>.SAVED_PORT);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        <span class="keyword">final</span> String URI = ip+ <span class="stringliteral">&quot;:&quot;</span> + port + <span class="stringliteral">&quot;/&quot;</span> + <span class="stringliteral">&quot;notification&quot;</span>;</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        bundle.putString(<span class="stringliteral">&quot;URI&quot;</span>, URI);</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        <span class="keywordflow">return</span> bundle;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    }</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;}</div>
+<div class="ttc" id="classwhatsapp_1_1client_1_1LoginActivity_html"><div class="ttname"><a href="classwhatsapp_1_1client_1_1LoginActivity.html">whatsapp.client.LoginActivity</a></div><div class="ttdef"><b>Definition:</b> <a href="LoginActivity_8java_source.html#l00022">LoginActivity.java:22</a></div></div>
+<div class="ttc" id="classmodel_1_1ServerResultReceiver_html"><div class="ttname"><a href="classmodel_1_1ServerResultReceiver.html">model.ServerResultReceiver</a></div><div class="ttdef"><b>Definition:</b> <a href="ServerResultReceiver_8java_source.html#l00016">ServerResultReceiver.java:16</a></div></div>
+<div class="ttc" id="classmodel_1_1POSTService_html"><div class="ttname"><a href="classmodel_1_1POSTService.html">model.POSTService</a></div><div class="ttdef"><b>Definition:</b> <a href="POSTService_8java_source.html#l00024">POSTService.java:24</a></div></div>
+<div class="ttc" id="classutils_1_1ConfigurationManager_html"><div class="ttname"><a href="classutils_1_1ConfigurationManager.html">utils.ConfigurationManager</a></div><div class="ttdef"><b>Definition:</b> <a href="ConfigurationManager_8java_source.html#l00015">ConfigurationManager.java:15</a></div></div>
+<div class="ttc" id="classmodel_1_1GETService_html"><div class="ttname"><a href="classmodel_1_1GETService.html">model.GETService</a></div><div class="ttdef"><b>Definition:</b> <a href="GETService_8java_source.html#l00026">GETService.java:26</a></div></div>
+<div class="ttc" id="classutils_1_1Alarm_html"><div class="ttname"><a href="classutils_1_1Alarm.html">utils.Alarm</a></div><div class="ttdef"><b>Definition:</b> <a href="Alarm_8java_source.html#l00032">Alarm.java:32</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generado el Miércoles, 29 de Abril de 2015 22:46:08 para MensajerO por &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.6
+</small></address>
+</body>
+</html>
