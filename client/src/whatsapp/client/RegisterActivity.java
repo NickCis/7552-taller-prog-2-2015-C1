@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.EditText;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.POSTService;
@@ -49,9 +50,10 @@ public class RegisterActivity extends Activity implements ServerResultReceiver.L
 					RegisterActivity.class
 			);
 		} else {
-
-			bundle.putString("username", user = userNameField.getText().toString());
-			bundle.putString("password", pass = passwordField.getText().toString());
+			HashMap<String, String> params = new HashMap<String, String>();
+			params.put("user", user = userNameField.getText().toString());
+			params.put("pass", pass = passwordField.getText().toString());
+			bundle.putSerializable("params", params);
 			URI = getIP() + ":" + getPort() + "/" + "signup";
 			bundle.putString("URI", URI);
 			//TODO: esto es auth
@@ -96,17 +98,19 @@ public class RegisterActivity extends Activity implements ServerResultReceiver.L
 				JSONObject data = new JSONObject(resultData.getString("data"));
 				if (!data.has("access_token")) {
 					Bundle bundle = new Bundle();
-					bundle.putString("username", user);
-					bundle.putString("password", pass);
+					HashMap<String, String> params = new HashMap<String, String>();
+
+					params.put("user",user);
+					params.put("pass", pass);
+					bundle.putSerializable("params", params);
 					URI = getIP() + ":" + getPort() + "/" + "auth";
 					bundle.putString("URI", URI);
-					//TODO: esto es auth
 					InfoDialog.createProgressDialog(this, "Registrando... por favor espere");
 					startService(createCallingIntent(bundle));
 				} else {
 
 					String dataString = data.getString("access_token");
-					LoginActivity.storeAcessToken(this, dataString);
+					LoginActivity.storeAccessToken(this, dataString);
 					startActivity(new Intent(this, MainActivity.class));
 
 				}

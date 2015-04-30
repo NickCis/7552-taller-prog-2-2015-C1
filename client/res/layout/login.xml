@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/IP"
-            android:inputType="number"
+            android:inputType="phone"
             android:layout_alignParentLeft="true"
             android:id="@+id/ipEditText"
             android:layout_gravity="center"
