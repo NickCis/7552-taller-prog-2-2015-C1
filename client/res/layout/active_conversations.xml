@@ -5,7 +5,7 @@
     android:background="@drawable/loginbgimg">
 
     <ListView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/mainListview"
+    android:id="@+id/activeConversationsListview"
     android:padding="15dip"
     android:textSize="18sp"
     android:layout_width="fill_parent"

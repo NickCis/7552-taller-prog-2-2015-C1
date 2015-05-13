@@ -171,47 +171,49 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return result;
     }
     
-    public ConversationEntity createConversation(UserEntity user)
+    private ConversationEntity createConversation(Integer conversationId, UserEntity user, Calendar date)
     {
-        return this.createConversation(user, null);
+        ContentValues initialValues = new ContentValues(); 
+        if (date != null)
+        {
+            initialValues.put(KEY_DATE, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").format(date.getTime()));
+        }
+        initialValues.put(KEY_CONVERSATIONID, conversationId);
+        initialValues.put(KEY_USERID, user.getUserId());
+        mDb.insert(DATABASE_CONVERSATION_TABLE, null, initialValues);
+        return this.fetchConversation(conversationId);
     }
     
-    public ConversationEntity createConversation(UserEntity user, Calendar date) {
+    public ConversationEntity createConversation(UserEntity user, Calendar date)
+    {
+        List<UserEntity> lista = new ArrayList<UserEntity>();
+        lista.add(this.fetchUser(this.USERID_ME));
+        lista.add(user);
+        return this.createConversation(lista, date);
+    }
+    
+    public ConversationEntity createConversation(List<UserEntity> users, Calendar date) 
+    {
         ConversationEntity result = null;
-        if (user != null)
+        if (users != null)
         {
-            result = new ConversationEntity(this.fetchLastConversationId(),date);
-            result.addUser(user);
-            result.addUser(this.fetchUser(USERID_ME));
+            result = new ConversationEntity(this.fetchLastConversationId() + 1, date, users);
             ContentValues initialValues = new ContentValues(); 
-            initialValues.put(KEY_USERID, user.getUserId());
             if (date != null)
             {
                 initialValues.put(KEY_DATE, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").format(date.getTime()));
             }
             initialValues.put(KEY_CONVERSATIONID, result.getConversationId());
-            mDb.insert(DATABASE_CONVERSATION_TABLE, null, initialValues);
-            initialValues.remove(KEY_USERID);
-            initialValues.put(KEY_USERID, USERID_ME);
-            mDb.insert(DATABASE_CONVERSATION_TABLE, null, initialValues);
+            
+            for (UserEntity user : users)
+            {
+                initialValues.put(KEY_USERID, user.getUserId());
+                mDb.insert(DATABASE_CONVERSATION_TABLE, null, initialValues);
+                initialValues.remove(KEY_USERID);
+            }
         }
         
         return result;
-    }
-    
-    public ConversationEntity createConversation(ConversationEntity conversation, UserEntity user, Calendar date) { 
-        ConversationEntity result = null;
-        conversation.addUser(user);
-        conversation.setLast_message_time(date);
-        ContentValues initialValues = new ContentValues(); 
-        initialValues.put(KEY_CONVERSATIONID, conversation.getConversationId());
-        initialValues.put(KEY_USERID, user.getUserId()); 
-        initialValues.put(KEY_DATE, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").format(date.getTime()));
-        mDb.insert(DATABASE_CONVERSATION_TABLE, null, initialValues);
-        initialValues.remove(KEY_USERID);
-        initialValues.put(KEY_USERID, USERID_ME);
-        mDb.insert(DATABASE_CONVERSATION_TABLE, null, initialValues);
-        return conversation;
     }
     
     public boolean deleteConversation(ConversationEntity conversation) {
@@ -245,15 +247,62 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return list;
     }
     
-    public ConversationEntity fetchConversation(ConversationEntity conversation) throws SQLException {
+    private ConversationEntity fetchConversation(List<UserEntity> list) throws SQLException {
+        String stringUsrList = "";
+        for (UserEntity uE : list)
+        {
+            stringUsrList += String.valueOf(uE.getUserId()) + ",";
+        }
+        stringUsrList = stringUsrList.substring(0, stringUsrList.length() - 1);
+        
+        String query = "WHERE " + KEY_CONVERSATIONID + " not in "
+                + "(SELECT lconversationId FROM "
+                + "(SELECT tbl1." + KEY_CONVERSATIONID + " as lconversationId, conv2." + KEY_CONVERSATIONID + " as rconversationId FROM "
+                + "(SELECT conv." + KEY_CONVERSATIONID + ", usr." + KEY_USERID + " FROM " + DATABASE_CONVERSATION_TABLE + " as conv, " + DATABASE_USER_TABLE + " as usr where usr." + KEY_USERID + " in (" + stringUsrList + ")) as tbl1 "
+                + "LEFT JOIN " + DATABASE_CONVERSATION_TABLE + " as conv2 "
+                + "ON conv2." + KEY_CONVERSATIONID + " = tbl1." + KEY_CONVERSATIONID + " "
+                + "AND conv2." + KEY_USERID + " = tbl1." + KEY_CONVERSATIONID + ") as tbl "
+                + "where rconversationId is null);";
+        
         Cursor cursor = mDb.query(true, DATABASE_CONVERSATION_TABLE, new String [] 
-             {KEY_CONVERSATIONID, KEY_USERID, KEY_DATE}, KEY_CONVERSATIONID + 
-             "=?", new String[]{"" + conversation.getConversationId()}, null, null, KEY_DATE + " DESC", null); 
+             {KEY_CONVERSATIONID}, query, null, null, null, null, null);
+        
         ConversationEntity cE = null;
         if (cursor != null && cursor.getCount() > 0) 
         {
             cursor.moveToFirst();
-            cE = new ConversationEntity(conversation.getConversationId(), cursor.getString(cursor.getColumnIndex(KEY_DATE)));
+            cE = this.fetchConversation(cursor.getInt(cursor.getColumnIndex(KEY_CONVERSATIONID)));
+        }
+        return cE;
+    }
+    
+    public ConversationEntity fetchConversation(ConversationEntity conversation) throws SQLException {
+        if (conversation.getConversationId() == null)
+        {
+            if (conversation.getUsers() != null)
+            {
+                return this.fetchConversation(conversation.getUsers());
+            }
+            else
+            {
+                return null;
+            }
+        } 
+        else 
+        {
+            return this.fetchConversation(conversation.getConversationId());
+        }
+    }
+    
+    private ConversationEntity fetchConversation(Integer conversationId) throws SQLException {
+        Cursor cursor = mDb.query(true, DATABASE_CONVERSATION_TABLE, new String [] 
+             {KEY_CONVERSATIONID, KEY_USERID, KEY_DATE}, KEY_CONVERSATIONID + 
+             "=?", new String[]{"" + conversationId}, null, null, KEY_DATE + " DESC", null); 
+        ConversationEntity cE = null;
+        if (cursor != null && cursor.getCount() > 0) 
+        {
+            cursor.moveToFirst();
+            cE = new ConversationEntity(conversationId, cursor.getString(cursor.getColumnIndex(KEY_DATE)));
             do
             {
                 cE.addUser(this.fetchUser(cursor.getInt(cursor.getColumnIndex(KEY_USERID))));
@@ -275,7 +324,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             cursor.moveToFirst();
             return cursor.getInt(0);
         }
-        return 1;
+        return 0;
     }
     
     public boolean updateConversation(ConversationEntity conversation) {
@@ -287,7 +336,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             boolean result = mDb.update(DATABASE_CONVERSATION_TABLE, args, KEY_CONVERSATIONID + "=" + conversation.getConversationId(), null) > 0;
             if (!result) 
             {
-                return Boolean.FALSE;
+                this.createConversation(conversation.getConversationId(), user, conversation.getLast_message_time());
             }
         }
         return Boolean.TRUE;

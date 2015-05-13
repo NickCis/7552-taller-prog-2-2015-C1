@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TabWidget;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import utils.ConversationEntity;
@@ -31,7 +32,7 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
         if(!prefs.getBoolean("firstTime", false)) {
             UserEntity uEMe = dbH.createUser(1554587629, "Me", DatabaseHelper.NORMAL);
             UserEntity uE = dbH.createUser(1511111111, "WhatsApp Info", DatabaseHelper.NORMAL);
-            ConversationEntity cE = dbH.createConversation(uE);
+            ConversationEntity cE = dbH.createConversation(uE, Calendar.getInstance());
             dbH.createMessage(cE, uE, null, null, "Bienvenido a Whatsapp", dbH.NOT_SEEN);
             dbH.createMessage(cE, uEMe, null, null, "Hola!!!", dbH.NOT_SEEN);
             dbH.createMessage(cE, uEMe, null, null, "Como estas?", dbH.NOT_SEEN);
@@ -42,7 +43,7 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
         }
         setContentView(R.layout.active_conversations);
         
-        final ListView listview = (ListView) findViewById(R.id.mainListview);
+        final ListView listview = (ListView) findViewById(R.id.activeConversationsListview);
         
         final ArrayList<String> list = new ArrayList<String>();
         
@@ -83,7 +84,7 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
                     Intent intent = new Intent(context, ConversationActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putInt("conversationId", conversationID);
-                    intent.putExtra("whatsapp.client.MainActivity.data", bundle);
+                    intent.putExtra("whatsapp.client.ConversationActivity.data", bundle);
                     startActivity(intent);
                 }
             });
