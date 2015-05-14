@@ -187,8 +187,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public ConversationEntity createConversation(UserEntity user, Calendar date)
     {
         List<UserEntity> lista = new ArrayList<UserEntity>();
-        lista.add(this.fetchUser(this.USERID_ME));
         lista.add(user);
+        lista.add(this.fetchUser(this.USERID_ME));
         return this.createConversation(lista, date);
     }
     
@@ -255,14 +255,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
         stringUsrList = stringUsrList.substring(0, stringUsrList.length() - 1);
         
-        String query = "WHERE " + KEY_CONVERSATIONID + " not in "
-                + "(SELECT lconversationId FROM "
+        String query = KEY_CONVERSATIONID + " not in "
+                + "(SELECT rconversationId FROM "
                 + "(SELECT tbl1." + KEY_CONVERSATIONID + " as lconversationId, conv2." + KEY_CONVERSATIONID + " as rconversationId FROM "
-                + "(SELECT conv." + KEY_CONVERSATIONID + ", usr." + KEY_USERID + " FROM " + DATABASE_CONVERSATION_TABLE + " as conv, " + DATABASE_USER_TABLE + " as usr where usr." + KEY_USERID + " in (" + stringUsrList + ")) as tbl1 "
-                + "LEFT JOIN " + DATABASE_CONVERSATION_TABLE + " as conv2 "
+                + DATABASE_CONVERSATION_TABLE + " as conv2 "
+                + "LEFT JOIN (SELECT conv." + KEY_CONVERSATIONID + ", usr." + KEY_USERID + " FROM " + DATABASE_CONVERSATION_TABLE + " as conv, " + DATABASE_USER_TABLE + " as usr where usr." + KEY_USERID + " in (" + stringUsrList + ")) as tbl1 "
                 + "ON conv2." + KEY_CONVERSATIONID + " = tbl1." + KEY_CONVERSATIONID + " "
-                + "AND conv2." + KEY_USERID + " = tbl1." + KEY_CONVERSATIONID + ") as tbl "
-                + "where rconversationId is null);";
+                + "AND conv2." + KEY_USERID + " = tbl1." + KEY_USERID + ") as tbl "
+                + "WHERE lconversationId is null);";
         
         Cursor cursor = mDb.query(true, DATABASE_CONVERSATION_TABLE, new String [] 
              {KEY_CONVERSATIONID}, query, null, null, null, null, null);
@@ -317,7 +317,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 null,
                 null,
                 null,
-                KEY_DATE,
+                KEY_CONVERSATIONID + " DESC",
                 "1"); 
         if (cursor != null && cursor.getCount() > 0) 
         {
@@ -397,7 +397,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     
     public MessageEntity createMessage(ConversationEntity conversation, UserEntity user, MediaEntity media, Calendar date, String content, Short status) { 
           ContentValues values = new ContentValues(); 
-          //values.put(KEY_CONVERSATIONID, conversation.getConversationId());
+          values.put(KEY_CONVERSATIONID, conversation.getConversationId());
           values.put(KEY_USERID, user.getUserId()); 
           if (date != null)
           {

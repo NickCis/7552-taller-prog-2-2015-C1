@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import utils.ConversationEntity;
@@ -29,8 +30,9 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
         final ListView listview = (ListView) findViewById(R.id.usersListview);
         
         final ArrayList<String> list = new ArrayList<String>();
-        
-        for (UserEntity uE : dbH.fetchAllUsers())
+        List<UserEntity> users = dbH.fetchAllUsers();
+        users.remove(dbH.fetchUser(dbH.USERID_ME));
+        for (UserEntity uE : users)
         {
             list.add(uE.getName());
         }
@@ -58,7 +60,16 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
             DatabaseHelper dbH = new DatabaseHelper(this.context);
             dbH.open();
             List<UserEntity> list = dbH.fetchAllUsers();
-            final int conversationID = dbH.fetchConversation(new ConversationEntity(list.get(position))).getConversationId();
+            list.remove(dbH.fetchUser(dbH.USERID_ME));
+            List<UserEntity> users = new ArrayList<UserEntity>();
+            users.add(list.get(position));
+            users.add(dbH.fetchUser(dbH.USERID_ME));
+            ConversationEntity cE = dbH.fetchConversation(new ConversationEntity(users));
+            if (cE == null)
+            {
+                cE = dbH.createConversation(users, Calendar.getInstance());
+            }
+            final int conversationID = cE.getConversationId();
             dbH.close();
             view.animate().setDuration(500).alpha(0).withEndAction(new Runnable() {
                 @Override

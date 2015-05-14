@@ -32,6 +32,8 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
         if(!prefs.getBoolean("firstTime", false)) {
             UserEntity uEMe = dbH.createUser(1554587629, "Me", DatabaseHelper.NORMAL);
             UserEntity uE = dbH.createUser(1511111111, "WhatsApp Info", DatabaseHelper.NORMAL);
+                            dbH.createUser(1522222222, "Rodrigo", DatabaseHelper.NORMAL);
+                            dbH.createUser(1533333333, "Nico", DatabaseHelper.NORMAL);
             ConversationEntity cE = dbH.createConversation(uE, Calendar.getInstance());
             dbH.createMessage(cE, uE, null, null, "Bienvenido a Whatsapp", dbH.NOT_SEEN);
             dbH.createMessage(cE, uEMe, null, null, "Hola!!!", dbH.NOT_SEEN);
