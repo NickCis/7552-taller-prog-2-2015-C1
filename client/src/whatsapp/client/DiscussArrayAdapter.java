@@ -16,13 +16,13 @@ import android.widget.TextView;
 
 public class DiscussArrayAdapter extends ArrayAdapter<OneComment> {
 
-	private TextView countryName;
-	private List<OneComment> countries = new ArrayList<OneComment>();
+	private TextView campoEscritura;
+	private List<OneComment> comentarios = new ArrayList<OneComment>();
 	private LinearLayout wrapper;
 
 	@Override
 	public void add(OneComment object) {
-		countries.add(object);
+		comentarios.add(object);
 		super.add(object);
 	}
 
@@ -31,11 +31,11 @@ public class DiscussArrayAdapter extends ArrayAdapter<OneComment> {
 	}
 
 	public int getCount() {
-		return this.countries.size();
+		return this.comentarios.size();
 	}
 
 	public OneComment getItem(int index) {
-		return this.countries.get(index);
+		return this.comentarios.get(index);
 	}
 
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -49,11 +49,11 @@ public class DiscussArrayAdapter extends ArrayAdapter<OneComment> {
 
 		OneComment coment = getItem(position);
 
-		countryName = (TextView) row.findViewById(R.id.comment);
+		campoEscritura = (TextView) row.findViewById(R.id.comment);
 
-		countryName.setText(coment.comment);
+		campoEscritura.setText(coment.comment);
 
-		countryName.setBackgroundResource(coment.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
+		campoEscritura.setBackgroundResource(coment.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
 		wrapper.setGravity(coment.left ? Gravity.LEFT : Gravity.RIGHT);
 
 		return row;

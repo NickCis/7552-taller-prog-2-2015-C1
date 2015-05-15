@@ -1,8 +1,9 @@
-package whatsapp.client;
+ package whatsapp.client;
 
 import model.ServerResultReceiver;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -21,8 +22,9 @@ import utils.DatabaseHelper;
 import utils.UserEntity;
 
 public class ActiveConversationsActivity extends Activity implements ServerResultReceiver.Listener{
+	StableArrayAdapter adapter;
 
-    @Override
+	@Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -52,11 +54,13 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
         for (ConversationEntity cE : dbH.fetchAllConversations())
         {
             list.add(cE.getUser(0).getName());
+			list.add("un mockk");
         }
         dbH.close();
-        final StableArrayAdapter adapter = new StableArrayAdapter(this, android.R.layout.simple_list_item_1, list);
+        adapter = new StableArrayAdapter(this, android.R.layout.simple_list_item_1, list);
         listview.setAdapter(adapter);
 
+		listview.setOnItemLongClickListener(new OptionListener());
         listview.setOnItemClickListener(new ClickListener(this));
     }
 
@@ -92,6 +96,25 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
             });
         }
     }
+	
+	private class OptionListener implements AdapterView.OnItemLongClickListener{
+
+		public boolean onItemLongClick(AdapterView<?> adapterView, final View arg1,final int idx, long arg3) {
+			InfoDialog.createOkCancelDialog(ActiveConversationsActivity.this, 
+					"Eliminar conversación", "¿Está seguro que desea eliminar la conversación?",
+					new DialogInterface.OnClickListener() {
+
+				public void onClick(DialogInterface arg0, int id) {
+					//adapterView.get
+					String itemSelected = adapter.getItem(idx);
+					adapter.remove(itemSelected);
+					adapter.notifyDataSetChanged();
+				}
+			});
+			return true;
+		}
+	
+	}
 
     private class StableArrayAdapter extends ArrayAdapter<String> {
 
@@ -109,6 +132,18 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
             String item = getItem(position);
             return mIdMap.get(item);
         }
+
+		@Override
+		public void remove(String object) {
+			super.remove(object); 
+			// TODO : MATI MIRA ESTO, CUANDO REMUEVEN UNA CONVERSACION LO TENDRIA Q EFECTIVIZAR DE LA BBDD
+			// ALGO ASI ME IMAGINO YO 
+			DatabaseHelper dbh = new DatabaseHelper(ActiveConversationsActivity.this);
+			UserEntity conversationToRemove = dbh.createUser(1554587629, object, DatabaseHelper.NORMAL);
+			dbh.deleteConversation(dbh.createConversation(conversationToRemove, null));
+		}
+		
+		
 
         @Override
         public boolean hasStableIds() {
