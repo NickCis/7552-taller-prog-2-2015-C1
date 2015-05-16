@@ -50,7 +50,7 @@ else()
 endif()
 
 if(PROFILE_COVERAGE)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --fprofile-arcs -ftest-coverage -g -O0")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage -g -O0")
 endif()
 
 
