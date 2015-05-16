@@ -10,7 +10,7 @@ set (SERVER_VERSION_MAJOR 0)
 set (SERVER_VERSION_MINOR 1)
 
 # options
-option(PROFILE_COVERAGE "Activa flags para profiling y test coverage" OFF)
+option(CHECK_COVERAGE "Activa flags para checkear test coverage" OFF)
 
 file( GLOB WA_FILES src/wa_server.cpp src/node/wa_node.cpp src/node/wa_str_node.cpp src/node/wa_method_node.cpp src/node/wa_parent_node.cpp)
 file( GLOB DB_FILES src/db/db_manager.cpp src/db/user.cpp src/db/access_token.cpp src/db/message.cpp src/db/notification.cpp src/db/db_comparator.cpp)
@@ -18,9 +18,10 @@ file( GLOB REST_FILES src/rest/root_node.cpp src/rest/signup_node.cpp src/rest/w
 file( GLOB UTILS_FILES src/util/bin2hex.cpp src/util/md5.cpp src/util/random_number.cpp src/util/log.cpp)
 file( GLOB MONGOOSE_FILES src/mg/mg_server.cpp src/mg/mg_connection.cpp src/mg/mongoose/mongoose.c)
 
+set(SRC_FILES ${WA_FILES} ${REST_FILES} ${MONGOOSE_FILES} ${DB_FILES} ${UTILS_FILES})
+
 # add the executable
-add_executable(server src/main.cpp ${WA_FILES} ${REST_FILES} ${MONGOOSE_FILES} ${DB_FILES} ${UTILS_FILES})
-#add_executable(dbtest test/test.cpp)
+add_executable(server src/main.cpp ${SRC_FILES})
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
@@ -49,8 +50,12 @@ else()
 	message(FATAL_ERROR "No se encuentra RocksDB")
 endif()
 
-if(PROFILE_COVERAGE)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage -g -O0")
+if(CHECK_COVERAGE)
+	add_executable(coverage src/coverage.cpp ${SRC_FILES})
+	set_target_properties(coverage PROPERTIES COMPILE_FLAGS "-fprofile-arcs -ftest-coverage -g -O0")
+	target_link_libraries(coverage ${ROCKSDB_LIBRARIES} -fprofile-arcs)
+
+	add_custom_command(TARGET coverage POST_BUILD COMMAND ./coverage)
 endif()
 
 

@@ -32,11 +32,11 @@ before_script:
     - mkdir server/build server/test_build
 
 script: 
-    - cd server/build && cmake -DPROFILE_COVERAGE=ON ../ && make 
+    - cd server/build && cmake -DCHECK_COVERAGE=ON ../ && make 
     - cd -
     - cd server/test_build && cmake ../test && make && CTEST_OUTPUT_ON_FAILURE=1 make test
     - cd -
 
 after_success:
-    - cd server/test_build && coveralls -E '.*CMakeFiles/feature_tests\..*' -E '.*CMakeCXXCompilerId\.cpp' -E '.*CMakeCCompilerId\.c' -e build -e CMake -e doc -e test -r ../ --gcov-options '\-lp'
+    - cd server && coveralls -i src -i test -e src/coverage.cpp -E '.*\/mongoose\/mongoose\.[hc]' -E '.*CMakeFiles/feature_tests\..*' -E '.*CMakeCXXCompilerId\.cpp' -E '.*CMakeCCompilerId\.c' -E '.*\/test\/.*\.(h|hpp|cpp)$' -r ./
     - cd -
