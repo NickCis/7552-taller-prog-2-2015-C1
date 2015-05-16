@@ -38,7 +38,7 @@ else()
 	message(FATAL_ERROR "El compilador ${CMAKE_CXX_COMPILER} no tiene soporte para pthreads. Por favor usar otro compilador.")
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -fprofile-arcs -ftest-coverage -g -O0")
 
 find_package(RocksDB)
 if(ROCKSDB_FOUND)

@@ -10,3 +10,4 @@ Alumnos:
 
 ## Servidor
 [![Build Status](https://travis-ci.org/NickCis/7552-taller-prog-2-2015-C1.svg?branch=master)](https://travis-ci.org/NickCis/7552-taller-prog-2-2015-C1)
+[![Coverage Status](https://coveralls.io/repos/NickCis/7552-taller-prog-2-2015-C1/badge.svg)](https://coveralls.io/r/NickCis/7552-taller-prog-2-2015-C1)

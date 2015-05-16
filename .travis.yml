@@ -20,6 +20,7 @@ before_install:
     - wget https://github.com/NickCis/rocksdb/releases/download/deb/rocksdb_3.10-0.deb
     - sudo dpkg -i rocksdb_3.10-0.deb
     #- wget "https://github.com/facebook/rocksdb/archive/rocksdb-3.9.1.zip" && unzip rocksdb-3.9.1
+    - sudo pip install cpp-coveralls
 
 #install:
 #    - cd rocksdb-rocksdb-3.9.1
@@ -27,6 +28,11 @@ before_install:
 #    - cd -
 
 before_script:
-    - mkdir build test_build
+    - mkdir server/build server/test_build
 
-script: cd build && cmake ../server && make && cd ../test_build && cmake ../server/test && make && CTEST_OUTPUT_ON_FAILURE=1 make test
+script: 
+    - cd server/build && cmake ../server && make && cd -
+    - cd server/test_build && cmake ../server/test && make && CTEST_OUTPUT_ON_FAILURE=1 make test && cd -
+
+after_success:
+    -  cd server/test_build && coveralls -E '.*CMakeFiles/feature_tests\..*' -E '.*CMakeCXXCompilerId\.cpp' -E '.*CMakeCCompilerId\.c' -e build -e CMake -e doc -e test -r ../ --gcov-options '\-lp' && cd -
