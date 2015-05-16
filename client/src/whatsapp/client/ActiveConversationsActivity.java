@@ -1,8 +1,9 @@
-package whatsapp.client;
+ package whatsapp.client;
 
 import model.ServerResultReceiver;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TabWidget;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import utils.ConversationEntity;
@@ -20,8 +22,9 @@ import utils.DatabaseHelper;
 import utils.UserEntity;
 
 public class ActiveConversationsActivity extends Activity implements ServerResultReceiver.Listener{
+	StableArrayAdapter adapter;
 
-    @Override
+	@Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -31,7 +34,9 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
         if(!prefs.getBoolean("firstTime", false)) {
             UserEntity uEMe = dbH.createUser(1554587629, "Me", DatabaseHelper.NORMAL);
             UserEntity uE = dbH.createUser(1511111111, "WhatsApp Info", DatabaseHelper.NORMAL);
-            ConversationEntity cE = dbH.createConversation(uE);
+                            dbH.createUser(1522222222, "Rodrigo", DatabaseHelper.NORMAL);
+                            dbH.createUser(1533333333, "Nico", DatabaseHelper.NORMAL);
+            ConversationEntity cE = dbH.createConversation(uE, Calendar.getInstance());
             dbH.createMessage(cE, uE, null, null, "Bienvenido a Whatsapp", dbH.NOT_SEEN);
             dbH.createMessage(cE, uEMe, null, null, "Hola!!!", dbH.NOT_SEEN);
             dbH.createMessage(cE, uEMe, null, null, "Como estas?", dbH.NOT_SEEN);
@@ -42,18 +47,20 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
         }
         setContentView(R.layout.active_conversations);
         
-        final ListView listview = (ListView) findViewById(R.id.mainListview);
+        final ListView listview = (ListView) findViewById(R.id.activeConversationsListview);
         
         final ArrayList<String> list = new ArrayList<String>();
         
         for (ConversationEntity cE : dbH.fetchAllConversations())
         {
             list.add(cE.getUser(0).getName());
+			list.add("un mockk");
         }
         dbH.close();
-        final StableArrayAdapter adapter = new StableArrayAdapter(this, android.R.layout.simple_list_item_1, list);
+        adapter = new StableArrayAdapter(this, android.R.layout.simple_list_item_1, list);
         listview.setAdapter(adapter);
 
+		listview.setOnItemLongClickListener(new OptionListener());
         listview.setOnItemClickListener(new ClickListener(this));
     }
 
@@ -83,12 +90,31 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
                     Intent intent = new Intent(context, ConversationActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putInt("conversationId", conversationID);
-                    intent.putExtra("whatsapp.client.MainActivity.data", bundle);
+                    intent.putExtra("whatsapp.client.ConversationActivity.data", bundle);
                     startActivity(intent);
                 }
             });
         }
     }
+	
+	private class OptionListener implements AdapterView.OnItemLongClickListener{
+
+		public boolean onItemLongClick(AdapterView<?> adapterView, final View arg1,final int idx, long arg3) {
+			InfoDialog.createOkCancelDialog(ActiveConversationsActivity.this, 
+					"Eliminar conversación", "¿Está seguro que desea eliminar la conversación?",
+					new DialogInterface.OnClickListener() {
+
+				public void onClick(DialogInterface arg0, int id) {
+					//adapterView.get
+					String itemSelected = adapter.getItem(idx);
+					adapter.remove(itemSelected);
+					adapter.notifyDataSetChanged();
+				}
+			});
+			return true;
+		}
+	
+	}
 
     private class StableArrayAdapter extends ArrayAdapter<String> {
 
@@ -106,6 +132,18 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
             String item = getItem(position);
             return mIdMap.get(item);
         }
+
+		@Override
+		public void remove(String object) {
+			super.remove(object); 
+			// TODO : MATI MIRA ESTO, CUANDO REMUEVEN UNA CONVERSACION LO TENDRIA Q EFECTIVIZAR DE LA BBDD
+			// ALGO ASI ME IMAGINO YO 
+			DatabaseHelper dbh = new DatabaseHelper(ActiveConversationsActivity.this);
+			UserEntity conversationToRemove = dbh.createUser(1554587629, object, DatabaseHelper.NORMAL);
+			dbh.deleteConversation(dbh.createConversation(conversationToRemove, null));
+		}
+		
+		
 
         @Override
         public boolean hasStableIds() {
