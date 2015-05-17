@@ -6,6 +6,7 @@
 #include <memory>
 #include <rocksdb/db.h>
 #include <rocksdb/status.h>
+#include <rocksdb/write_batch.h>
 #include <rocksdb/iterator.h>
 
 /** Clase que maneja las notificaciones en la db
@@ -58,6 +59,7 @@ class Notification {
 		static std::string TypeToStr(const NotificationType& type);
 
 		/** Borra notificaciones hasta (inclusive) la indicada.
+		 * Marca como leidas, envia ACK de msjes recibidos.
 		 * @param from: usuario due~no de las notificaciones
 		 * @param id: ultima id (inclusive) que se borrara (formato hexa)
 		 */
@@ -105,6 +107,7 @@ class Notification {
 /** Clase para iterar por las notificaciones
 */
 class Notification::NotificationIterator {
+	friend class Notification;
 	public:
 		/** mueve el iterador para adelante
 		 */
@@ -122,21 +125,32 @@ class Notification::NotificationIterator {
 		rocksdb::Status status() const;  ///< Estado del iterador
 		bool valid() const;  ///< Devuelve si el iterador esta en una posicion valida
 
-		/** Constructor
-		 * @param iterador de rocksdb asociado a la db
+		/** Operacion Delete. Delete es una palabra reservada =(, por eso tiene este nombre criptico.
 		 */
-		NotificationIterator(rocksdb::Iterator*);
+		void dlt();
 
 		/** Busca notificacion apartir de usuario. (mueve el iterador)
 		 * @param from: usuario
 		 */
 		void seek(const std::string& from);
 
+		rocksdb::Status write();
+
+		~NotificationIterator();
+
 	protected:
 		std::shared_ptr<rocksdb::Iterator> it; ///< Instancia al iterador de rocksdb
+		rocksdb::DB *db; ///< Instancia db
+		rocksdb::ColumnFamilyHandle* cf; ///< Instancia column family
+		rocksdb::WriteBatch batch; ///< Batch que guarda las operaciones a realizaar con el iterator.
 		Notification notif; ///< notificacion actual
 		void unPack(); ///< deserializador del mensaje
 		std::string prefix; ///< Prefijo de las Keys buscadas
+
+		/** Constructor
+		 * @param iterador de rocksdb asociado a la db
+		 */
+		NotificationIterator(rocksdb::Iterator*, rocksdb::DB*, rocksdb::ColumnFamilyHandle*);
 };
 
 #endif

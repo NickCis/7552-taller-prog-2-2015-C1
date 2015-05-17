@@ -92,7 +92,7 @@ bool Notification::UnPack(const string& data, Notification& m){
 }
 
 shared_ptr<Notification::NotificationIterator> Notification::NewIterator(){
-	return shared_ptr<Notification::NotificationIterator>(new Notification::NotificationIterator(Notification::db->NewIterator(ReadOptions(), Notification::cf)));
+	return shared_ptr<Notification::NotificationIterator>(new Notification::NotificationIterator(Notification::db->NewIterator(ReadOptions(), Notification::cf), Notification::db, Notification::cf));
 }
 
 string Notification::getId() const {
@@ -127,12 +127,11 @@ string Notification::TypeToStr(const NotificationType& type){
 
 Status Notification::DeleteUpTo(const std::string& from, const uint64_t& id){
 	auto it = Notification::NewIterator();
-	WriteBatch batch;
 
 	for(it->seek(from); it->valid() && memcmp((char*) &id, (char*) &(it->value().getIdBin()), sizeof(uint64_t)) >= 0; it->next())
-		batch.Delete(Notification::cf, it->key());
+		it->dlt();
 
-	return Notification::db->Write(WriteOptions(), &batch);
+	return it->write();
 }
 
 Status Notification::DeleteUpTo(const std::string& from, const string& id){
@@ -140,7 +139,7 @@ Status Notification::DeleteUpTo(const std::string& from, const string& id){
 	return Notification::DeleteUpTo(from, *( (uint64_t*) data.data()));
 }
 
-Notification::NotificationIterator::NotificationIterator(Iterator* i) : it(i) {
+Notification::NotificationIterator::NotificationIterator(Iterator* i, DB* d, ColumnFamilyHandle* c) : it(i), db(d), cf(c) {
 }
 
 void Notification::NotificationIterator::seek(const string& from){
@@ -184,4 +183,22 @@ void Notification::NotificationIterator::seekToFirst(){
 	this->it->SeekToFirst();
 	if(this->valid())
 		this->unPack();
+}
+
+void Notification::NotificationIterator::dlt(){
+	this->batch.Delete(this->cf, this->key());
+}
+
+rocksdb::Status Notification::NotificationIterator::write(){
+	if(this->batch.Count()){
+		Status s = this->db->Write(WriteOptions(), &this->batch);
+		this->batch.Clear();
+		return s;
+	}
+
+	return Status::OK();
+}
+
+Notification::NotificationIterator::~NotificationIterator(){
+	this->write();
 }
