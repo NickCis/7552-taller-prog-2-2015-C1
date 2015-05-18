@@ -1,6 +1,6 @@
 #include "notification.h"
 #include "../util/bin2hex.h"
-#include "serializer.h"
+#include "../util/serializer.h"
 
 #include <sstream>
 #include <cstdlib>

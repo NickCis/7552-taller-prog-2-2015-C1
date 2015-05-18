@@ -1,5 +1,5 @@
 #include "../catch.hpp"
-#include "../../src/db/serializer.h"
+#include "../../src/util/serializer.h"
 
 #include <string>
 #include <cstdlib>
@@ -231,27 +231,28 @@ TEST_CASE( "Serializador de Entrada  (binario -> class) ", "[ISerializer]" ) {
 	SECTION( "Deserializo algo complejo" ) {
 		struct {
 			size_t s;
-			unsigned char n1[4];
-			char c;
-			unsigned char n2[4];
-			char d;
+			unsigned char n[16];
 			uint64_t t;
 		} buf = {
-			4,
+			7,
 			{
 				'p',
 				'e',
 				'p',
-				'e'
-			},
-			'/',
-			{
+				'e',
+				'e',
+				'e',
+				'e',
+				'/',
 				'p',
 				'a',
 				'p',
-				'a'
+				'a',
+				'a',
+				'a',
+				'a',
+				'/'
 			},
-			'/',
 			0xCCCCCCCCCCCCCCCC
 		};
 		string in((const char*) &buf, sizeof(buf));
@@ -259,18 +260,18 @@ TEST_CASE( "Serializador de Entrada  (binario -> class) ", "[ISerializer]" ) {
 		string n1 = "";
 		string n2 = "";
 		uint64_t num = 0;
-		REQUIRE( (ISerializer(in) >> n1 >> Ignore('/') >> StrNoPrefix(n2, 4) >> Ignore('/') >> num).error() == false);
+		REQUIRE( (ISerializer(in) >> n1 >> Ignore('/') >> StrNoPrefix(n2, 7) >> Ignore('/') >> num).error() == false);
 
-		REQUIRE( n1 == "pepe");
-		REQUIRE( n2 == "papa");
+		REQUIRE( n1 == "pepeeee");
+		REQUIRE( n2 == "papaaaa");
 		REQUIRE( num == 0xCCCCCCCCCCCCCCCC );
 
 		num = 0;
-		REQUIRE( (ISerializer(in) >> Ignore(sizeof(size_t)) >> Ignore(4) >> Ignore('/') >> Ignore("papa") >> Ignore('/') >> num).error() == false);
+		REQUIRE( (ISerializer(in) >> Ignore(sizeof(size_t)) >> Ignore(7) >> Ignore('/') >> Ignore("papaaaa") >> Ignore('/') >> num).error() == false);
 		REQUIRE( num == 0xCCCCCCCCCCCCCCCC );
 
 		num = 0;
-		REQUIRE( (ISerializer(in) >> Ignore(sizeof(size_t)+4+1+4+1) >> num).error() == false);
+		REQUIRE( (ISerializer(in) >> Ignore(sizeof(size_t)+7+1+7+1) >> num).error() == false);
 		REQUIRE( num == 0xCCCCCCCCCCCCCCCC );
 	}
 }
