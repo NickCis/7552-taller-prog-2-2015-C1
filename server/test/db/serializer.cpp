@@ -140,13 +140,9 @@ TEST_CASE( "Serializador de Entrada  (binario -> class) ", "[ISerializer]" ) {
 	}
 
 	SECTION( "Deserializo un int" ) {
-		const unsigned char buf[] = {
-			0xCC,
-			0xCC,
-			0xCC,
-			0xCC
-		};
-		string in((const char*) buf, sizeof(buf));
+		int buf = 0xCCCCCCCC;
+
+		string in((const char*) &buf, sizeof(buf));
 
 		int num;
 		REQUIRE( (ISerializer(in) >> num).error() == false);
@@ -154,17 +150,8 @@ TEST_CASE( "Serializador de Entrada  (binario -> class) ", "[ISerializer]" ) {
 	}
 
 	SECTION( "Deserializo un uint64_t" ) {
-		const unsigned char buf[] = {
-			0xCC,
-			0xCC,
-			0xCC,
-			0xCC,
-			0xCC,
-			0xCC,
-			0xCC,
-			0xCC
-		};
-		string in((const char*) buf, sizeof(buf));
+		uint64_t buf = 0xCCCCCCCCCCCCCCCC;
+		string in((const char*) &buf, sizeof(buf));
 
 		uint64_t num;
 		REQUIRE( (ISerializer(in) >> num).error() == false);
@@ -173,20 +160,26 @@ TEST_CASE( "Serializador de Entrada  (binario -> class) ", "[ISerializer]" ) {
 	}
 
 	SECTION( "Deserializo un string" ) {
-		const unsigned char buf[] = {
-			0x0A, 0, 0, 0,
-			'0',
-			'1',
-			'2',
-			'3',
-			'4',
-			'5',
-			'6',
-			'7',
-			'8',
-			'9'
+		struct {
+			size_t s;
+			unsigned char b[10];
+		} buf = {
+			10,
+			{
+				'0',
+				'1',
+				'2',
+				'3',
+				'4',
+				'5',
+				'6',
+				'7',
+				'8',
+				'9'
+			}
 		};
-		string in((const char*) buf, sizeof(buf));
+
+		string in((const char*) &buf, sizeof(buf));
 
 		string out;
 		REQUIRE( (ISerializer(in) >> out).error() == false);
@@ -195,20 +188,25 @@ TEST_CASE( "Serializador de Entrada  (binario -> class) ", "[ISerializer]" ) {
 	}
 
 	SECTION( "Deserializo un vector" ) {
-		const unsigned char buf[] = {
-			0x0A, 0, 0, 0,
-			'1',
-			'1',
-			'1',
-			'1',
-			'1',
-			'1',
-			'1',
-			'1',
-			'1',
-			'1'
+		struct {
+			size_t s;
+			unsigned char b[10];
+		} buf = {
+			10,
+			{
+				'1',
+				'1',
+				'1',
+				'1',
+				'1',
+				'1',
+				'1',
+				'1',
+				'1',
+				'1'
+			}
 		};
-		string in((const char*) buf, sizeof(buf));
+		string in((const char*) &buf, sizeof(buf));
 
 		vector<char> out;
 		REQUIRE( (ISerializer(in) >> out).error() == false);
@@ -231,31 +229,35 @@ TEST_CASE( "Serializador de Entrada  (binario -> class) ", "[ISerializer]" ) {
 	}
 
 	SECTION( "Deserializo algo complejo" ) {
-		const unsigned char buf[] = {
-			0x04, 0, 0, 0,
-			'p',
-			'e',
-			'p',
-			'e',
+		struct {
+			size_t s;
+			unsigned char n1[4];
+			char c;
+			unsigned char n2[4];
+			char d;
+			uint64_t t;
+		} buf = {
+			4,
+			{
+				'p',
+				'e',
+				'p',
+				'e'
+			},
 			'/',
-			'p',
-			'a',
-			'p',
-			'a',
+			{
+				'p',
+				'a',
+				'p',
+				'a'
+			},
 			'/',
-			0xCC,
-			0xCC,
-			0xCC,
-			0xCC,
-			0xCC,
-			0xCC,
-			0xCC,
-			0xCC
+			0xCCCCCCCCCCCCCCCC
 		};
-		string in((const char*) buf, sizeof(buf));
+		string in((const char*) &buf, sizeof(buf));
 
-		string n1;
-		string n2;
+		string n1 = "";
+		string n2 = "";
 		uint64_t num = 0;
 		REQUIRE( (ISerializer(in) >> n1 >> Ignore('/') >> StrNoPrefix(n2, 4) >> Ignore('/') >> num).error() == false);
 
