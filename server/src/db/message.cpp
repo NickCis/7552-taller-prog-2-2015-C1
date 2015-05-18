@@ -70,8 +70,7 @@ Status Message::Put(const string& to, const string& from, const string& msg, Mes
 	fill(key.end()-sizeof(uint64_t), key.end(), 0);
 	batch.Put(Message::cf, Slice(key.data(), key.size()), Slice((char*) &a.id, sizeof(uint64_t)));
 
-	Notification n;
-	Notification::Put(to, Notification::NOTIFICATION_MESSAGE, a.toJson(), n);
+	Notification::Now(to, Notification::NOTIFICATION_MESSAGE, a.toJson()).put();
 
 	return Message::db->Write(WriteOptions(), &batch);
 }

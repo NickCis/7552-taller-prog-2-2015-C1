@@ -9,20 +9,23 @@
 #include <rocksdb/write_batch.h>
 #include <rocksdb/iterator.h>
 
+#include "db_entity.h"
+
 /** Clase que maneja las notificaciones en la db
  */
-class Notification {
+class Notification : public DbEntity  {
+
 	public:
+		DB_ENTITY_CLASS_PUBLIC(Notification)
+
+		class Iterator;
+
 		/** Enum que representa el tipo de notificacion
 		 */
 		typedef enum {
 			NOTIFICATION_MESSAGE=0, ///< Tipo mensaje
 			NOTIFICATION_ACK ///< Tipo ACK
 		} NotificationType;
-
-		/** Clase para iterar por las notificaciones
-		 */
-		class NotificationIterator;
 
 		/** Constructor
 		 */
@@ -36,21 +39,17 @@ class Notification {
 		 * @return Estado de error
 		 */
 		static rocksdb::Status Put(const std::string& to, Notification::NotificationType type, const std::string& data, Notification& n);
-
-		/** Devuelve un nuevo iterador
-		 */
-		static std::shared_ptr<Notification::NotificationIterator> NewIterator();
-
-		/** Metodo que sirve para setear la instancia a la base de datos y a la column family.
-		 * @param db[in]: Instancia a la base de datos a usar
-		 * @param cf[in]: instancia a la column family a usar
-		 */
-		static void SetDB(rocksdb::DB* db, rocksdb::ColumnFamilyHandle* cf);
+		static Notification Now();
+		static Notification Now(const std::string& to, Notification::NotificationType type, const std::string& data);
 
 		const uint64_t& getIdBin() const; ///< Id en formato binario
 		std::string getId() const; ///< id en formato hexa
 		const time_t& getTime() const; ///< timestamp de la notificacion
 		std::string toJson() const; ///< Representacion en JSON
+
+		void setOwner(const std::string&);
+		void setType(const Notification::NotificationType);
+		void setData(const std::string&);
 
 		/** Convierte un tipo de notificacion a su representacion en texto
 		 * @param type:
@@ -71,9 +70,13 @@ class Notification {
 		 */
 		static rocksdb::Status DeleteUpTo(const std::string& from, const uint64_t& id);
 
+		static Notification::Iterator NewIterator();  ///< Crea iterador
+		void packKey(std::string& key);
+		void packValue(std::string& value);
+		bool unPack(const std::string& key, const std::string& value);
+
 	protected:
-		static rocksdb::DB* db; ///< Instancia db
-		static rocksdb::ColumnFamilyHandle* cf; ///< Instancia column family
+		DB_ENTITY_CLASS_PROTECTED(Notification)
 
 		/** Genera Key (completa) de la db apartir de usuario e id.
 		 * salida del tipo: usuario/id
@@ -98,59 +101,29 @@ class Notification {
 		 */
 		static bool UnPack(const std::string& data, Notification& m);
 
-		std::string data; ///< data que guarda la notificacion
+		/** Infomacion de la notificacion **/
+		std::string owner; ///< a quien le pertenece la notificacion
+		uint64_t id; ///< id en formato binario
 		Notification::NotificationType type; ///< tipo de notificacion
 		time_t t; ///< timestamp de la notificacion
-		uint64_t id; ///< id en formato binario
+		std::string data; ///< data que guarda la notificacion
 };
 
 /** Clase para iterar por las notificaciones
 */
-class Notification::NotificationIterator {
-	friend class Notification;
+class Notification::Iterator : public DbIterator<Notification>{
+	friend Notification;
 	public:
-		/** mueve el iterador para adelante
-		 */
-		void next();
-
-		//rocksdb::Slice key() const;
-		//rocksdb::Slice value() const;
-
-		/** Va a la primera notifcacion. La verdad no tiene mucha utilidad, se puede usar para listar todos las notificaiciones
-		 * de todos los usuarios. (mueve el iterador)
-		 */
-		void seekToFirst();
-		const Notification& value() const; ///< Devuelve la notificacion correspondiste a la posicion actual
-		rocksdb::Slice key() const; ///< Devuelve la Key de la notificacion
-		rocksdb::Status status() const;  ///< Estado del iterador
-		bool valid() const;  ///< Devuelve si el iterador esta en una posicion valida
-
-		/** Operacion Delete. Delete es una palabra reservada =(, por eso tiene este nombre criptico.
-		 */
-		void dlt();
-
 		/** Busca notificacion apartir de usuario. (mueve el iterador)
 		 * @param from: usuario
 		 */
 		void seek(const std::string& from);
 
-		rocksdb::Status write();
-
-		~NotificationIterator();
-
 	protected:
-		std::shared_ptr<rocksdb::Iterator> it; ///< Instancia al iterador de rocksdb
-		rocksdb::DB *db; ///< Instancia db
-		rocksdb::ColumnFamilyHandle* cf; ///< Instancia column family
-		rocksdb::WriteBatch batch; ///< Batch que guarda las operaciones a realizaar con el iterator.
-		Notification notif; ///< notificacion actual
-		void unPack(); ///< deserializador del mensaje
-		std::string prefix; ///< Prefijo de las Keys buscadas
-
 		/** Constructor
 		 * @param iterador de rocksdb asociado a la db
 		 */
-		NotificationIterator(rocksdb::Iterator*, rocksdb::DB*, rocksdb::ColumnFamilyHandle*);
+		Iterator(rocksdb::Iterator*, rocksdb::DB*, rocksdb::ColumnFamilyHandle*);
 };
 
 #endif

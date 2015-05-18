@@ -1,5 +1,6 @@
 #include "notification.h"
 #include "../util/bin2hex.h"
+#include "serializer.h"
 
 #include <sstream>
 #include <cstdlib>
@@ -36,63 +37,46 @@ using rocksdb::ColumnFamilyHandle;
 	SRC_SIZE -= SIZE; \
 	SRC += SIZE
 
-DB* Notification::db = NULL;
-ColumnFamilyHandle* Notification::cf = NULL;
-
-void Notification::SetDB(DB* db, ColumnFamilyHandle* cf){
-	Notification::db = db;
-	Notification::cf = cf;
-}
+DB_ENTITY_DEF(Notification)
 
 Notification::Notification(){}
 
-Status Notification::Put(const string& to, Notification::NotificationType type, const string& data, Notification &n){
-	vector<char> key;
+Notification Notification::Now(){
+	Notification n;
 	struct timeval tv;
+
 	gettimeofday(&tv, NULL);
 	n.t = tv.tv_sec;
 	n.id = htobe64(tv.tv_sec * (uint64_t)1000000 + tv.tv_usec);
-	n.type = type;
-	Notification::GetKeyFromUser(key, to, n.id);
-	return Notification::db->Put(WriteOptions(), Notification::cf, Slice(key.data(), key.size()), Notification::Pack(n.data, type, data));
+
+	return n;
 }
 
-void Notification::GetKeyFromUser(vector<char>& data, const string& from, const uint64_t& tv){
-	// XXX: Esto es un ascoo!
-	data.resize(from.size()+1+sizeof(uint64_t));
-	auto it = data.begin();
+Notification Notification::Now(const string& owner, Notification::NotificationType type, const string& data){
+	Notification n = Notification::Now();
+	n.setOwner(owner);
+	n.setType(type);
+	n.setData(data);
 
-	copy(from.begin(), from.end(), it);
-	it += from.size();
-
-	*it = '/';
-	copy((char*) &tv, ((char*) &tv)+sizeof(uint64_t), it+1);
+	return n;
 }
 
-Slice Notification::Pack(string& data, const Notification::NotificationType& type, const string& n_data){
-	data.resize(sizeof(Notification::NotificationType)+n_data.size());
-	auto it = data.begin();
-	copy(&type, &type+1, it);
-	it+=sizeof(Notification::NotificationType);
-	copy(n_data.begin(), n_data.end(), it);
-	return Slice(data);
+void Notification::packKey(string& key){
+	OSerializer(key) << StrNoPrefix(this->owner) << '/' << this->id;
 }
 
-bool Notification::UnPack(const string& data, Notification& m){
-	size_t data_size = data.size();
-	auto it = data.begin();
-
-	UNPACK(((char*) &m.type), sizeof(Notification::NotificationType), it, data_size);
-
-	size_t size = data.size() - sizeof(Notification::NotificationType);
-	m.data.resize(size);
-	UNPACK(m.data.begin(), size, it, data_size);
-
-	return true;
+void Notification::packValue(string& value){
+	OSerializer(value) << this->type << this->data;
 }
 
-shared_ptr<Notification::NotificationIterator> Notification::NewIterator(){
-	return shared_ptr<Notification::NotificationIterator>(new Notification::NotificationIterator(Notification::db->NewIterator(ReadOptions(), Notification::cf), Notification::db, Notification::cf));
+bool Notification::unPack(const string& key, const string& value){
+	ISerializer keySerializer(key);
+	keySerializer >> StrNoPrefix(this->owner, key.size()-1-sizeof(this->id)) >> Ignore('/') >> this->id;
+
+	ISerializer valueSerializer(value);
+	valueSerializer >> this->type >> this->data;
+
+	return ! (keySerializer.error() || valueSerializer.error() );
 }
 
 string Notification::getId() const {
@@ -105,6 +89,18 @@ const uint64_t& Notification::getIdBin() const {
 
 const time_t& Notification::getTime() const {
 	return this->t;
+}
+
+void Notification::setOwner(const std::string& owner){
+	this->owner = owner;
+}
+
+void Notification::setType(const Notification::NotificationType type){
+	this->type = type;
+}
+
+void Notification::setData(const std::string& data){
+	this->data = data;
 }
 
 string Notification::toJson() const {
@@ -128,10 +124,10 @@ string Notification::TypeToStr(const NotificationType& type){
 Status Notification::DeleteUpTo(const std::string& from, const uint64_t& id){
 	auto it = Notification::NewIterator();
 
-	for(it->seek(from); it->valid() && memcmp((char*) &id, (char*) &(it->value().getIdBin()), sizeof(uint64_t)) >= 0; it->next())
-		it->dlt();
+	for(it.seek(from); it.valid() && memcmp((char*) &id, (char*) &(it.value().getIdBin()), sizeof(uint64_t)) >= 0; it.next())
+		it.dlt();
 
-	return it->write();
+	return it.write();
 }
 
 Status Notification::DeleteUpTo(const std::string& from, const string& id){
@@ -139,66 +135,13 @@ Status Notification::DeleteUpTo(const std::string& from, const string& id){
 	return Notification::DeleteUpTo(from, *( (uint64_t*) data.data()));
 }
 
-Notification::NotificationIterator::NotificationIterator(Iterator* i, DB* d, ColumnFamilyHandle* c) : it(i), db(d), cf(c) {
+Notification::Iterator Notification::NewIterator(){
+	return Notification::Iterator(Notification::db->NewIterator(ReadOptions(), Notification::cf), Notification::db, Notification::cf);
 }
 
-void Notification::NotificationIterator::seek(const string& from){
-	this->prefix = from+"/";
-	this->it->Seek(Slice(this->prefix));
+Notification::Iterator::Iterator(rocksdb::Iterator* i, DB* d, ColumnFamilyHandle* c) :
+	DbIterator<Notification>(i, d, c) {}
 
-	if(this->valid())
-		this->unPack();
-}
-
-void Notification::NotificationIterator::unPack(){
-	Notification::UnPack(this->it->value().ToString(), this->notif);
-	auto keyIt = this->it->key().ToString().end();
-	copy(keyIt-sizeof(uint64_t), keyIt, (char*) &this->notif.id);
-	this->notif.t = be64toh(this->notif.id) / 1000000;
-}
-
-void Notification::NotificationIterator::next(){
-	this->it->Next();
-	if(this->valid())
-		this->unPack();
-}
-
-const Notification& Notification::NotificationIterator::value() const{
-	return this->notif;
-}
-
-Slice Notification::NotificationIterator::key() const{
-	return this->it->key();
-}
-
-Status Notification::NotificationIterator::status() const{
-	return this->it->status();
-}
-
-bool Notification::NotificationIterator::valid() const {
-	return this->it->Valid() && ( this->prefix.size() ? this->it->key().starts_with(Slice(this->prefix)) : true);
-}
-
-void Notification::NotificationIterator::seekToFirst(){
-	this->it->SeekToFirst();
-	if(this->valid())
-		this->unPack();
-}
-
-void Notification::NotificationIterator::dlt(){
-	this->batch.Delete(this->cf, this->key());
-}
-
-rocksdb::Status Notification::NotificationIterator::write(){
-	if(this->batch.Count()){
-		Status s = this->db->Write(WriteOptions(), &this->batch);
-		this->batch.Clear();
-		return s;
-	}
-
-	return Status::OK();
-}
-
-Notification::NotificationIterator::~NotificationIterator(){
-	this->write();
+void Notification::Iterator::seek(const string& from){
+	DbIterator<Notification>::seek(from+"/");
 }

@@ -19,9 +19,9 @@ void NotificationNode::executeGet(MgConnection& conn, const char* url){
 	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
 	conn.printfData("{\"notifications\":[");
 
-	it->seek(loggedUser);
-	for(int counter = 0; it->valid(); it->next(), counter++)
-		conn.printfData("%s%s", counter == 0 ? "" : ",", it->value().toJson().c_str());
+	it.seek(loggedUser);
+	for(int counter = 0; it.valid(); it.next(), counter++)
+		conn.printfData("%s%s", counter == 0 ? "" : ",", it.value().toJson().c_str());
 
 	conn.printfData("]}");
 }
