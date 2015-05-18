@@ -32,16 +32,14 @@ class Ignore {
 	public:
 		Ignore();
 
-		Ignore(const char*&);
-		Ignore(size_t);
+		Ignore(const char*);
+		Ignore(const size_t);
+		Ignore(const int);
+		Ignore(const char);
 
-		template <typename T>
-		Ignore(const T&, size_t nmemb=1) :
-			_size(sizeof(T) *nmemb) {}
-
-		template <typename T>
-		Ignore(size_t nmemb=1) :
-			_size(sizeof(T) *nmemb) {}
+		//template <typename T>
+		//Ignore(const T&) :
+		//	_size(sizeof(T)) {}
 
 		size_t size();
 
@@ -55,7 +53,7 @@ class OSerializer {
 
 		OSerializer& operator<<(const std::string&);
 		OSerializer& operator<<(const std::vector<char>&);
-		OSerializer& operator<<(ConstStrNoPrefix&);
+		OSerializer& operator<<(ConstStrNoPrefix);
 
 		/** Debe finalizar con '\0' como toda string en c!
 		 */

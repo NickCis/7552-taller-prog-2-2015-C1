@@ -12,8 +12,17 @@ using std::calloc;
 Ignore::Ignore() :
 	_size(0) {}
 
-Ignore::Ignore(const char*& str) :
+Ignore::Ignore(const size_t  s) :
+	_size(s) {}
+
+Ignore::Ignore(const int  s) :
+	_size(s) {}
+
+Ignore::Ignore(const char* str) :
 	_size(strlen(str)) {}
+
+Ignore::Ignore(const char) :
+	_size(sizeof(char)) {}
 
 size_t Ignore::size(){
 	return this->_size;
@@ -54,7 +63,7 @@ OSerializer& OSerializer::operator<<(const char* & str){
 	return (*this);
 }
 
-OSerializer& OSerializer::operator<<(ConstStrNoPrefix& str){
+OSerializer& OSerializer::operator<<(ConstStrNoPrefix str){
 	buffer.reserve(buffer.size()+str->size());
 	buffer.append(str->begin(), str->end());
 	return (*this);
