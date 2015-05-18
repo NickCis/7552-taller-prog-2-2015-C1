@@ -14,10 +14,9 @@
 /** Clase que maneja las notificaciones en la db
  */
 class Notification : public DbEntity  {
+	DB_ENTITY_CLASS(Notification)
 
 	public:
-		DB_ENTITY_CLASS_PUBLIC(Notification)
-
 		class Iterator;
 
 		/** Enum que representa el tipo de notificacion
@@ -31,15 +30,17 @@ class Notification : public DbEntity  {
 		 */
 		Notification();
 
-		/** Escribe una notificacion en la db, genera su Key e id correspondiente.
+		/** Crea una nueva notificacion, setea el tiempo al actual.
+		 * No la guarda en DB.
+		 */
+		static Notification Now();
+
+		/** Crea una nueva notificacion, setea el tiempo al actual.
+		 * No la guarda en DB.
 		 * @param to: usuario al que le corresponde la notificacion
 		 * @param type: tipo de notificacion
 		 * @param data: contenido de la notificacion (debe ser un JSON valido, es una precondicion, no se valida)
-		 * @param n[out]: nueva notificacion
-		 * @return Estado de error
 		 */
-		static rocksdb::Status Put(const std::string& to, Notification::NotificationType type, const std::string& data, Notification& n);
-		static Notification Now();
 		static Notification Now(const std::string& to, Notification::NotificationType type, const std::string& data);
 
 		const uint64_t& getIdBin() const; ///< Id en formato binario
@@ -76,31 +77,6 @@ class Notification : public DbEntity  {
 		bool unPack(const std::string& key, const std::string& value);
 
 	protected:
-		DB_ENTITY_CLASS_PROTECTED(Notification)
-
-		/** Genera Key (completa) de la db apartir de usuario e id.
-		 * salida del tipo: usuario/id
-		 * @param data[out]: buffer donde se escribira
-		 * @param from[in]: usuario
-		 * @param id[in]: id en formato binario
-		 */
-		static void GetKeyFromUser(std::vector<char>& data, const std::string& from, const uint64_t& tv);
-
-		/** Serializa la notificacion
-		 * @param data[out]: buffer destino
-		 * @param tipo
-		 * @param datos
-		 * @return Slice de Rocksdb que apunta al buffer data
-		 */
-		static rocksdb::Slice Pack(std::string& data, const Notification::NotificationType&, const std::string& n_data);
-
-		/** Deserializa la notificacion
-		 * @param data[in]: notificacion serializado
-		 * @param n[out]: instacia donde se escribiran los datos
-		 * @return true: si data esta bien, false: si no se pudo deserializar
-		 */
-		static bool UnPack(const std::string& data, Notification& m);
-
 		/** Infomacion de la notificacion **/
 		std::string owner; ///< a quien le pertenece la notificacion
 		uint64_t id; ///< id en formato binario

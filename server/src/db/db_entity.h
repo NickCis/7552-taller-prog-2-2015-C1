@@ -8,14 +8,13 @@
 
 #include "db_iterator.h"
 
-#define DB_ENTITY_CLASS_PROTECTED(T) \
+#define DB_ENTITY_CLASS(T) \
+	protected: \
 		static rocksdb::DB *db; \
 		static rocksdb::ColumnFamilyHandle *cf; \
-		rocksdb::Status _put(const rocksdb::Slice& key, const rocksdb::Slice& value){ \
-			return T::db->Put(rocksdb::WriteOptions(), T::cf, rocksdb::Slice(key), rocksdb::Slice(value)); \
-		}
-
-#define DB_ENTITY_CLASS_PUBLIC(T) \
+		rocksdb::ColumnFamilyHandle* getCf(){ return T::cf; }\
+		rocksdb::DB* getDb(){ return T::db; }\
+	public: \
 		T(const DbIterator<T>& it) { \
 			this->unPack(it.key().ToString(), it._value().ToString()); \
 		} \
@@ -52,7 +51,7 @@ class DbEntity {
 
 		rocksdb::Status put(){
 			this->pack();
-			return this->_put(rocksdb::Slice(this->key), rocksdb::Slice(this->value));
+			return this->put(rocksdb::Slice(this->key), rocksdb::Slice(this->value));
 		}
 
 	protected:
@@ -92,7 +91,12 @@ class DbEntity {
 		 */
 		virtual bool unPack(const std::string& key, const std::string& value) = 0;
 
-		virtual rocksdb::Status _put(const rocksdb::Slice& key, const rocksdb::Slice& value) = 0;
+		virtual rocksdb::ColumnFamilyHandle* getCf() = 0;
+		virtual rocksdb::DB* getDb() = 0;
+
+		virtual rocksdb::Status put(const rocksdb::Slice& key, const rocksdb::Slice& value){
+			return this->getDb()->Put(rocksdb::WriteOptions(), this->getCf(), rocksdb::Slice(key), rocksdb::Slice(value)); \
+		}
 
 		/*rocksdb::Status put(const rocksdb::Slice& key, const rocksdb::Slice& value){
 			return T::db->Put(rocksdb::WriteOptions(), T::cf, rocksdb::Slice(key), rocksdb::Slice(value));
