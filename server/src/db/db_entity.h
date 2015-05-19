@@ -54,6 +54,13 @@ class DbEntity {
 			return this->put(rocksdb::Slice(this->key), rocksdb::Slice(this->value));
 		}
 
+		/** Deserializa
+		 * @param key[in]
+		 * @param value[in]
+		 * @return true si es valido, false si no
+		 */
+		virtual bool unPack(const std::string& key, const std::string& value) = 0;
+
 	protected:
 		std::string key;
 		std::string value;
@@ -83,13 +90,6 @@ class DbEntity {
 		bool unPack(){
 			return this->unPack(this->key, this->value);
 		}
-
-		/** Deserializa
-		 * @param key[in]
-		 * @param value[in]
-		 * @return true si es valido, false si no
-		 */
-		virtual bool unPack(const std::string& key, const std::string& value) = 0;
 
 		virtual rocksdb::ColumnFamilyHandle* getCf() = 0;
 		virtual rocksdb::DB* getDb() = 0;

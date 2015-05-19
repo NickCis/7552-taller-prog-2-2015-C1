@@ -103,6 +103,10 @@ void Notification::setData(const std::string& data){
 	this->data = data;
 }
 
+const string& Notification::getData() const{
+	return this->data;
+}
+
 string Notification::toJson() const {
 	stringstream ss;
 	ss << "{\"id\":\"" << this->getId() << "\",\"time\":\"" << this->t << "\",\"type\":\"" << Notification::TypeToStr(this->type) << "\",\"data\":" << this->data << "}";

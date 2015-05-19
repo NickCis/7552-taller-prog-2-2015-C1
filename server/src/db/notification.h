@@ -48,9 +48,11 @@ class Notification : public DbEntity  {
 		const time_t& getTime() const; ///< timestamp de la notificacion
 		std::string toJson() const; ///< Representacion en JSON
 
+
 		void setOwner(const std::string&);
 		void setType(const Notification::NotificationType);
 		void setData(const std::string&);
+		const std::string& getData() const;
 
 		/** Convierte un tipo de notificacion a su representacion en texto
 		 * @param type:
@@ -72,11 +74,13 @@ class Notification : public DbEntity  {
 		static rocksdb::Status DeleteUpTo(const std::string& from, const uint64_t& id);
 
 		static Notification::Iterator NewIterator();  ///< Crea iterador
-		void packKey(std::string& key);
-		void packValue(std::string& value);
+
 		bool unPack(const std::string& key, const std::string& value);
 
 	protected:
+		void packKey(std::string& key);
+		void packValue(std::string& value);
+
 		/** Infomacion de la notificacion **/
 		std::string owner; ///< a quien le pertenece la notificacion
 		uint64_t id; ///< id en formato binario
