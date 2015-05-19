@@ -275,3 +275,89 @@ TEST_CASE( "Serializador de Entrada  (binario -> class) ", "[ISerializer]" ) {
 		REQUIRE( num == 0xCCCCCCCCCCCCCCCC );
 	}
 }
+
+TEST_CASE( "Serializador de Salida a Serializador de entrada  (class -> binario -> class) ", "[I/OSerializer]" ) {
+	SECTION( "Serializo un char" ) {
+		char c = 't';
+		string out;
+		OSerializer(out) << c;
+
+		char co;
+		ISerializer(out) >> co;
+
+		REQUIRE( c == co );
+	}
+
+	SECTION( "Serializo un int" ) {
+		int num = 0xCCCCCCCC;
+		string out;
+		OSerializer(out) << num;
+
+		int numout;
+		ISerializer(out) >> numout;
+
+		REQUIRE( num == numout);
+	}
+
+	SECTION( "Serializo un uint64_t" ) {
+		uint64_t num = 0xCCCCCCCCCCCCCCCC;
+		string out;
+		OSerializer(out) << num;
+
+		uint64_t numout;
+		ISerializer(out) >> numout;
+
+		REQUIRE( num == numout);
+	}
+
+	SECTION( "Serializo un string" ) {
+		string data = "esto es un texto de prueba";
+		string out;
+		OSerializer(out) << data;
+
+		string dataout;
+		ISerializer(out) >> dataout;
+
+		REQUIRE( data == dataout);
+	}
+
+	SECTION( "Serializo un vector" ) {
+		vector<char> data(10, 0xCC);
+		string out;
+		OSerializer(out) << data;
+
+		vector<char> dataout;
+		ISerializer(out) >> dataout;
+
+		REQUIRE( data == dataout);
+	}
+
+	SECTION( "Serializo un string sin prefijo de tama~no" ) {
+		string data = "esto es un texto de prueba";
+		string out;
+
+		OSerializer(out) << ConstStrNoPrefix(data);
+
+		string dataout;
+		ISerializer(out) >> StrNoPrefix(dataout, data.size());
+
+		REQUIRE( data == dataout);
+	}
+
+	SECTION( "Serializo algo complejo" ) {
+		string nombre = "pepe";
+		uint64_t num = 0xCCCCCCCCCCCCCCCC;
+		string out;
+
+		OSerializer(out) << nombre << '/' << ConstStrNoPrefix(nombre) << '/' << num;
+
+		string nombreout;
+		string nombrenoprefixout;
+		uint64_t numout;
+
+		ISerializer(out) >> nombreout >> Ignore('/') >> StrNoPrefix(nombrenoprefixout, nombre.size()) >> Ignore('/') >> numout;
+		REQUIRE( nombre == nombreout);
+		REQUIRE( nombre == nombrenoprefixout);
+		REQUIRE( num == numout);
+	}
+}
