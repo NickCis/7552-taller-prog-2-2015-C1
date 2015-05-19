@@ -3,12 +3,13 @@
 #include "access_token.h"
 #include "message.h"
 #include "notification.h"
+#include "contact_list.h"
+#include "contact_list_merge_operator.h"
 
 #include <cstring>
+#include <iostream>
 
 #include <rocksdb/options.h>
-
-#include <iostream>
 
 using std::string;
 using std::strcmp;
@@ -30,15 +31,22 @@ typedef enum Comparator {
 	COMPARATOR_DB_COMPARATOR_REVERSE,
 } Comparator;
 
+typedef enum MergeOperator {
+	MERGE_DEFAULT=0,
+	MERGE_DB_CONTACT_LIST
+} MergeOperator;
+
 static const struct {
 	const char* name;
 	const Comparator comparator;
+	const MergeOperator mergeOperator;
 } HANDLES[] = {
-	{ "messages", COMPARATOR_DEFAULT },
-	{ "users", COMPARATOR_DB_COMPARATOR },
-	{ "notifications", COMPARATOR_DB_COMPARATOR },
-	{ "access_tokens", COMPARATOR_DEFAULT },
-	{ NULL, COMPARATOR_DEFAULT }
+	{ "messages", COMPARATOR_DEFAULT, MERGE_DEFAULT },
+	{ "users", COMPARATOR_DB_COMPARATOR, MERGE_DEFAULT },
+	{ "notifications", COMPARATOR_DB_COMPARATOR, MERGE_DEFAULT },
+	{ "access_tokens", COMPARATOR_DEFAULT, MERGE_DEFAULT },
+	{ "contact_list", COMPARATOR_DEFAULT, MERGE_DB_CONTACT_LIST },
+	{ NULL, COMPARATOR_DEFAULT, MERGE_DEFAULT }
 };
 
 DBManager::DBManager(const string& p, Status& s) : path(p){
@@ -46,6 +54,7 @@ DBManager::DBManager(const string& p, Status& s) : path(p){
 	if(s.ok())
 		this->open(s);
 }
+
 void DBManager::create(Status& s){
 	Options options;
 	DB* _db;
@@ -64,6 +73,15 @@ void DBManager::create(Status& s){
 				default:
 					break;
 			}
+
+			switch(HANDLES[i].mergeOperator){
+				case MERGE_DB_CONTACT_LIST:
+					cfo.merge_operator.reset(new ContactListMergeOperator);
+					break;
+				default:
+					break;
+			}
+
 			s = _db->CreateColumnFamily(cfo, HANDLES[i].name, &cf);
 			delete cf;
 			if(!s.ok())
@@ -117,4 +135,5 @@ void DBManager::setEnviroment(){
 	AccessToken::SetDB(this->db.get(), this->cfs[DBManager::COLUMN_FAMILY_ACCESS_TOKENS].get());
 	Message::SetDB(this->db.get(), this->cfs[DBManager::COLUMN_FAMILY_MESSAGES].get());
 	Notification::SetDB(this->db.get(), this->cfs[DBManager::COLUMN_FAMILY_NOTIFICATIONS].get());
+	ContactList::SetDB(this->db.get(), this->cfs[DBManager::COLUMN_FAMILY_CONTACT_LIST].get());
 }

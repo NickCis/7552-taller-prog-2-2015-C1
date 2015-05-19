@@ -3,7 +3,6 @@
 
 #include <ctime>
 #include <string>
-#include <memory>
 #include <rocksdb/db.h>
 #include <rocksdb/status.h>
 #include <rocksdb/write_batch.h>

@@ -30,13 +30,6 @@ using rocksdb::ReadOptions;
 using rocksdb::WriteOptions;
 using rocksdb::ColumnFamilyHandle;
 
-#define UNPACK(DST, SIZE, SRC, SRC_SIZE) \
-	if(SRC_SIZE < SIZE) \
-		return false; \
-	copy(SRC, SRC+SIZE, DST); \
-	SRC_SIZE -= SIZE; \
-	SRC += SIZE
-
 DB_ENTITY_DEF(Notification)
 
 Notification::Notification(){}

@@ -22,6 +22,7 @@ class DBManager {
 			COLUMN_FAMILY_USERS, ///< Column Family Para los usuarios
 			COLUMN_FAMILY_NOTIFICATIONS, ///< Column Family Para las notificaciones
 			COLUMN_FAMILY_ACCESS_TOKENS, ///< Column Family Para los access token
+			COLUMN_FAMILY_CONTACT_LIST, ///< Column Family Para la lista de contactos
 			COLUMN_FAMILY_TOTAL ///< Numero total de column families
 		} ColumnFamilies;
 

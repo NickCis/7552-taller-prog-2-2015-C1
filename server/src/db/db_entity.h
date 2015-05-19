@@ -49,6 +49,22 @@ class DbEntity {
 			T::cf = cf;
 		}*/
 
+		/** Obtiene registro (GET de rocksdb)
+		 * @return Salida de estado del put
+		 */
+		rocksdb::Status get(const std::string& key){
+			this->key = key;
+			rocksdb::Status s = this->getDb()->Get(rocksdb::ReadOptions(), this->getCf(), rocksdb::Slice(this->key), &this->value);
+			if(s.ok())
+				if(!this->unPack())
+					return rocksdb::Status::Corruption(this->key);
+
+			return s;
+		}
+
+		/** Guarda registro (PUT de rocksdb)
+		 * @return Salida de estado del put
+		 */
 		rocksdb::Status put(){
 			this->pack();
 			return this->put(rocksdb::Slice(this->key), rocksdb::Slice(this->value));
@@ -94,16 +110,17 @@ class DbEntity {
 		virtual rocksdb::ColumnFamilyHandle* getCf() = 0;
 		virtual rocksdb::DB* getDb() = 0;
 
-		virtual rocksdb::Status put(const rocksdb::Slice& key, const rocksdb::Slice& value){
-			return this->getDb()->Put(rocksdb::WriteOptions(), this->getCf(), rocksdb::Slice(key), rocksdb::Slice(value)); \
+		rocksdb::Status put(const rocksdb::Slice& key, const rocksdb::Slice& value){
+			return this->getDb()->Put(rocksdb::WriteOptions(), this->getCf(), key, value);
 		}
 
-		/*rocksdb::Status put(const rocksdb::Slice& key, const rocksdb::Slice& value){
-			return T::db->Put(rocksdb::WriteOptions(), T::cf, rocksdb::Slice(key), rocksdb::Slice(value));
-		}*/
+		rocksdb::Status merge(const std::string& value){
+			return this->merge(rocksdb::Slice(this->key), rocksdb::Slice(value));
+		} 
 
-		//static rocksdb::DB *db;
-		//static rocksdb::ColumnFamilyHandle *cf;
+		rocksdb::Status merge(const rocksdb::Slice& key, const rocksdb::Slice& value){
+			return this->getDb()->Merge(rocksdb::WriteOptions(), this->getCf(), key, value);
+		}
 };
 
 #endif
