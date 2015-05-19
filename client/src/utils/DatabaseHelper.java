@@ -34,7 +34,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public static final String KEY_USERID = "iduser";
     public static final String KEY_DATE = "last_message_time";
     public static final String KEY_PHONE = "phone";
-    public static final String KEY_NAME = "name";
+    public static final String KEY_USERNAME = "username";
+    public static final String KEY_NICKNAME = "nickname";
     public static final String KEY_STATUS = "status";
     public static final String KEY_LOCATION = "location";
     public static final String KEY_TYPE = "type";
@@ -55,7 +56,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private static final String DATABASE_USER_CREATE = "CREATE TABLE " + DATABASE_USER_TABLE + " ("
             + KEY_USERID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + KEY_PHONE + " INTEGER NOT NULL, "
-            + KEY_NAME + " TEXT NOT NULL, "
+            + KEY_USERNAME + " TEXT NOT NULL, "
+            + KEY_NICKNAME + " TEXT NOT NULL, "
             + KEY_STATUS + " SHORT INTEGER NOT NULL);";
     
     private static final String DATABASE_CONVERSATION_CREATE = "CREATE TABLE " + DATABASE_CONVERSATION_TABLE + " ("
@@ -107,13 +109,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
         onCreate(db);
     }
     
-    public UserEntity createUser(Integer phone, String name, Short status) {
+    public UserEntity createUser(Integer phone, String username, String nickname, Short status) {
         ContentValues values = new ContentValues(); 
-        values.put(KEY_NAME, name);
+        values.put(KEY_USERNAME, username);
+        values.put(KEY_NICKNAME, nickname);
         values.put(KEY_PHONE, phone);
         values.put(KEY_STATUS, status);
         long userId = mDb.insert(DATABASE_USER_TABLE, null, values); 
-        return new UserEntity((int)userId, name, phone, status);
+        return new UserEntity((int)userId, username, nickname, phone, status);
     }
     
     public boolean deleteUser(Integer userId) {
@@ -127,7 +130,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
     
     public List<UserEntity> fetchAllUsers() {
-        Cursor cursor = mDb.query(DATABASE_USER_TABLE, new String[]{KEY_USERID, KEY_NAME, KEY_PHONE, KEY_STATUS}, null, null, null, null, KEY_USERID + " ASC");
+        Cursor cursor = mDb.query(DATABASE_USER_TABLE, new String[]{KEY_USERID, KEY_USERNAME, KEY_NICKNAME, KEY_PHONE, KEY_STATUS}, null, null, null, null, KEY_USERID + " ASC");
         List<UserEntity> list = null;
         if (cursor != null && cursor.getCount() > 0)
         {
@@ -136,7 +139,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
             do
             {
                 UserEntity uE = new UserEntity(cursor.getInt(cursor.getColumnIndex(this.KEY_USERID)),
-                        cursor.getString(cursor.getColumnIndex(this.KEY_NAME)),
+                        cursor.getString(cursor.getColumnIndex(this.KEY_USERNAME)),
+                        cursor.getString(cursor.getColumnIndex(this.KEY_NICKNAME)),
                         cursor.getInt(cursor.getColumnIndex(this.KEY_PHONE)),
                         cursor.getShort(cursor.getColumnIndex(this.KEY_STATUS)));
                 list.add(uE);
@@ -147,14 +151,33 @@ public class DatabaseHelper extends SQLiteOpenHelper
     
     public UserEntity fetchUser(Integer userId) throws SQLException {
         Cursor cursor = mDb.query(true, DATABASE_USER_TABLE, new String [] 
-             {KEY_USERID, KEY_NAME, KEY_PHONE, KEY_STATUS}, KEY_USERID + 
+             {KEY_USERID, KEY_USERNAME, KEY_NICKNAME, KEY_PHONE, KEY_STATUS}, KEY_USERID + 
              "=?", new String[]{"" + userId}, null, null, null, null); 
         UserEntity uE = null;
         if (cursor != null && cursor.getCount() > 0) 
         { 
             cursor.moveToFirst();
             uE = new UserEntity(userId,
-                    cursor.getString(cursor.getColumnIndex(this.KEY_NAME)),
+                    cursor.getString(cursor.getColumnIndex(this.KEY_USERNAME)),
+                    cursor.getString(cursor.getColumnIndex(this.KEY_NICKNAME)),
+                    cursor.getInt(cursor.getColumnIndex(this.KEY_PHONE)),
+                    cursor.getShort(cursor.getColumnIndex(this.KEY_STATUS)));
+            
+        } 
+        return uE;
+    }
+    
+    public UserEntity fetchUser(String userName) throws SQLException {
+        Cursor cursor = mDb.query(true, DATABASE_USER_TABLE, new String [] 
+             {KEY_USERID, KEY_USERNAME, KEY_NICKNAME, KEY_PHONE, KEY_STATUS}, KEY_USERNAME + 
+             "=?", new String[]{"" + userName}, null, null, null, null); 
+        UserEntity uE = null;
+        if (cursor != null && cursor.getCount() > 0) 
+        { 
+            cursor.moveToFirst();
+            uE = new UserEntity(cursor.getInt(cursor.getColumnIndex(this.KEY_USERID)),
+                    userName,
+                    cursor.getString(cursor.getColumnIndex(this.KEY_NICKNAME)),
                     cursor.getInt(cursor.getColumnIndex(this.KEY_PHONE)),
                     cursor.getShort(cursor.getColumnIndex(this.KEY_STATUS)));
             
@@ -165,7 +188,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public boolean updateUser(UserEntity user) { 
         ContentValues values = new ContentValues(); 
         values.put(KEY_PHONE, user.getPhone()); 
-        values.put(KEY_NAME, user.getName());
+        values.put(KEY_USERNAME, user.getUsername());
+        values.put(KEY_NICKNAME, user.getNickname());
         values.put(KEY_STATUS, user.getStatus());
         boolean result = mDb.update(DATABASE_USER_TABLE, values, KEY_USERID + "=?", new String[]{"" + user.getUserId()}) > 0; 
         return result;

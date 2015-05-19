@@ -12,6 +12,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import utils.ConversationEntity;
 import utils.DatabaseHelper;
@@ -32,12 +33,13 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
         final ArrayList<String> list = new ArrayList<String>();
         List<UserEntity> users = dbH.fetchAllUsers();
         users.remove(dbH.fetchUser(dbH.USERID_ME));
+        LinkedHashMap<String, Integer> map = new LinkedHashMap<String, Integer>();
         for (UserEntity uE : users)
         {
-            list.add(uE.getName());
+            map.put(uE.getNickname(), uE.getUserId());
         }
         dbH.close();
-        final StableArrayAdapter adapter = new StableArrayAdapter(this, android.R.layout.simple_list_item_1, list);
+        final StableArrayAdapter adapter = new StableArrayAdapter(this, android.R.layout.simple_list_item_1, map);
         listview.setAdapter(adapter);
 
         listview.setOnItemClickListener(new ClickListener(this));
@@ -68,6 +70,7 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
             if (cE == null)
             {
                 cE = dbH.createConversation(users, Calendar.getInstance());
+                // Mandar a server (?)
             }
             final int conversationID = cE.getConversationId();
             dbH.close();
@@ -87,14 +90,12 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 
     private class StableArrayAdapter extends ArrayAdapter<String> {
 
-        HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
+        LinkedHashMap<String, Integer> mIdMap = new LinkedHashMap<String, Integer>();
 
-        public StableArrayAdapter(Context context, int textViewResourceId, List<String> objects) {
-            super(context, textViewResourceId, objects);
-            for (int i = 0; i < objects.size(); ++i) {
-                mIdMap.put(objects.get(i), i);
-            }
-        }
+        public StableArrayAdapter(Context context, int textViewResourceId, LinkedHashMap<String, Integer> objects) {
+            super(context, textViewResourceId, new ArrayList<String>(objects.keySet()));
+            this.mIdMap = objects;
+        } 
 
         @Override
         public long getItemId(int position) {
