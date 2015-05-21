@@ -58,6 +58,7 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                         dbH.open();
                         dbH.createMessage(cE, dbH.fetchUser(DatabaseHelper.USERID_ME), null, null, editText1.getText().toString(), DatabaseHelper.NOT_RECIEVED);
+                        dbH.close();
                         String msg;
                         adapter.add(new OneComment(true, msg = editText1.getText().toString()));
                         send(msg);

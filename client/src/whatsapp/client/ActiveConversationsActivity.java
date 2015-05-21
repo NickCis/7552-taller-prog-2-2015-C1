@@ -32,10 +32,10 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
         dbH.open();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if(!prefs.getBoolean("firstTime", false)) {
-            UserEntity uEMe = dbH.createUser(1554587629, "Me", DatabaseHelper.NORMAL);
-            UserEntity uE = dbH.createUser(1511111111, "WhatsApp Info", DatabaseHelper.NORMAL);
-                            dbH.createUser(1522222222, "Rodrigo", DatabaseHelper.NORMAL);
-                            dbH.createUser(1533333333, "Nico", DatabaseHelper.NORMAL);
+            UserEntity uEMe = dbH.createUser(1554587629, "Me", "Me", DatabaseHelper.NORMAL);
+            UserEntity uE = dbH.createUser(1511111111, "WhatsApp Info", "WhatsApp Info", DatabaseHelper.NORMAL);
+                            dbH.createUser(1522222222, "Rodrigo", "Rodri", DatabaseHelper.NORMAL);
+                            dbH.createUser(1533333333, "Nico", "Nico", DatabaseHelper.NORMAL);
             ConversationEntity cE = dbH.createConversation(uE, Calendar.getInstance());
             dbH.createMessage(cE, uE, null, null, "Bienvenido a Whatsapp", dbH.NOT_SEEN);
             dbH.createMessage(cE, uEMe, null, null, "Hola!!!", dbH.NOT_SEEN);
@@ -49,15 +49,13 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
         
         final ListView listview = (ListView) findViewById(R.id.activeConversationsListview);
         
-        final ArrayList<String> list = new ArrayList<String>();
-        
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
         for (ConversationEntity cE : dbH.fetchAllConversations())
         {
-            list.add(cE.getUser(0).getName());
-			list.add("un mockk");
+            map.put(cE.getUser(0).getNickname(), cE.getConversationId());
         }
         dbH.close();
-        adapter = new StableArrayAdapter(this, android.R.layout.simple_list_item_1, list);
+        adapter = new StableArrayAdapter(this, android.R.layout.simple_list_item_1, map);
         listview.setAdapter(adapter);
 
 		listview.setOnItemLongClickListener(new OptionListener());
@@ -78,11 +76,8 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
         }
 
         public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-            DatabaseHelper dbH = new DatabaseHelper(this.context);
-            dbH.open();
-            List<ConversationEntity> list = dbH.fetchAllConversations();
-            dbH.close();
-            final int conversationID = list.get(position).getConversationId();
+            StableArrayAdapter sAA = (StableArrayAdapter) parent.getAdapter();
+            final int conversationID = (int)sAA.getItemId(position);
             view.animate().setDuration(500).alpha(0).withEndAction(new Runnable() {
                 @Override
                 public void run() {
@@ -120,11 +115,9 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 
         HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
 
-        public StableArrayAdapter(Context context, int textViewResourceId, List<String> objects) {
-            super(context, textViewResourceId, objects);
-            for (int i = 0; i < objects.size(); ++i) {
-                mIdMap.put(objects.get(i), i);
-            }
+        public StableArrayAdapter(Context context, int textViewResourceId, HashMap<String, Integer> objects) {
+            super(context, textViewResourceId, new ArrayList<String>(objects.keySet()));
+            this.mIdMap = objects;
         }
 
         @Override
@@ -133,15 +126,23 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
             return mIdMap.get(item);
         }
 
-		@Override
-		public void remove(String object) {
-			super.remove(object); 
-			// TODO : MATI MIRA ESTO, CUANDO REMUEVEN UNA CONVERSACION LO TENDRIA Q EFECTIVIZAR DE LA BBDD
-			// ALGO ASI ME IMAGINO YO 
-			DatabaseHelper dbh = new DatabaseHelper(ActiveConversationsActivity.this);
-			UserEntity conversationToRemove = dbh.createUser(1554587629, object, DatabaseHelper.NORMAL);
-			dbh.deleteConversation(dbh.createConversation(conversationToRemove, null));
-		}
+        @Override
+        public void remove(String object) {
+            /* 
+             * Esto es lo mas cercano que podemos hacer todavia pero no me cierra, porque deberia remover por ID y no por nickname
+             * Con nicknames repetidos podria fallar el hashing
+             */
+            
+            Integer conversationId = this.mIdMap.get(object);
+            if (conversationId != null)
+            {
+                DatabaseHelper dbH = new DatabaseHelper(ActiveConversationsActivity.this);
+                dbH.deleteConversation(dbH.fetchConversation(new ConversationEntity(conversationId)));
+                dbH.close();
+                this.mIdMap.remove(object);
+                super.remove(object);
+            }
+        }
 		
 		
 

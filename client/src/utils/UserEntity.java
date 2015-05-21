@@ -4,6 +4,8 @@
  */
 package utils;
 
+import android.graphics.Bitmap;
+
 /**
  *
  * @author umm194
@@ -11,17 +13,28 @@ package utils;
 public class UserEntity {
     private Integer userId;
     private Integer phone;
-    private String name;
+    private String username;
+    private String nickname;
     private Short status;
+	private Bitmap avatar;
 
-    public UserEntity(Integer userId, String name, Integer phone, Short status)
+    public UserEntity(Integer userId, String username, String nickname, Integer phone, Short status)
     {
         this.userId = userId;
-        this.name = name;
+        this.username = username;
+        this.nickname = nickname;
         this.phone = phone;
         this.status = status;
     }
     
+	public void setAvatar(Bitmap img){
+		this.avatar = img;
+	}
+
+	public Bitmap getAvatar() {
+		return avatar;
+	}
+		
     /**
      * @return the userId
      */
@@ -51,17 +64,31 @@ public class UserEntity {
     }
 
     /**
-     * @return the name
+     * @return the username
      */
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
     /**
-     * @param name the name to set
+     * @param username the name to set
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    
+    /**
+     * @return the nickname
+     */
+    public String getNickname() {
+        return nickname;
+    }
+
+    /**
+     * @param nickname the nickname to set
+     */
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     /**
@@ -88,7 +115,8 @@ public class UserEntity {
 
         UserEntity other = (UserEntity) obj;
         if(!this.userId.equals(other.userId)) return false;
-        if(!this.name.equals(other.name)) return false;
+        if(!this.username.equals(other.username)) return false;
+        if(!this.nickname.equals(other.nickname)) return false;
         if(!this.phone.equals(other.phone)) return false;
         if(!this.status.equals(other.status)) return false;
         
