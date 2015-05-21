@@ -4,6 +4,8 @@
  */
 package utils;
 
+import android.graphics.Bitmap;
+
 /**
  *
  * @author umm194
@@ -14,6 +16,7 @@ public class UserEntity {
     private String username;
     private String nickname;
     private Short status;
+	private Bitmap avatar;
 
     public UserEntity(Integer userId, String username, String nickname, Integer phone, Short status)
     {
@@ -24,6 +27,14 @@ public class UserEntity {
         this.status = status;
     }
     
+	public void setAvatar(Bitmap img){
+		this.avatar = img;
+	}
+
+	public Bitmap getAvatar() {
+		return avatar;
+	}
+		
     /**
      * @return the userId
      */
