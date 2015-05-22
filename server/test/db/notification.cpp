@@ -32,10 +32,13 @@ TEST_CASE( "La clase Notification funciona correctamente", "[Notification]" ) {
 		/*SECTION( "Notificaciones tienen que volver ordedanas" )*/ {
 			auto it = Notification::NewIterator();
 			it.seek("foo");
-			for(int i=0; it.valid(); it.next(), i++){
+			int i;
+			for(i=0; it.valid(); it.next(), i++){
 				REQUIRE( it.value().getIdBin() == ids[i] );
 				REQUIRE( it.value().getData() == datas[i] );
 			}
+
+			REQUIRE( i == 5 );
 		}
 
 		/*SECTION( "Delete up to tiene que poder borrar" )*/ {

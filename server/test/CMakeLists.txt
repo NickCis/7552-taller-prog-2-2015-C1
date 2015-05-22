@@ -15,7 +15,7 @@ endmacro()
 
 enable_testing()
 
-add_library(Main STATIC main.cpp)
+add_library(Main STATIC main.cpp ../src/util/log.cpp)
 
 add_executable(util_serializer ${MAIN} util/serializer.cpp ../src/util/serializer.cpp)
 add_executable(wa_node ${MAIN} node/wa_node.cpp ../src/node/wa_node.cpp)

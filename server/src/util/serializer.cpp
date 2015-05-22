@@ -63,6 +63,10 @@ OSerializer& OSerializer::operator<<(const char* & str){
 	return (*this);
 }
 
+OSerializer& OSerializer::operator<<(StrNoPrefix str){
+	return (*this) << ConstStrNoPrefix(str->data(), str.size());
+}
+
 OSerializer& OSerializer::operator<<(ConstStrNoPrefix str){
 	buffer.reserve(buffer.size()+str->size());
 	buffer.append(str->begin(), str->end());

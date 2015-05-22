@@ -55,7 +55,7 @@ Notification Notification::Now(const string& owner, Notification::NotificationTy
 }
 
 void Notification::packKey(string& key){
-	OSerializer(key) << StrNoPrefix(this->owner) << '/' << this->id;
+	OSerializer(key) << ConstStrNoPrefix(this->owner) << '/' << this->id;
 }
 
 void Notification::packValue(string& value){

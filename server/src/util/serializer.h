@@ -53,6 +53,7 @@ class OSerializer {
 
 		OSerializer& operator<<(const std::string&);
 		OSerializer& operator<<(const std::vector<char>&);
+		OSerializer& operator<<(StrNoPrefix) __attribute__ ((deprecated));
 		OSerializer& operator<<(ConstStrNoPrefix);
 
 		/** Debe finalizar con '\0' como toda string en c!
