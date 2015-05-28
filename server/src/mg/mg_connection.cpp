@@ -70,11 +70,11 @@ void MgConnection::setParameter(const std::string& key, const string& value){
 	this->parameters[key] = value;
 }
 
-string MgConnection::getVarStr(const char* varName, size_t max){
+string MgConnection::getVarStr(const char* varName, int n, size_t max){
 	string value;
 	value.resize(max);
 	// XXX: fixme es feo esto!,, jaja
-	switch(mg_get_var(this->conn, varName, (char*) value.data(), max)){
+	switch(mg_get_var_n(this->conn, varName, (char*) value.data(), max, n)){
 		case -2:
 			return this->getVarStr(varName, max+max);
 			break;
@@ -92,18 +92,17 @@ string MgConnection::getVarStr(const char* varName, size_t max){
 	return value;
 }
 
-string MgConnection::getVarStr(const string& varName, size_t max){
-	return this->getVarStr(varName.c_str(), max);
+string MgConnection::getVarStr(const string& varName, int n, size_t max){
+	return this->getVarStr(varName.c_str(), n, max);
 }
 
 
-int MgConnection::getVarInt(const char* varName, size_t max){
-	return atoi(this->getVarStr(varName, max).c_str());
-
+int MgConnection::getVarInt(const char* varName, int n, size_t max){
+	return atoi(this->getVarStr(varName, n, max).c_str());
 }
 
-int MgConnection::getVarInt(const string& varName, size_t max){
-	return this->getVarInt(varName, max);
+int MgConnection::getVarInt(const string& varName, int n, size_t max){
+	return this->getVarInt(varName.c_str(), n, max);
 }
 
 

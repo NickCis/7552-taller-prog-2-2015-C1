@@ -88,17 +88,18 @@ class MgConnection {
 
 		/** Obtiene un parametro de la url o de post (si es url encoded)
 		 * @param varName: nombre del parametro
+		 * @param n: posicion del valor @see mg_get_var_n(), para la primera aparicion usar 0
 		 * @param max: buffer a allocar
 		 * @return valor del parametro o "" si no existe
 		 */
-		std::string getVarStr(const char* varName, size_t max=64);
-		std::string getVarStr(const std::string& varName, size_t max=64);
+		std::string getVarStr(const char* varName, int n=0, size_t max=64);
+		std::string getVarStr(const std::string& varName, int n=0, size_t max=64);
 
 		/** Obtiene un parametro de la url, lo convierte a entero
 		 * @see MgConnection::getVarStr
 		 */
-		int getVarInt(const char* varName, size_t max=64);
-		int getVarInt(const std::string& varName, size_t max=64);
+		int getVarInt(const char* varName, int n=0, size_t max=64);
+		int getVarInt(const std::string& varName, int n=0, size_t max=64);
 
 
 	protected:
