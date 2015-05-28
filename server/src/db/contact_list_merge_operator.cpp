@@ -33,10 +33,19 @@ bool ContactListMergeOperator::push_back(const rocksdb::Slice* existing_value,
 		std::string* new_value) const {
 	OSerializer ser(*new_value);
 
-	if(existing_value)
-		ser << ConstStrNoPrefix(existing_value->ToString());
+	string user = value.ToString().substr(1);
 
-	ser << value.ToString().substr(1);
+	if(existing_value){
+		ser << ConstStrNoPrefix(existing_value->ToString());
+		string u;
+		ISerializer iser(existing_value->ToString());
+		while(!((iser >> u).error())){
+			if(user == u)
+				return true;
+		}
+	}
+
+	ser << user;
 
 	return true;
 }
@@ -44,6 +53,7 @@ bool ContactListMergeOperator::push_back(const rocksdb::Slice* existing_value,
 bool ContactListMergeOperator::erase(const rocksdb::Slice* existing_value,
 		const rocksdb::Slice& value,
 		std::string* new_value) const {
+
 	if(!existing_value)
 		return false;
 
