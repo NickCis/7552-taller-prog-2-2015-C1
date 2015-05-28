@@ -5469,3 +5469,7 @@ struct mg_server *mg_create_server(void *server_data, mg_handler_t handler) {
   server->event_handler = handler;
   return server;
 }
+
+void *mg_get_server_param(struct mg_server *server) {
+  return server->ns_mgr.user_data;
+}

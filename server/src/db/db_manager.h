@@ -7,6 +7,7 @@
 
 #include <rocksdb/db.h>
 #include <rocksdb/status.h>
+#include <rocksdb/options.h>
 
 #include "db_comparator.h"
 
@@ -48,6 +49,27 @@ class DBManager {
 		void setEnviroment();
 
 	protected:
+		typedef enum Comparator {
+			COMPARATOR_DEFAULT=0,
+			COMPARATOR_DB_COMPARATOR,
+			COMPARATOR_DB_COMPARATOR_REVERSE,
+		} Comparator;
+
+		typedef enum MergeOperator {
+			MERGE_DEFAULT=0,
+			MERGE_DB_CONTACT_LIST
+		} MergeOperator;
+
+		typedef struct {
+			const char* name;
+			const DBManager::Comparator comparator;
+			const DBManager::MergeOperator mergeOperator;
+		} ColumnFamilyDescriptor;
+
+		void columnFamilyOptionsFromDescriptor(const DBManager::ColumnFamilyDescriptor& cfd, rocksdb::ColumnFamilyOptions &cfo);
+
+		static const DBManager::ColumnFamilyDescriptor ColumnFamilyDescriptors[];
+
 		std::string path; ///< Path a la db
 		std::unique_ptr<rocksdb::DB> db; ///< Instancia de la db
 		std::vector < std::unique_ptr < rocksdb::ColumnFamilyHandle > > cfs; ///< vector con todas las instancias de column families

@@ -15,9 +15,9 @@ TEST_CASE( "La clase ContactList funciona correctamente?", "[ContactList]" ) {
 
 	SECTION( "ContactList" ) {
 		{
+			ContactList contactList;
+			contactList.setOwner("pepe");
 			for(int i=0; i < 5; i++){
-				ContactList contactList;
-				contactList.setOwner("pepe");
 				REQUIRE( contactList.push_back(to_string(i)).ok() == true );
 			}
 		}
