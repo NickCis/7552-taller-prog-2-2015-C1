@@ -95,6 +95,9 @@
 #include <BaseTsd.h>
 typedef SSIZE_T ssize_t;
 #endif
+#ifndef FD_SETSIZE
+#define FD_SETSIZE 1024
+#endif
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <windows.h>
@@ -235,6 +238,7 @@ struct ns_connection {
 
   sock_t sock;                // Socket
   union socket_address sa;    // Peer address
+  size_t recv_iobuf_limit; /* Max size of recv buffer */
   struct iobuf recv_iobuf;    // Received data
   struct iobuf send_iobuf;    // Data scheduled for sending
   SSL *ssl;
@@ -1403,7 +1407,7 @@ struct dir_entry {
   file_stat_t st;
 };
 
-// NOTE(lsm): this enum shoulds be in sync with the config_options.
+// NOTE(lsm): this enum should be in sync with the config_options.
 enum {
   ACCESS_CONTROL_LIST,
 #ifndef MONGOOSE_NO_FILESYSTEM
@@ -1947,12 +1951,20 @@ static void write_chunk(struct connection *conn, const char *buf, int len) {
 }
 
 size_t mg_printf(struct mg_connection *conn, const char *fmt, ...) {
-  struct connection *c = MG_CONN_2_CONN(conn);
   va_list ap;
+  int ret;
 
   va_start(ap, fmt);
-  ns_vprintf(c->ns_conn, fmt, ap);
+  ret = mg_vprintf(conn, fmt, ap);
   va_end(ap);
+
+  return ret;
+}
+
+size_t mg_vprintf(struct mg_connection *conn, const char *fmt, va_list ap) {
+  struct connection *c = MG_CONN_2_CONN(conn);
+
+  ns_vprintf(c->ns_conn, fmt, ap);
 
   return c->ns_conn->send_iobuf.len;
 }
@@ -1993,7 +2005,7 @@ static void *push_to_stdin(void *arg) {
       if (!WriteFile(tp->hPipe, buf + sent, n - sent, &k, 0)) stop = 1;
     }
   }
-  DBG(("%s", "FORWARED EVERYTHING TO CGI"));
+  DBG(("%s", "FORWARDED EVERYTHING TO CGI"));
   CloseHandle(tp->hPipe);
   NS_FREE(tp);
   _endthread();
@@ -2504,7 +2516,7 @@ static size_t parse_http_message(char *buf, size_t len,
 
   buf[len - 1] = '\0';
 
-  // RFC says that all initial whitespaces should be ingored
+  // RFC says that all initial whitespaces should be ignored
   while (*buf != '\0' && isspace(* (unsigned char *) buf)) {
     buf++;
   }
@@ -2678,7 +2690,8 @@ static int convert_uri_to_file_name(struct connection *conn, char *buf,
 #endif
   const char *uri = conn->mg_conn.uri;
   const char *domain = mg_get_header(&conn->mg_conn, "Host");
-  size_t match_len, root_len = root == NULL ? 0 : strlen(root);
+  // Important: match_len has to be declared as int, unless rewrites break.
+  int match_len, root_len = root == NULL ? 0 : strlen(root);
 
   // Perform virtual hosting rewrites
   if (rewrites != NULL && domain != NULL) {
@@ -2786,9 +2799,12 @@ size_t mg_send_data(struct mg_connection *c, const void *data, int data_len) {
 
 size_t mg_printf_data(struct mg_connection *c, const char *fmt, ...) {
   va_list ap;
+  int ret;
+
   va_start(ap, fmt);
-  size_t ret = mg_vprintf_data(c, fmt, ap);
+  ret = mg_vprintf_data(c, fmt, ap);
   va_end(ap);
+
   return ret;
 }
 
@@ -3321,7 +3337,8 @@ static int find_index_file(struct connection *conn, char *path,
 
   // If no index file exists, restore directory path
   if (!found) {
-    path[n] = '\0';
+    path[n] = '/';
+    path[n + 1] = '\0';
   }
 
   return found;
@@ -3519,11 +3536,11 @@ static int scan_directory(struct connection *conn, const char *dir,
     }
     mg_snprintf(path, sizeof(path), "%s%c%s", dir, '/', dp->d_name);
 
-    // Resize the array if nesessary
+    // Resize the array if necessary
     if (arr_ind >= arr_size) {
       if ((p = (struct dir_entry *)
            NS_REALLOC(*arr, (inc + arr_size) * sizeof(**arr))) != NULL) {
-        // Memset new chunk to zero, otherwize st_mtime will have garbage which
+        // Memset new chunk to zero, otherwise st_mtime will have garbage which
         // can make strftime() segfault, see
         // http://code.google.com/p/mongoose/issues/detail?id=79
         memset(p + arr_size, 0, sizeof(**arr) * inc);
@@ -4296,7 +4313,7 @@ static void do_ssi_include(struct mg_connection *conn, const char *ssi,
     mg_snprintf(path, sizeof(path), "%s", file_name);
   } else if (sscanf(tag, " file=\"%[^\"]\"", file_name) == 1 ||
              sscanf(tag, " \"%[^\"]\"", file_name) == 1) {
-    // File name is relative to the currect document
+    // File name is relative to the current document
     mg_snprintf(path, sizeof(path), "%s", ssi);
     if ((p = strrchr(path, '/')) != NULL) {
       p[1] = '\0';
@@ -4998,26 +5015,25 @@ struct mg_connection *mg_next(struct mg_server *s, struct mg_connection *c) {
 }
 
 static int get_var(const char *data, size_t data_len, const char *name,
-                   char *dst, size_t dst_len) {
-  const char *p, *e, *s;
+                   char *dst, size_t dst_len, int n) {
+  const char *p, *e = data + data_len, *s;
   size_t name_len;
-  int len;
+  int i = 0, len = -1;
 
   if (dst == NULL || dst_len == 0) {
     len = -2;
   } else if (data == NULL || name == NULL || data_len == 0) {
-    len = -1;
     dst[0] = '\0';
   } else {
     name_len = strlen(name);
-    e = data + data_len;
-    len = -1;
     dst[0] = '\0';
 
     // data is "var1=val1&var2=val2...". Find variable first
     for (p = data; p + name_len < e; p++) {
       if ((p == data || p[-1] == '&') && p[name_len] == '=' &&
           !mg_strncasecmp(name, p, name_len)) {
+
+        if (n != i++) continue;
 
         // Point p to variable value
         p += name_len + 1;
@@ -5044,14 +5060,19 @@ static int get_var(const char *data, size_t data_len, const char *name,
   return len;
 }
 
-int mg_get_var(const struct mg_connection *conn, const char *name,
-               char *dst, size_t dst_len) {
+int mg_get_var_n(const struct mg_connection *conn, const char *name,
+               char *dst, size_t dst_len, int n) {
   int len = get_var(conn->query_string, conn->query_string == NULL ? 0 :
-                    strlen(conn->query_string), name, dst, dst_len);
-  if (len < 0) {
-    len = get_var(conn->content, conn->content_len, name, dst, dst_len);
+                    strlen(conn->query_string), name, dst, dst_len, n);
+  if (len == -1) {
+    len = get_var(conn->content, conn->content_len, name, dst, dst_len, n);
   }
   return len;
+}
+
+int mg_get_var(const struct mg_connection *conn, const char *name,
+               char *dst, size_t dst_len) {
+  return mg_get_var_n(conn, name, dst, dst_len, 0);
 }
 
 static int get_line_len(const char *buf, int buf_len) {
@@ -5271,31 +5292,32 @@ static void process_udp(struct ns_connection *nc) {
   //ns_printf(nc, "%s", "HTTP/1.0 200 OK\r\n\r\n");
 }
 
+#ifdef MONGOOSE_SEND_NS_EVENTS
+static void send_ns_event(struct ns_connection *nc, int ev, void *p) {
+  struct connection *conn = (struct connection *) nc->user_data;
+  if (conn != NULL) {
+    void *param[2] = { nc, p };
+    conn->mg_conn.callback_param = param;
+    call_user(conn, (enum mg_event) ev);
+  }
+}
+#else
+static void send_ns_event(struct ns_connection *nc, int ev, void *p) {
+  (void) nc; (void) p; (void) ev;
+}
+#endif
+
 static void mg_ev_handler(struct ns_connection *nc, int ev, void *p) {
   struct connection *conn = (struct connection *) nc->user_data;
 
   // Send NS event to the handler. Note that call_user won't send an event
   // if conn == NULL. Therefore, repeat this for NS_ACCEPT event as well.
-#ifdef MONGOOSE_SEND_NS_EVENTS
-  {
-    struct connection *conn = (struct connection *) nc->user_data;
-    void *param[2] = { nc, p };
-    if (conn != NULL) conn->mg_conn.callback_param = param;
-    call_user(conn, (enum mg_event) ev);
-  }
-#endif
+  send_ns_event(nc, ev, p);
 
   switch (ev) {
     case NS_ACCEPT:
       on_accept(nc, (union socket_address *) p);
-#ifdef MONGOOSE_SEND_NS_EVENTS
-      {
-        struct connection *conn = (struct connection *) nc->user_data;
-        void *param[2] = { nc, p };
-        if (conn != NULL) conn->mg_conn.callback_param = param;
-        call_user(conn, (enum mg_event) ev);
-      }
-#endif
+      send_ns_event(nc, ev, p);
       break;
 
     case NS_CONNECT:
@@ -5367,6 +5389,11 @@ static void mg_ev_handler(struct ns_connection *nc, int ev, void *p) {
             write_terminating_chunk(conn);
           }
           close_local_endpoint(conn);
+          /*
+           * MG_POLL callback returned MG_TRUE,
+           * i.e. data is sent, set corresponding flag
+           */
+          conn->ns_conn->flags |= NSF_FINISHED_SENDING_DATA;
         }
 
         if (conn->endpoint_type == EP_FILE) {
@@ -5441,8 +5468,4 @@ struct mg_server *mg_create_server(void *server_data, mg_handler_t handler) {
   set_default_option_values(server->config_options);
   server->event_handler = handler;
   return server;
-}
-
-void *mg_get_server_param(struct mg_server *server) {
-  return server->ns_mgr.user_data;
 }
