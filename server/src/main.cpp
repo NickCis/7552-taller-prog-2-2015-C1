@@ -58,13 +58,15 @@ int parse_cmd(int argc, char *argv[], Configuration& config){
 		{"port", required_argument, 0, 'p'},
 		{"log-file", required_argument, 0, 'l'},
 		{"log-level", required_argument, 0, 'L'},
+		{"threads", required_argument, 0, 't'},
+		{"db-path", required_argument, 0, 'd'},
 		{"help", no_argument, 0, 'h'},
 		{0, 0, 0, 0}
 	};
 
 	int option_index = 0;
 
-	while((c = getopt_long (argc, argv, "hp:l:L:", long_options, &option_index))){
+	while((c = getopt_long (argc, argv, "hp:l:L:t:d:", long_options, &option_index))){
 		if (c == -1)
 			break;
 
