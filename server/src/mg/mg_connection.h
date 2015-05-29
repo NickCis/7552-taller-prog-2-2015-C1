@@ -106,10 +106,12 @@ class MgConnection {
 		int getVarInt(const char* varName, int n=0, size_t max=64);
 		int getVarInt(const std::string& varName, int n=0, size_t max=64);
 
+		std::string getMultipartData(std::string& var_name, std::string& file_name);
 
 	protected:
 		struct mg_connection *conn; ///< Instacia de mg_connection
 		std::map<std::string, std::string> parameters; ///< map de los parametros guardados por el usuario
+		int multipartOffset;
 };
 
 #endif

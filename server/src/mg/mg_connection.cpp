@@ -17,7 +17,7 @@ static const char* CONTENT_TYPES[] = {
 	"image/jpg" // CONTENT_TYPE_JPG
 };
 
-MgConnection::MgConnection(struct mg_connection *c) : conn(c) {
+MgConnection::MgConnection(struct mg_connection *c) : conn(c), multipartOffset(0) {
 
 }
 
@@ -110,4 +110,22 @@ int MgConnection::getVarInt(const string& varName, int n, size_t max){
 	return this->getVarInt(varName.c_str(), n, max);
 }
 
+std::string MgConnection::getMultipartData(string& var_name, string& file_name){
+	const char *data;
+	int data_len;
+	var_name.resize(100);
+	file_name.resize(100);
 
+	this->multipartOffset += mg_parse_multipart(
+		this->conn->content + this->multipartOffset,
+		this->conn->content_len - this->multipartOffset,
+		(char*) var_name.data(), 100,
+		(char*) file_name.data(), 100,
+		&data, &data_len
+	);
+
+	var_name.resize(strlen(var_name.data()));
+	file_name.resize(strlen(file_name.data()));
+
+	return string(data, data_len);
+}
