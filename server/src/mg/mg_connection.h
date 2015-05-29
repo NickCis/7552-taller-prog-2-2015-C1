@@ -39,6 +39,7 @@ class MgConnection {
 		typedef enum ContentTypes {
 			CONTENT_TYPE_JSON=0, ///< Se envia un JSON
 			CONTENT_TYPE_HTML, ///< Se envia un HTML
+			CONTENT_TYPE_JPG, ///< Se envia un JPG
 			CONTENT_TYPE_TOTAL
 		} ContentTypes;
 
@@ -68,6 +69,10 @@ class MgConnection {
 		/** Printf - abstrae mg_vprintf_data
 		 */
 		size_t printfData(const char* format, ...);
+
+		/** manda un binario - abstrae mg_send_data()
+		 */
+		size_t send_data(const void* buf, size_t len);
 
 		/** Operador derreferencia.
 		 * @return puntero a mg_connection

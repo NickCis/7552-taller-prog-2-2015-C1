@@ -13,7 +13,8 @@ using std::strlen;
 
 static const char* CONTENT_TYPES[] = {
 	"application/json", // CONTENT_TYPE_JSON
-	"text/html" // CONTENT_TYPE_HTML
+	"text/html", // CONTENT_TYPE_HTML
+	"image/jpg" // CONTENT_TYPE_JPG
 };
 
 MgConnection::MgConnection(struct mg_connection *c) : conn(c) {
@@ -42,6 +43,10 @@ size_t MgConnection::printfData(const char* fmt, ...){
 	size_t ret = mg_vprintf_data(this->conn, fmt, ap);
 	va_end(ap);
 	return ret;
+}
+
+size_t MgConnection::send_data(const void* buf, size_t len){
+	return mg_send_data(this->conn, buf, len);
 }
 
 struct mg_connection* MgConnection::operator->(){
