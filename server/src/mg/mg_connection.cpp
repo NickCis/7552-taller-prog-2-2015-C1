@@ -111,12 +111,16 @@ int MgConnection::getVarInt(const string& varName, int n, size_t max){
 }
 
 std::string MgConnection::getMultipartData(string& var_name, string& file_name){
-	const char *data;
-	int data_len;
+	const char *data = NULL;
+	int data_len = 0;
+
 	var_name.resize(100);
 	file_name.resize(100);
 
-	this->multipartOffset += mg_parse_multipart(
+	var_name[0] = 0;
+	file_name[0] = 0;
+
+	this->multipartOffset = mg_parse_multipart(
 		this->conn->content + this->multipartOffset,
 		this->conn->content_len - this->multipartOffset,
 		(char*) var_name.data(), 100,
