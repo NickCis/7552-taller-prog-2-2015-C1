@@ -24,7 +24,7 @@ add_executable(not_found_node ${MAIN} rest/not_found_node.cpp ../src/rest/not_fo
 add_executable(db_comparator ${MAIN} db/db_comparator.cpp ../src/db/db_comparator.cpp)
 add_executable(db_user ${MAIN} db/user.cpp ../src/db/user.cpp)
 add_executable(db_notification ${MAIN} db/notification.cpp ../src/db/notification.cpp ../src/util/serializer.cpp ../src/util/bin2hex.cpp)
-add_executable(db_contact_list ${MAIN} db/contact_list.cpp ../src/db/contact_list.cpp ../src/db/contact_list_merge_operator.cpp ../src/util/serializer.cpp)
+add_executable(db_contact_list ${MAIN} db/contact_list.cpp ../src/db/contact_list.cpp ../src/db/contact_list_merge_operator.cpp ../src/util/serializer.cpp ../src/db/profile.cpp)
 add_executable(db_avatar ${MAIN} db/avatar.cpp ../src/db/avatar.cpp ../src/util/serializer.cpp)
 add_executable(db_profile ${MAIN} db/profile.cpp ../src/db/profile.cpp ../src/util/serializer.cpp)
 add_executable(db_checkin ${MAIN} db/checkin.cpp ../src/db/checkin.cpp ../src/util/serializer.cpp)
