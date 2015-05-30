@@ -106,6 +106,12 @@ class MgConnection {
 		int getVarInt(const char* varName, int n=0, size_t max=64);
 		int getVarInt(const std::string& varName, int n=0, size_t max=64);
 
+		/** Obtiene un parametro de la url, lo convierte a un double
+		 * @see MgConnection::getVarStr
+		 */
+		double getVarDouble(const char* varName, int n=0, size_t max=64);
+		double getVarDouble(const std::string& varName, int n=0, size_t max=64);
+
 		std::string getMultipartData(std::string& var_name, std::string& file_name);
 
 	protected:

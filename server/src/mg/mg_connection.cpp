@@ -110,6 +110,14 @@ int MgConnection::getVarInt(const string& varName, int n, size_t max){
 	return this->getVarInt(varName.c_str(), n, max);
 }
 
+double MgConnection::getVarDouble(const char* varName, int n, size_t max){
+	return atof(this->getVarStr(varName, n, max).c_str());
+}
+
+double MgConnection::getVarDouble(const string& varName, int n, size_t max){
+	return this->getVarDouble(varName.c_str(), n, max);
+}
+
 std::string MgConnection::getMultipartData(string& var_name, string& file_name){
 	const char *data = NULL;
 	int data_len = 0;
