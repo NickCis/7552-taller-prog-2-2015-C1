@@ -1,6 +1,8 @@
 #include "contact_list.h"
 #include "../util/serializer.h"
 
+#include "profile.h"
+
 #include <sstream>
 #include <cstdlib>
 #include <cstring>
@@ -57,9 +59,21 @@ bool ContactList::unPack(const string& key, const string& value){
 
 string ContactList::toJson() const {
 	stringstream ss;
-	//ss << "{\"id\":\"" << this->getId() << "\",\"time\":\"" << this->t << "\",\"type\":\"" << Notification::TypeToStr(this->type) << "\",\"data\":" << this->data << "}";
-	return ss.str();
+	ss << "{\"contacts\":[";
 
+	bool first=true;
+	Profile p;
+	for(auto it=this->contactList.begin(); it!=this->contactList.end(); it++){
+		if(first)
+			first = false;
+		else
+			ss << ',';
+
+		p.get((*it).c_str());
+		ss << p.toJson();
+	}
+
+	return ss.str();
 }
 
 const string& ContactList::getOwner() const{

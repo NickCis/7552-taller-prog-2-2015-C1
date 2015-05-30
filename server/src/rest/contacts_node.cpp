@@ -28,18 +28,7 @@ void ContactsNode::executeGet(MgConnection& conn, const char* url){
 	conn.sendStatus(MgConnection::STATUS_CODE_OK);
 	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
 
-	bool first=true;
-	conn.printfData("{\"contacts\":[");
-	for(auto it=cl.getList().begin(); it!=cl.getList().end(); it++){
-		if(first)
-			first = false;
-		else
-			conn.printfData(",");
-
-		conn.printfData("{\"username\":\"%s\"}", (*it).c_str());
-	}
-
-	conn.printfData("]}");
+	conn.printfData("%s", cl.toJson().c_str());
 }
 
 void ContactsNode::executeDelete(MgConnection& conn, const char* url){
