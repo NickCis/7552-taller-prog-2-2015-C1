@@ -55,6 +55,7 @@ bool Profile::unPack(const string& key, const string& value){
 }
 
 Status Profile::get(const string& key){
+	this->owner = key;
 	return DbEntity::get(key+"/profile");
 }
 
