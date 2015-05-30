@@ -30,6 +30,7 @@ TEST_CASE( "La clase Profile funciona correctamente?", "[Profile]" ) {
 		{
 			Profile profile;
 			REQUIRE( profile.get("pepe").ok() == true );
+			REQUIRE( profile.getOwner() == "pepe" );
 			REQUIRE( profile.getNick() == "nickname" );
 			REQUIRE( profile.getOnline() == true );
 			REQUIRE( profile.getStatus() == "estado" );

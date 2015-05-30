@@ -6,6 +6,7 @@
 #include "contact_list.h"
 #include "contact_list_merge_operator.h"
 #include "avatar.h"
+#include "profile.h"
 
 #include <cstring>
 #include <iostream>
@@ -116,6 +117,7 @@ ColumnFamilyHandle* DBManager::getColumnFamily(DBManager::ColumnFamilies c){
 void DBManager::setEnviroment(){
 	User::SetDB(this->db.get(), this->cfs[DBManager::COLUMN_FAMILY_USERS].get());
 	Avatar::SetDB(this->db.get(), this->cfs[DBManager::COLUMN_FAMILY_USERS].get());
+	Profile::SetDB(this->db.get(), this->cfs[DBManager::COLUMN_FAMILY_USERS].get());
 
 	AccessToken::SetDB(this->db.get(), this->cfs[DBManager::COLUMN_FAMILY_ACCESS_TOKENS].get());
 	Message::SetDB(this->db.get(), this->cfs[DBManager::COLUMN_FAMILY_MESSAGES].get());

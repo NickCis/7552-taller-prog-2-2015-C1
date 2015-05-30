@@ -47,9 +47,11 @@ void Profile::packValue(string& value){
 }
 
 bool Profile::unPack(const string& key, const string& value){
+	ISerializer keySerializer(key);
 	ISerializer valueSerializer(value);
+	keySerializer >> StrNoPrefix(this->owner, key.size() - 8);
 	valueSerializer >> this->owner >> this->nick >> this->online >> this->status >> this->status_time >> this->last_activity;
-	return ! valueSerializer.error();
+	return ! (keySerializer.error() || valueSerializer.error());
 }
 
 Status Profile::get(const string& key){
@@ -78,6 +80,10 @@ void Profile::setOnline(const bool& online){
 void Profile::setStatus(const std::string& status){
 	this->status = status;
 	this->status_time = time(NULL);
+}
+
+const std::string& Profile::getOwner() const{
+	return this->owner;
 }
 
 const std::string& Profile::getNick() const{

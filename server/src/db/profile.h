@@ -25,6 +25,7 @@ class Profile : public DbEntity  {
 		void setOnline(const bool&);
 		void setStatus(const std::string&);
 
+		const std::string& getOwner() const;
 		const std::string& getNick() const;
 		const bool& getOnline() const;
 		const std::string& getStatus() const;
