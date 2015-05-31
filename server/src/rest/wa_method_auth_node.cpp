@@ -1,5 +1,6 @@
 #include "wa_method_auth_node.h"
 #include "../db/access_token.h"
+#include "../db/profile.h"
 
 #include <string>
 
@@ -21,5 +22,6 @@ void WAMethodAuthNode::execute(MgConnection& conn, const char* url){
 	}
 
 	conn.setParameter("logged_user", accessToken.getUsername());
+	rocksdb::Status s = Profile::UpdateLastActivity(accessToken.getUsername());
 	WAMethodNode::execute(conn, url);
 }

@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <algorithm>
+#include "../util/log.h"
 
 extern "C" {
 	#include <sys/time.h>
@@ -105,4 +106,15 @@ const time_t& Profile::getStatusTime() const{
 
 const time_t& Profile::getLastActivity() const{
 	return this->last_activity;
+}
+
+Status Profile::UpdateLastActivity(const string& user){
+	string value;
+	Profile profile;
+
+	profile.setOwner(user);
+	profile.packKey();
+
+	OSerializer(value) << time(NULL);
+	return profile.merge(value);
 }

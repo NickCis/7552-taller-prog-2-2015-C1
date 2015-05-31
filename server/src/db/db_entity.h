@@ -27,16 +27,20 @@
 rocksdb::DB* T::db = NULL; \
 rocksdb::ColumnFamilyHandle* T::cf = NULL;
 
-
-//template<typename T>
+/** Clase que representa una entidad de la base de datos.
+ * Todas las clases que sean hijas deben utilizar la macro DB_ENTITY_CLASS(T) en su declaracion de clase y DB_ENTITY_DEF(T) en su definicion de la clase.
+ */
 class DbEntity {
 
 	public:
-		DbEntity(){}
+		DbEntity();
 
-		virtual ~DbEntity(){}
+		virtual ~DbEntity();
 
-		virtual std::string toJson() const = 0; ///< Representacion en JSON
+		/** Genera representacion en JSON
+		 * @return devuelve la representacion generada
+		 */
+		virtual std::string toJson() const = 0;
 
 		//virtual DbIterator<T> NewIterator() = 0;  ///< Crea iterador
 
@@ -52,23 +56,13 @@ class DbEntity {
 		/** Obtiene registro (GET de rocksdb)
 		 * @return Salida de estado del put
 		 */
-		rocksdb::Status get(const std::string& key){
-			this->key = key;
-			rocksdb::Status s = this->getDb()->Get(rocksdb::ReadOptions(), this->getCf(), rocksdb::Slice(this->key), &this->value);
-			if(s.ok())
-				if(!this->unPack())
-					return rocksdb::Status::Corruption(this->key);
+		rocksdb::Status get(const std::string& key);
 
-			return s;
-		}
-
-		/** Guarda registro (PUT de rocksdb)
+		/** Guarda registro (PUT de rocksdb).
+		 * Utiliza buffers internos: this->key y this->value.
 		 * @return Salida de estado del put
 		 */
-		rocksdb::Status put(){
-			this->pack();
-			return this->put(rocksdb::Slice(this->key), rocksdb::Slice(this->value));
-		}
+		rocksdb::Status put();
 
 		/** Deserializa
 		 * @param key[in]
@@ -78,49 +72,73 @@ class DbEntity {
 		virtual bool unPack(const std::string& key, const std::string& value) = 0;
 
 	protected:
-		std::string key;
-		std::string value;
+		std::string key; ///< Buffer interno usado para guarda el key
+		std::string value; ///< Buffer interno usado para guardar el value
 
 		/** Serializa utilizando buffers internos
 		 */
-		rocksdb::Slice pack(){
-			return this->pack(this->key, this->value);
-		}
+		rocksdb::Slice pack();
 
 		/** Serializa
 		 * @param key[out]
 		 * @param value[out]
 		 * return Slice de Rocksdb
 		 */
-		rocksdb::Slice pack(std::string& key, std::string& value){
-			this->packKey(key);
-			this->packValue(value);
-			return rocksdb::Slice(value);
-		}
+		rocksdb::Slice pack(std::string& key, std::string& value);
 
+		/** Serializa el key.
+		 * @param key: buffer donde se guardara la serializacion.
+		 */
 		virtual void packKey(std::string& key) = 0;
+
+		/** Serializa el key utilizando como buffer this->key
+		 */
+		void packKey();
+
+
+		/** Serializa value.
+		 * @param value: buffer donde se guardara la serializacion
+		 */
 		virtual void packValue(std::string& value) = 0;
+
+		/** Serializa value utilizando como buffer this->value;
+		 */
+		void packValue();
+
 
 		/** Deserializa utilizando buffers internos
 		 */
-		bool unPack(){
-			return this->unPack(this->key, this->value);
-		}
+		bool unPack();
 
+		/** Devuelve la instancia de Column Family de la base de datos de la clase.
+		 * Este metodo lo crea por defecto la macro DB_ENTITY_CLASS(T).
+		 */
 		virtual rocksdb::ColumnFamilyHandle* getCf() = 0;
+
+		/** Devuelve la instancia de Db de la clase
+		 * Este metodo lo crea por defecto la macro DB_ENTITY_CLASS(T).
+		 */
 		virtual rocksdb::DB* getDb() = 0;
 
-		rocksdb::Status put(const rocksdb::Slice& key, const rocksdb::Slice& value){
-			return this->getDb()->Put(rocksdb::WriteOptions(), this->getCf(), key, value);
-		}
+		/** Ejecuta DB::Put utilizando key y value provistos.
+		 * @param key
+		 * @param value
+		 * @return Devolucion del DB::Put
+		 */
+		rocksdb::Status put(const rocksdb::Slice& key, const rocksdb::Slice& value);
 
-		rocksdb::Status merge(const std::string& value){
-			return this->merge(rocksdb::Slice(this->key), rocksdb::Slice(value));
-		} 
+		/** Ejecuta DB::Merge utilizando this->key y value.
+		 * @param value
+		 * @return Devolicon del DB::Merge
+		 */
+		rocksdb::Status merge(const std::string& value);
 
-		rocksdb::Status merge(const rocksdb::Slice& key, const rocksdb::Slice& value){
-			return this->getDb()->Merge(rocksdb::WriteOptions(), this->getCf(), key, value);
-		}
+		/** Ejecuta DB::Merge utilizando key y value provistos.
+		 * @param key
+		 * @param value
+		 * @return Devolicon del DB::Merge
+		 */
+		rocksdb::Status merge(const rocksdb::Slice& key, const rocksdb::Slice& value);
 };
 
 #endif

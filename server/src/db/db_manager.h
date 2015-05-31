@@ -57,7 +57,8 @@ class DBManager {
 
 		typedef enum MergeOperator {
 			MERGE_DEFAULT=0,
-			MERGE_DB_CONTACT_LIST
+			MERGE_DB_CONTACT_LIST,
+			MERGE_DB_USER
 		} MergeOperator;
 
 		typedef struct {

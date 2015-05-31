@@ -8,6 +8,7 @@
 #include "avatar.h"
 #include "profile.h"
 #include "checkin.h"
+#include "user_merge_operator.h"
 
 #include <cstring>
 #include <iostream>
@@ -28,7 +29,7 @@ using rocksdb::kDefaultColumnFamilyName;
 
 const DBManager::ColumnFamilyDescriptor DBManager::ColumnFamilyDescriptors[] = {
 	{ "messages", COMPARATOR_DEFAULT, MERGE_DEFAULT },
-	{ "users", COMPARATOR_DB_COMPARATOR, MERGE_DEFAULT },
+	{ "users", COMPARATOR_DB_COMPARATOR, MERGE_DB_USER },
 	{ "notifications", COMPARATOR_DB_COMPARATOR, MERGE_DEFAULT },
 	{ "access_tokens", COMPARATOR_DEFAULT, MERGE_DEFAULT },
 	{ "contact_list", COMPARATOR_DEFAULT, MERGE_DB_CONTACT_LIST },
@@ -47,6 +48,9 @@ void DBManager::columnFamilyOptionsFromDescriptor(const DBManager::ColumnFamilyD
 	switch(cfd.mergeOperator){
 		case MERGE_DB_CONTACT_LIST:
 			cfo.merge_operator.reset(new ContactListMergeOperator);
+			break;
+		case MERGE_DB_USER:
+			cfo.merge_operator.reset(new UserMergeOperator);
 			break;
 		default:
 			break;

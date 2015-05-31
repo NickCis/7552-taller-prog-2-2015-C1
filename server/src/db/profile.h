@@ -9,11 +9,14 @@
 #include <rocksdb/iterator.h>
 
 #include "db_entity.h"
+#include "user_merge_operator.h"
 
 /** Clase que maneja las notificaciones en la db
  */
 class Profile : public DbEntity  {
 	DB_ENTITY_CLASS(Profile)
+
+	friend class UserMergeOperator;
 
 	public:
 		/** Constructor
@@ -38,8 +41,13 @@ class Profile : public DbEntity  {
 
 		bool unPack(const std::string& key, const std::string& value);
 
+		static rocksdb::Status UpdateLastActivity(const std::string& user);
+
 	protected:
+		using DbEntity::packKey;
 		void packKey(std::string& key);
+
+		using DbEntity::packValue;
 		void packValue(std::string& value);
 
 		/** Infomacion de la notificacion **/
