@@ -11,7 +11,7 @@ class UserNode : public WAParentNode {
 		UserNode();
 
 	protected:
-		void preExecute(MgConnection& conn, const char*& url);
+		bool preExecute(MgConnection& conn, const char*& url);
 };
 
 #endif

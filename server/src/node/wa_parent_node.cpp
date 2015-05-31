@@ -13,12 +13,14 @@ WAParentNode::~WAParentNode(){
 }
 
 void WAParentNode::execute(MgConnection& conn, const char* url){
-	this->preExecute(conn, url);
-	for(auto it=children.begin(); it != children.end(); it++)
-		if((*it)->handle(conn, url))
-			break;
+	if(this->preExecute(conn, url)){
+		for(auto it=children.begin(); it != children.end(); it++)
+			if((*it)->handle(conn, url))
+				break;
+	}
 }
 
-void WAParentNode::preExecute(MgConnection& conn, const char*& url){
+bool WAParentNode::preExecute(MgConnection& conn, const char*& url){
 	url += this->uri.length();
+	return true;
 }

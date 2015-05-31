@@ -19,9 +19,12 @@ class WAParentNode : public WAStrNode {
 		/** Meotodo que maneja las acciones, itera por la lista de subnodos fijandose quien debe manejar la uri
 		 */
 		void execute(MgConnection& conn, const char* url);
-		/** Funcion que se ejecuta antes de chequear si algun subnodo debe manejar la connecion
+		/** Funcion que se ejecuta antes de chequear si algun subnodo debe manejar la connecion.
+		 * @param conn
+		 * @param url
+		 * @return true: si debe continuar, false si no debe iterar por los hijos
 		 */
-		virtual void preExecute(MgConnection& conn, const char*& url);
+		virtual bool preExecute(MgConnection& conn, const char*& url);
 		std::vector<WANode*> children; ///< Lista de subnodos
 };
 

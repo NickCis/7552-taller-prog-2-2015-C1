@@ -4,6 +4,7 @@
 #include "profile_node.h"
 #include "checkin_node.h"
 #include "not_found_node.h"
+#include "../db/user.h"
 
 #include <string>
 #include <iostream>
@@ -18,7 +19,7 @@ UserNode::UserNode() : WAParentNode("user/") {
 	children.push_back(new NotFoundNode());
 }
 
-void UserNode::preExecute(MgConnection& conn, const char*& url){
+bool UserNode::preExecute(MgConnection& conn, const char*& url){
 	WAParentNode::preExecute(conn, url);
 	string user;
 
@@ -29,4 +30,12 @@ void UserNode::preExecute(MgConnection& conn, const char*& url){
 		url++;
 
 	conn.setParameter("user", user);
+	User u;
+	if(User::Get(user, u).ok())
+		return true;
+
+	conn.sendStatus(MgConnection::STATUS_CODE_NOT_FOUND);
+	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
+	conn.printfData("{\"error\":{ \"message\": \"'%s' no encontrado\", \"code\": 404, \"error_user_msg\": \"Ups... No se encontro!\" }}", conn->uri);
+	return false;
 }
