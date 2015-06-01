@@ -35,7 +35,7 @@ const string& AccessToken::getToken() const{
 	return token;
 }
 
-const string& AccessToken::getUsername() const{
+const string& AccessToken::getOwner() const{
 	return owner;
 }
 

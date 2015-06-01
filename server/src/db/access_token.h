@@ -31,7 +31,7 @@ class AccessToken : public DbEntity{
 		/** Devuelve el nombre de usuario
 		 * @return Nombre de usuario
 		 */
-		const std::string& getUsername() const;
+		const std::string& getOwner() const;
 
 		rocksdb::Status put();
 

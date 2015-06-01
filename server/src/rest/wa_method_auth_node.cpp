@@ -6,6 +6,8 @@
 
 using std::string;
 
+using rocksdb::Status;
+
 WAMethodAuthNode::WAMethodAuthNode(const string &str) : WAMethodNode(str) {
 }
 WAMethodAuthNode::WAMethodAuthNode(const char *str) : WAMethodNode(str){
@@ -14,14 +16,15 @@ WAMethodAuthNode::WAMethodAuthNode(const char *str) : WAMethodNode(str){
 void WAMethodAuthNode::execute(MgConnection& conn, const char* url){
 	string at = conn.getVarStr("access_token");
 	AccessToken accessToken;
-	if(!at.size() || !(AccessToken::Get(at, accessToken).ok())){
+	Status s = accessToken.get(at);
+	if(!at.size() || !s.ok()){
 		conn.sendStatus(MgConnection::STATUS_CODE_UNAUTHORIZED);
 		conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
-		conn.printfData("{ \"message\": \"no hay access token o es invalido\", \"code\": %d, \"error_user_msg\": \"Ups... Hubo problemas con las credenciales!.\" }", MgConnection::STATUS_CODE_UNAUTHORIZED);
+		conn.printfData("{\"error\":{\"message\": \"%s\", \"code\": %d, \"error_user_msg\": \"Ups... Hubo problemas con las credenciales!.\"}}", s.ToString().c_str(), MgConnection::STATUS_CODE_UNAUTHORIZED);
 		return;
 	}
 
-	conn.setParameter("logged_user", accessToken.getUsername());
-	rocksdb::Status s = Profile::UpdateLastActivity(accessToken.getUsername());
+	conn.setParameter("logged_user", accessToken.getOwner());
+	s = Profile::UpdateLastActivity(accessToken.getUsername());
 	WAMethodNode::execute(conn, url);
 }
