@@ -9,39 +9,23 @@
 using std::string;
 using std::stringstream;
 
-using rocksdb::DB;
 using rocksdb::Slice;
 using rocksdb::Status;
 using rocksdb::ReadOptions;
 using rocksdb::WriteOptions;
 using rocksdb::ColumnFamilyHandle;
 
-DB* AccessToken::db = NULL;
-ColumnFamilyHandle* AccessToken::cf = NULL;
 
-AccessToken::AccessToken() : token(""), username("") {
+DB_ENTITY_DEF(AccessToken)
+
+AccessToken::AccessToken() :
+	token(""),
+	owner("") {
 }
 
-Status AccessToken::Get(const string& token, AccessToken& a){
-	a.token = token;
-	return AccessToken::db->Get(ReadOptions(), AccessToken::cf, Slice(token), &a.username);
-}
-
-Status AccessToken::Put(const string& u, AccessToken& a){
-	a.username = u;
-	a.token = AccessToken::CreateToken(u);
-	return AccessToken::db->Put(WriteOptions(), AccessToken::cf, Slice(a.token), Slice(u));
-}
-
-
-void AccessToken::SetDB(DB* db, ColumnFamilyHandle* cf){
-	AccessToken::db = db;
-	AccessToken::cf = cf;
-}
-
-std::string AccessToken::CreateToken(const string& username){
+string AccessToken::CreateToken(const string& owner){
 	stringstream ss;
-	ss << randomNumber(1000) << username << time(NULL) << randomNumber(9999) ;
+	ss << randomNumber(1000) << owner << time(NULL) << randomNumber(9999) ;
 	string out;
 	md5Str(out, ss.str());
 	return out;
@@ -52,10 +36,38 @@ const string& AccessToken::getToken() const{
 }
 
 const string& AccessToken::getUsername() const{
-	return username;
+	return owner;
 }
 
-bool AccessToken::IsLoggedIn(const string&t){
-	AccessToken at;
-	return AccessToken::Get(t, at).ok();
+bool AccessToken::IsLoggedIn(const string& t){
+	return AccessToken().get(t).ok();
+}
+
+bool AccessToken::unPack(const string& key, const string& value){
+	this->token = key;
+	this->owner = value;
+	return true;
+}
+
+void AccessToken::packKey(std::string& key){
+	key = token;
+}
+
+void AccessToken::packValue(std::string& value){
+	value = owner;
+}
+
+Status AccessToken::put(){
+	this->token = CreateToken(this->owner);
+	return DbEntity::put();
+}
+
+void AccessToken::setOwner(const std::string& o){
+	this->owner = o;
+}
+
+string AccessToken::toJson() const {
+	stringstream ss;
+	ss << "{\"token\":\"" << this->token << "\"}";
+	return ss.str();
 }

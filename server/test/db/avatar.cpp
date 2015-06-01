@@ -8,7 +8,7 @@
 using namespace std;
 using namespace rocksdb;
 
-TEST_CASE( "La clase Avatar funciona correctamente?", "[Profile]" ) {
+TEST_CASE( "La clase Avatar funciona correctamente?", "[Avatar]" ) {
 	DB* db = NewDB();
 	Avatar::SetDB(db, db->DefaultColumnFamily());
 
