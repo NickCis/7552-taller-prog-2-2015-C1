@@ -16,13 +16,13 @@ void AuthNode::executePost(MgConnection& conn, const char* url){
 	string u = conn.getVarStr("user");
 	string p = conn.getVarStr("pass");
 	User user;
-	Status s = User::Get(u, user);
+	Status s = user.get(u);
 
 	if(s.ok()){
-		if(p == user.getPassword()){
+		if(user.isPassword(p)){
 			AccessToken at;
 			at.setOwner(u);
-			Status s = at.put();
+			s = at.put();
 			if(s.ok()){
 				conn.sendStatus(MgConnection::STATUS_CODE_CREATED);
 				conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);

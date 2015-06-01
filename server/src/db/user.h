@@ -18,13 +18,6 @@ class User : public DbEntity {
 		 */
 		User();
 
-		/** Obtiene un usuario
-		 * @param username[in]: nombre de usuario
-		 * @param u[out]: instancia de usuario
-		 * @return Estado de error
-		 */
-		static rocksdb::Status Get(const std::string& username, User& u);
-
 		rocksdb::Status put();
 
 		/** Setea el nombre de usuario
