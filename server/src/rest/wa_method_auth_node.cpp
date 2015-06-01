@@ -25,6 +25,6 @@ void WAMethodAuthNode::execute(MgConnection& conn, const char* url){
 	}
 
 	conn.setParameter("logged_user", accessToken.getOwner());
-	s = Profile::UpdateLastActivity(accessToken.getUsername());
+	s = Profile::UpdateLastActivity(accessToken.getOwner());
 	WAMethodNode::execute(conn, url);
 }
