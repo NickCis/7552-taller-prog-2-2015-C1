@@ -49,27 +49,37 @@ class DBManager {
 		void setEnviroment();
 
 	protected:
+		/** Enum del tipo de comparador
+		 */
 		typedef enum Comparator {
-			COMPARATOR_DEFAULT=0,
-			COMPARATOR_DB_COMPARATOR,
-			COMPARATOR_DB_COMPARATOR_REVERSE,
+			COMPARATOR_DEFAULT=0, ///< Comparador por defecto
+			COMPARATOR_DB_COMPARATOR, ///< Comparador que ordena alfabeticamente diviendo las palabras por el caracter /
+			COMPARATOR_DB_COMPARATOR_REVERSE, ///< *-1 de COMPARATOR_DB_COMPARATOR
 		} Comparator;
 
+		/** Enum del tipo de MegeOperator
+		 */
 		typedef enum MergeOperator {
-			MERGE_DEFAULT=0,
-			MERGE_DB_CONTACT_LIST,
-			MERGE_DB_USER
+			MERGE_DEFAULT=0, ///< Merge operador por default
+			MERGE_DB_CONTACT_LIST, ///< Merge operator usado por la ContactList (una lista con push_back y erase)
+			MERGE_DB_USER ///< Merge operator usado por Profile (permite actualizar el last_activity)
 		} MergeOperator;
 
+		/** Descripcion de una column Family
+		 */
 		typedef struct {
-			const char* name;
-			const DBManager::Comparator comparator;
-			const DBManager::MergeOperator mergeOperator;
+			const char* name; ///< Nombre de la column familyt
+			const DBManager::Comparator comparator; ///< Tipo de comparador a utilizar
+			const DBManager::MergeOperator mergeOperator; ///< Tipo de MergeOperator a utilizar
 		} ColumnFamilyDescriptor;
 
+		/** Configura un rocksdb::ColumnFamilyOption apartir de un DBManager::ColumnFamilyDescriptor
+		 * @param cfd
+		 * @param cfo
+		 */
 		void columnFamilyOptionsFromDescriptor(const DBManager::ColumnFamilyDescriptor& cfd, rocksdb::ColumnFamilyOptions &cfo);
 
-		static const DBManager::ColumnFamilyDescriptor ColumnFamilyDescriptors[];
+		static const DBManager::ColumnFamilyDescriptor ColumnFamilyDescriptors[]; ///< Lista de column families a crear / utilizar
 
 		std::string path; ///< Path a la db
 		std::unique_ptr<rocksdb::DB> db; ///< Instancia de la db
