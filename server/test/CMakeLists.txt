@@ -17,8 +17,9 @@ enable_testing()
 
 add_library(Main STATIC main.cpp ../src/util/log.cpp)
 
-add_executable(util_serializer ${MAIN} util/serializer.cpp ../src/util/serializer.cpp)
+add_executable(util_bin2hex ${MAIN} util/bin2hex.cpp ../src/util/bin2hex.cpp)
 add_executable(util_md5 ${MAIN} util/md5.cpp ../src/util/md5.cpp ../src/util/bin2hex.cpp)
+add_executable(util_serializer ${MAIN} util/serializer.cpp ../src/util/serializer.cpp)
 add_executable(wa_node ${MAIN} node/wa_node.cpp ../src/node/wa_node.cpp)
 add_executable(wa_str_node ${MAIN} node/wa_str_node.cpp ../src/node/wa_str_node.cpp ../src/node/wa_node.cpp)
 add_executable(not_found_node ${MAIN} rest/not_found_node.cpp ../src/rest/not_found_node.cpp ../src/node/wa_node.cpp)
@@ -66,8 +67,9 @@ endif()
 include_directories("${PROJECT_BINARY_DIR}")
 
 # Tests
-add_test(UtilSerializer util_serializer --force-colour)
+add_test(UtilBin2Hex util_bin2hex --force-colour)
 add_test(UtilMd5 util_md5 --force-colour)
+add_test(UtilSerializer util_serializer --force-colour)
 add_test(WANode wa_node --force-colour)
 add_test(WAStrNode wa_str_node --force-colour)
 add_test(NotFoundNode not_found_node --force-colour)
