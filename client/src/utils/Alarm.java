@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.os.PowerManager;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,6 +30,7 @@ import model.ServerResultReceiver;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import whatsapp.client.ActiveConversationsActivity;
 import whatsapp.client.ConversationActivity;
 import whatsapp.client.R;
 
@@ -39,6 +41,7 @@ import whatsapp.client.R;
 public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Listener {
 
 	NotificationManager notificationManager;
+	DatabaseHelper dbh ;
 	private Context context;
 
 	String idDelUltimo;
@@ -59,6 +62,7 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 	public void setAlarm(Context context) {
 		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		Intent i = new Intent(context, Alarm.class);
+		dbh = new DatabaseHelper(context);
 		PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
 		am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000 * 5, pi); // Millisec * Second * Minute
 	}
@@ -70,6 +74,10 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 		alarmManager.cancel(sender);
 	}
 
+	/**
+	 * Crea servicio que va a pedir notificaciones 
+	 * @param context contexto donde se ejecuta
+	 */
 	private void startService(Context context) {
 		Intent intent = new Intent(context, GETService.class);
 		ServerResultReceiver receiver = new ServerResultReceiver(new Handler());
@@ -149,13 +157,24 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 	private void processMessage(JSONObject data) {
 		if (ConversationActivity.isShowing()) {
 			try {
-				write(data.getJSONObject("data"));
-				ConversationActivity.getInstance().addMsgs();
+				//ConversationActivity.getInstance().addMsgs(ce);
+				String txt = data.getJSONObject("data").getString("message");
+				ConversationActivity.getInstance().addMsgs(txt);
 			} catch (JSONException ex) {
 				Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
 			}
 
-		} else {
+		} 
+		else if (ActiveConversationsActivity.isShowing()){
+			try {
+				write(data.getJSONObject("data"));
+				ActiveConversationsActivity.getInstance().informNuevo(data.getJSONObject("data").getString("from"));
+			} catch (JSONException ex) {
+				Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
+			}
+			
+		}
+		else {
 			sendNotification(data);
 		}
 	}
@@ -194,23 +213,23 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 
 	}
 
-	private void write(JSONObject data) {
-		try {
-			SharedPreferences store = context.getSharedPreferences("pepe", 0);
-			SharedPreferences.Editor editor = store.edit();
+	//private void write(JSONObject data) {
+	//	try {
+	//		SharedPreferences store = context.getSharedPreferences("pepe", 0);
+	//		SharedPreferences.Editor editor = store.edit();
 
-			Set<String> set = store.getStringSet("messages", new LinkedHashSet<String>());
-			set.add(data.getString("message"));
-			/*editor.putString("from", data.getString("from"));
-			 editor.putString("id", data.getString("id"));
-			 editor.putString("time",data.getString("time"));
-			 */
-			editor.putStringSet("messages", set);
-			editor.apply();
-		} catch (JSONException ex) {
-			Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
-		}
-	}
+	//		Set<String> set = store.getStringSet("messages", new LinkedHashSet<String>());
+	//		set.add(data.getString("message"));
+	//		/*editor.putString("from", data.getString("from"));
+	//		 editor.putString("id", data.getString("id"));
+	//		 editor.putString("time",data.getString("time"));
+	//		 */
+	//		editor.putStringSet("messages", set);
+	//		editor.apply();
+	//	} catch (JSONException ex) {
+	//		Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
+	//	}
+	//}
 
 	private void startServiceDelete(Context context) {
 		Intent intent = new Intent(context, DELETEService.class);
@@ -232,6 +251,37 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 		intent.putExtra("rec", receiver);
 		intent.putExtra("info", bundle);
 		context.startService(intent);
+	}
+
+	private ConversationEntity write(JSONObject data) {
+		dbh = new DatabaseHelper(context);
+		dbh.open();
+		/*
+		para hacer un fetch de la conversacion necesito el usuario. 
+		si me llega un id de usuario tendria que crear el usuario en la bas de datos y ahi con eso lo q estaria haciedno es agregarlo a la lista de usuarios
+
+
+		
+		creo entity de usuario  con el username
+		creo una conversation entity y le agrego la entity usuario
+		capazq tmb tenga q agregar el userMe  
+		y dsp hago un fetch
+
+		puedo hacer un fetch conversacion del user
+
+		
+		*/
+		try {
+			ConversationEntity ce = dbh.fetchConversation(data.getString("from"));
+			UserEntity ue = dbh.createUser(0, data.getString("from"), "nick", DatabaseHelper.NORMAL);
+			dbh.createMessage(ce, ue, null, null,data.getString("message") , DatabaseHelper.NOT_SEEN);
+			//Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, "ASDASD");
+			return ce;
+
+		} catch (JSONException ex) {
+			Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		return null;
 	}
 
 }

@@ -53,6 +53,7 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
             super.onCreate(savedInstanceState);
             setContentView(R.layout.users);
             viewUsuarios = (ListView) findViewById(R.id.usersListview);
+	    agregar = (Button) findViewById(R.id.buttonAgregar);
             loadUsers();
             populateView();
             addActionListeners();
@@ -81,11 +82,10 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 	}
 
 	private void populateView() {
-
-		//VOY A TENER QUE USAR UN BITMAP, 
-		//TODO: Cambiar esto cuando este implementado el enviador de imagenes del servidor
 		Drawable img = getResources().getDrawable(R.drawable.img1);
 		rowItems = new ArrayList<RowItem>();
+		if (users == null)
+			return;
 		for (int i = 0; i < users.size(); i++) {
 			UserEntity aux = users.get(i);
 			RowItem item = new RowItem(aux.getNickname(), img, aux.getUsername(), "ultima conexion", aux.getUserId());
@@ -155,7 +155,7 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 		dbH.open();
 
 		users = dbH.fetchAllUsers();
-		users.remove(dbH.fetchUser(dbH.USERID_ME));
+		//users.remove(dbH.fetchUser(dbH.USERID_ME));
 		dbH.close();
 
 	}

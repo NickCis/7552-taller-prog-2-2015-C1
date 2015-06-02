@@ -9,5 +9,19 @@
     android:padding="15dip"
     android:textSize="18sp"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"/>
+    android:layout_height="wrap_content"
+    android:dividerHeight="2px"
+    android:divider="#c0c0c0"
+    />
+
+    <Button 
+	 android:id="@+id/buttonAgregar"
+        android:layout_height="wrap_content" android:layout_width="fill_parent" 
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:text="Agregar contacto"
+        style="@style/button_text"
+        android:layout_centerHorizontal="true"
+    />
+
 </RelativeLayout>

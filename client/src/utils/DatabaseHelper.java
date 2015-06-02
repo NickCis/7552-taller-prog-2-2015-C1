@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import org.apache.http.params.HttpProtocolParams;
 
 /**
  *
@@ -317,7 +318,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             return this.fetchConversation(conversation.getConversationId());
         }
     }
-    
+
     private ConversationEntity fetchConversation(Integer conversationId) throws SQLException {
         Cursor cursor = mDb.query(true, DATABASE_CONVERSATION_TABLE, new String [] 
              {KEY_CONVERSATIONID, KEY_USERID, KEY_DATE}, KEY_CONVERSATIONID + 
@@ -527,5 +528,20 @@ public class DatabaseHelper extends SQLiteOpenHelper
           values.put(KEY_STATUS, status);
           boolean result = this.mDb.update(DATABASE_MESSAGE_TABLE, values, KEY_CONVERSATIONID + " =? AND " + KEY_USERID + " =? AND " + KEY_TIMESTAMP + " =? ", new String[]{"" + conversation.getConversationId(), "" + user.getUserId(),"" + date.getTime().toString()}) > 0; 
           return result;
+    }
+
+    public ConversationEntity fetchConversation(String userName){
+	    UserEntity ue = fetchUser(userName);
+	    if (ue == null){
+		    //TODO: cambiar esto, el nickname tiene q ser posta
+		    ue = createUser(0, userName, userName, DatabaseHelper.NORMAL);
+	    }
+	    ArrayList<UserEntity> list = new ArrayList<UserEntity>();
+	    list.add(ue);
+	    list.add(fetchUser(USERID_ME));
+	    ConversationEntity ce = fetchConversation(list);
+
+	    ce = ( ce != null ) ? ce : createConversation(list,null);
+	    return ce;
     }
 }

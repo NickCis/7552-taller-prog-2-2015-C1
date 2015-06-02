@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/pic"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:contentDescription="desc"
         android:paddingLeft="10dp"
         android:paddingRight="10dp" />
@@ -20,6 +20,7 @@
         android:layout_toRightOf="@+id/pic"
         android:paddingBottom="10dp"
         android:text="head"
+        android:textColor="#000000"
         android:textStyle="bold"
         android:textSize="20sp" />
 

@@ -46,4 +46,8 @@ public class RowItem {
 	public Drawable getAvatar() {
 		return avatar;
 	}
+
+	public String getUserName(){
+		return this.userName;
+	}
 }
