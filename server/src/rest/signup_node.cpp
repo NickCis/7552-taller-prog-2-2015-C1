@@ -15,9 +15,10 @@ SignupNode::SignupNode() : WAMethodNode("signup") {
 }
 
 void SignupNode::executePost(MgConnection& conn, const char* url){
-	string u = conn.getVarStr("user");
-	string p = conn.getVarStr("pass");
-	Status s = User::Put(u, p);
+	User u;
+	u.setUsername(conn.getVarStr("user"));
+	u.setPassword(conn.getVarStr("pass"));
+	Status s = u.put();
 
 	if(s.ok()){
 		conn.sendStatus(MgConnection::STATUS_CODE_CREATED);

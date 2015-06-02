@@ -45,7 +45,7 @@ void ContactsNode::executeDelete(MgConnection& conn, const char* url){
 	User u;
 
 	for(int n=0; (user = conn.getVarStr("users[]", n)).length(); n++){
-		if(User::Get(user, u).ok() && contactList.erase(user).ok()){
+		if(u.get(user).ok() && contactList.erase(user).ok()){
 			if(!firstSuccess)
 				success += ",";
 			else
@@ -79,9 +79,7 @@ void ContactsNode::executePost(MgConnection& conn, const char* url){
 	User u;
 
 	for(int n=0; (user = conn.getVarStr("users[]", n)).length(); n++){
-		if(User::Get(user, u).ok()){
-		}
-		if(User::Get(user, u).ok() && contactList.push_back(user).ok()){
+		if(u.get(user).ok() && contactList.push_back(user).ok()){
 			if(!firstSuccess)
 				success += ",";
 			else

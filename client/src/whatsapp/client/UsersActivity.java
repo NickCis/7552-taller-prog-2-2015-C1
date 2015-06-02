@@ -7,17 +7,21 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewParent;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -41,23 +45,23 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 	List<UserEntity> users;
 	ListView viewUsuarios;
 	Button agregar;
+	UsersActivity uA;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.users);
-		viewUsuarios = (ListView) findViewById(R.id.usersListview);
-		agregar = (Button)findViewById(R.id.buttonAgregar);
-		loadUsers();
-		populateView();
-		addActionListeners();
-		/*
-		 LinkedHashMap<String, Integer> map = new LinkedHashMap<String, Integer>();
-		 for (UserEntity uE : users) {
-		 map.put(uE.getNickname(), uE.getUserId());
-		 }
-		 */
-
+            this.uA = this;
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.users);
+            viewUsuarios = (ListView) findViewById(R.id.usersListview);
+            loadUsers();
+            populateView();
+            addActionListeners();
+            /*
+             LinkedHashMap<String, Integer> map = new LinkedHashMap<String, Integer>();
+             for (UserEntity uE : users) {
+             map.put(uE.getNickname(), uE.getUserId());
+             }
+             */
 	}
 
 	private void addActionListeners() {
@@ -89,7 +93,61 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 		}
 		adapter = new UserAdapter(this, rowItems);
 		viewUsuarios.setAdapter(adapter);
+		registerForContextMenu(this.viewUsuarios);
 
+	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		getMenuInflater().inflate(R.layout.user_options , menu);
+	}
+
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) 
+	{
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		DatabaseHelper dbH = new DatabaseHelper(this);
+		dbH.open();
+		List<UserEntity> list = dbH.fetchAllUsers();
+		list.remove(dbH.fetchUser(dbH.USERID_ME));
+		UserEntity uE = list.get(info.position);
+		switch(item.getItemId()){
+			case R.id.conversation:
+				List<UserEntity> users = new ArrayList<UserEntity>();
+				users.add(uE);
+				users.add(dbH.fetchUser(dbH.USERID_ME));
+				ConversationEntity cE = dbH.fetchConversation(new ConversationEntity(users));
+				if (cE == null) {
+					cE = dbH.createConversation(users, Calendar.getInstance());
+					// Mandar a server (?)
+				}
+				final int conversationID = cE.getConversationId();
+				final View vista = this.viewUsuarios.getChildAt(info.position);
+				dbH.close();
+				vista.animate().setDuration(500).alpha(0).withEndAction(new Runnable() {
+					@Override
+					public void run() {
+						vista.setAlpha(1);
+						Intent intent = new Intent(uA, ConversationActivity.class);
+						Bundle bundle = new Bundle();
+						bundle.putInt("conversationId", conversationID);
+						intent.putExtra("whatsapp.client.ConversationActivity.data", bundle);
+						startActivity(intent);
+					}
+				});
+				break;
+			case R.id.profile:
+				dbH.close();
+				Intent intent = new Intent(this, ProfileActivity.class);
+				Bundle bundle = new Bundle();
+				bundle.putInt("userId", uE.getUserId());
+				intent.putExtra("whatsapp.client.ProfileActivity.data", bundle);
+				startActivity(intent);
+				break;
+		}
+		return true;
 	}
 
 	private void loadUsers() {
@@ -238,24 +296,4 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 	}
 	
 
-	//private class StableArrayAdapter extends ArrayAdapter<String> {
-
-	//	LinkedHashMap<String, Integer> mIdMap = new LinkedHashMap<String, Integer>();
-
-	//	public StableArrayAdapter(Context context, int textViewResourceId, LinkedHashMap<String, Integer> objects) {
-	//		super(context, textViewResourceId, new ArrayList<String>(objects.keySet()));
-	//		this.mIdMap = objects;
-	//	}
-
-	//	@Override
-	//	public long getItemId(int position) {
-	//		String item = getItem(position);
-	//		return mIdMap.get(item);
-	//	}
-
-	//	@Override
-	//	public boolean hasStableIds() {
-	//		return true;
-	//	}
-	//}
 }

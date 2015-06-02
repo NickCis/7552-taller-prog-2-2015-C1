@@ -31,7 +31,7 @@ bool UserNode::preExecute(MgConnection& conn, const char*& url){
 
 	conn.setParameter("user", user);
 	User u;
-	if(User::Get(user, u).ok())
+	if(u.get(user).ok())
 		return true;
 
 	conn.sendStatus(MgConnection::STATUS_CODE_NOT_FOUND);

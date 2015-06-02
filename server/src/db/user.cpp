@@ -1,6 +1,7 @@
 #include "user.h"
 
 #include <rocksdb/slice.h>
+#include "../util/md5.h"
 
 using std::string;
 using std::shared_ptr;
@@ -12,36 +13,66 @@ using rocksdb::ReadOptions;
 using rocksdb::WriteOptions;
 using rocksdb::ColumnFamilyHandle;
 
-DB* User::db = NULL;
-ColumnFamilyHandle* User::cf = NULL;
+DB_ENTITY_DEF(User)
 
-User::User() : username(""), password(""){
+User::User() :
+	username(""),
+	password("") {
 }
 
-User::User(const string& u) : username(u), password(""){
+const string& User::getUsername() const{
+	return this->username;
 }
 
-Status User::Get(const string& username, User& u){
-	u.username = username;
-	u.password = "";
-	return User::db->Get(ReadOptions(), User::cf, Slice(u.username), &u.password);
+Status User::put(){
+	if(!User::IsUsernameValid(this->username))
+		return Status::InvalidArgument(Slice("Nombre de usuario invalido"));
+
+	if(this->password == "")
+		return Status::InvalidArgument(Slice("Password invalida"));
+
+	return DbEntity::put();
 }
 
-Status User::Put(const string& u, const string p, bool check){
-	if(check){
-		User user;
-		Status s = User::Get(u, user);
-		if(s.ok())
-			return Status::InvalidArgument(Slice("Usuario ya existe"));
+bool User::isPassword(const string& p) const{
+	string pass;
+	User::HashPassword(pass, p);
+	return this->password == pass;
+}
 
-		if(!User::IsUsernameValid(u))
-			return Status::InvalidArgument(Slice("Nombre de usuario invalido"));
+bool User::setPassword(const std::string& p){
+	if(!User::IsPasswordValid(p))
+		return false;
 
-		if(!User::IsPasswordValid(p))
-			return Status::InvalidArgument(Slice("Password invalida"));
-	}
+	User::HashPassword(this->password, p);
+	return true;
+}
 
-	return User::db->Put(WriteOptions(), User::cf, Slice(u), Slice(p));
+bool User::setUsername(const string& user){
+	User u;
+	if(! u.get(user).IsNotFound())
+		return false;
+	this->username = user;
+
+	return true;
+}
+
+bool User::unPack(const std::string& key, const std::string& value){
+	this->username = key;
+	this->password = value;
+	return true;
+}
+
+void User::packKey(std::string& key){
+	key = this->username;
+}
+
+void User::packValue(std::string& value){
+	value = this->password;
+}
+
+string User::toJson() const {
+	return "";
 }
 
 bool User::IsUsernameValid(const string& username){
@@ -77,24 +108,6 @@ bool User::IsPasswordValid(const string& password){
 	return password.length() >= 6;
 }
 
-void User::SetDB(DB* db, ColumnFamilyHandle* cf){
-	User::db = db;
-	User::cf = cf;
-}
-
-
-const string& User::getUsername() const{
-	return this->username;
-}
-
-const string& User::getPassword(bool forceFetch){
-	if(forceFetch || this->password == "")
-		User::db->Get(ReadOptions(), User::cf, Slice(this->username), &this->password);
-
-	return this->password;
-}
-
-Status User::setPassword(const std::string& p){
-	this->password = p;
-	return User::db->Put(WriteOptions(), User::cf, Slice(this->username), Slice(p));
+void User::HashPassword(std::string& hashed, const std::string& password){
+	md5Str(hashed, password);
 }

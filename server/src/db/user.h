@@ -6,59 +6,68 @@
 #include <rocksdb/db.h>
 #include <rocksdb/status.h>
 
+#include "db_entity.h"
+
 /** Clase que maneja los Mensajes en la db
  */
-class User {
+class User : public DbEntity {
+	DB_ENTITY_CLASS(User)
+
 	public:
 		/** Constructor vacio
 		 */
 		User();
-		User(const std::string& username);
 
-		/** Obtiene un usuario
-		 * @param username[in]: nombre de usuario
-		 * @param u[out]: instancia de usuario
-		 * @return Estado de error
-		 */
-		static rocksdb::Status Get(const std::string& username, User& u);
+		rocksdb::Status put();
 
-		/** Metodo que sirve para setear la instancia a la base de datos y a la column family.
-		 * @param db[in]: Instancia a la base de datos a usar
-		 * @param cf[in]: instancia a la column family a usar
+		/** Setea el nombre de usuario
+		 * @param usuario
+		 * @return true: si se pudo, false: si el usuario ya existe
 		 */
-		static void SetDB(rocksdb::DB* db, rocksdb::ColumnFamilyHandle* cf);
+		bool setUsername(const std::string&);
 
-		/** Escribe usuario en la db
-		 * @param u: nombre de usuario
-		 * @param p: password
-		 * @param check: true para que haga validacion de usuario y datos, false para que escriba de una
-		 * @return Estado de error
+		/** Setea la contrase~na.
+		 * @param p: contrase~na
+		 * @return true: si la contrase~na es valida.
 		 */
-		static rocksdb::Status Put(const std::string& u, const std::string p, bool check=true);
+		bool setPassword(const std::string& p);  ///< Setea la contrase~na
 
 		const std::string& getUsername() const; ///< Devuelve el nombre de usuario
 
-		/** Devuelve la contrase~na
-		 * @param forceFetch: fuerza hacer un GET
-		 * @return contrase~na
+		/** Chequea que la password sea la misma
+		 * @param password a comparar;
+		 * @return true: si son la misma, false: si no
 		 */
-		const std::string& getPassword(bool forceFetch=false);
+		bool isPassword(const std::string&) const;
 
-		/** Setea el password. Hace PUT en la db despues.
-		 * @param p: contrase~na nueva
-		 * @return Estado de error
-		 */
-		rocksdb::Status setPassword(const std::string& p);
+		bool unPack(const std::string& key, const std::string& value);
+		std::string toJson() const;
+
 
 	protected:
+		void packKey(std::string& key);
+		void packValue(std::string& value);
+
 		std::string username; ///< usuario
 		std::string password; ///< contrase~na
 
-		static rocksdb::DB* db; ///< instancia db
-		static rocksdb::ColumnFamilyHandle* cf; ///< instancia column family
+		/** Valida el usuario.
+		 * @param usuario a validar
+		 * @return true: si es valido, false: si no.
+		 */
+		static bool IsUsernameValid(const std::string& username); 
 
-		static bool IsUsernameValid(const std::string& username); ///< Valida nombre de usuario
-		static bool IsPasswordValid(const std::string& password); ///< Valida contrase~na
+		/** Valida la contra~na
+		 * @param contrase~na a validar
+		 * @return true: si es valida, false: si no.
+		 */
+		static bool IsPasswordValid(const std::string& password);
+
+		/** Hashea una contrase~na para no guardarla en texto plano.
+		 * @param hashed: buffer donde se escribira la contrase~na hasheada
+		 * @param password: contrase~na a hashear
+		 */
+		static void HashPassword(std::string& hashed, const std::string& password);
 };
 
 #endif
