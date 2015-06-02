@@ -36,6 +36,7 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 		showing = true;
 		DatabaseHelper dbH = new DatabaseHelper(this);
 		dbH.open();
+		UserEntity uEMe = dbH.createUser(1554587629, "Me", "Me", DatabaseHelper.NORMAL);
 		/*
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 			UserEntity uEMe = dbH.createUser(1554587629, "Me", "Me", DatabaseHelper.NORMAL);
@@ -79,8 +80,8 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 			DatabaseHelper dbH = new DatabaseHelper(this);
 			dbH.open();
 			ConversationEntity ce = dbH.fetchConversation(nuevo);
-			adapter.add(ce.getUser(0).getNickname());
-			adapter.addToMap(ce.getUser(0).getNickname(), ce.getUser(0).getUserId());
+			adapter.add(ce.getUser(1).getNickname());
+			adapter.addToMap(ce.getUser(1).getNickname(), ce.getUser(1).getUserId());
 
 		}
 
@@ -97,13 +98,15 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 		public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
 			StableArrayAdapter sAA = (StableArrayAdapter) parent.getAdapter();
 			final int conversationID = (int) sAA.getItemId(position);
+			final String conversationOf = adapter.getItem(position);
 			view.animate().setDuration(500).alpha(0).withEndAction(new Runnable() {
 				@Override
 				public void run() {
 					view.setAlpha(1);
 					Intent intent = new Intent(context, ConversationActivity.class);
 					Bundle bundle = new Bundle();
-					intent.putExtra("conversationId", conversationID);
+					//intent.putExtra("conversationId", conversationID);
+					intent.putExtra("id", conversationOf);
 					//bundle.putInt("conversationId", conversationID);
 					//intent.putExtra("whatsapp.client.ConversationActivity.data", bundle);
 					startActivity(intent);

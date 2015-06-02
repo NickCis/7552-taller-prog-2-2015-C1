@@ -273,7 +273,8 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 		*/
 		try {
 			ConversationEntity ce = dbh.fetchConversation(data.getString("from"));
-			UserEntity ue = dbh.createUser(0, data.getString("from"), "nick", DatabaseHelper.NORMAL);
+			UserEntity ue = dbh.fetchUser(data.getString("from"));
+			//UserEntity ue = dbh.createUser(0, data.getString("from"), "nick", DatabaseHelper.NORMAL);
 			dbh.createMessage(ce, ue, null, null,data.getString("message") , DatabaseHelper.NOT_SEEN);
 			//Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, "ASDASD");
 			return ce;
