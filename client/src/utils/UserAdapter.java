@@ -86,4 +86,25 @@ public class UserAdapter extends BaseAdapter {
 		return convertView;
 	}
 
+	/**
+	 * Metodo para remover usuarios en la lista de usuario por nombre
+	 * @param name 
+	 */
+	public void remove(String name){
+		for (RowItem usuario : usuarios) {
+			if (usuario.getUserName().equalsIgnoreCase(name)){
+				this.usuarios.remove(usuario);
+				return;
+			}
+		}
+	}
+	
+	public void remove(int index){
+		this.usuarios.remove(index);
+	}
+	
+	public void remove(RowItem rowItem){
+		this.usuarios.remove(rowItem);
+	}
+
 }

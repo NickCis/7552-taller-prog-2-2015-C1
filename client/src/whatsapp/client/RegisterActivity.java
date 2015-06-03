@@ -45,7 +45,7 @@ public class RegisterActivity extends Activity implements ServerResultReceiver.L
 		String pass1 = passwordField.getText().toString();
 		String pass2 = passWordValidateField.getText().toString();
 		if (!pass1.equals(pass2)) {
-			InfoDialog.createAlertDialog(this, "Contraseña incorrecta",
+			DialogFactory.createAlertDialog(this, "Contraseña incorrecta",
 					"Las contraseñas no coinciden, vuelva a intentarlo",
 					RegisterActivity.class
 			);
@@ -57,7 +57,7 @@ public class RegisterActivity extends Activity implements ServerResultReceiver.L
 			URI = getIP() + ":" + getPort() + "/" + "signup";
 			bundle.putString("URI", URI);
 			//TODO: esto es auth
-			InfoDialog.createProgressDialog(this, "Registrando... por favor espere");
+			DialogFactory.createProgressDialog(this, "Registrando... por favor espere");
 			startService(createCallingIntent(bundle));
 		}
 	}
@@ -90,7 +90,7 @@ public class RegisterActivity extends Activity implements ServerResultReceiver.L
 	}
 
 	public void onReceiveResult(int resultCode, Bundle resultData) {
-		InfoDialog.disposeDialog();
+		DialogFactory.disposeDialog();
 
 		if (resultCode == 0) {
 			try {
@@ -105,7 +105,7 @@ public class RegisterActivity extends Activity implements ServerResultReceiver.L
 					bundle.putSerializable("params", params);
 					URI = getIP() + ":" + getPort() + "/" + "auth";
 					bundle.putString("URI", URI);
-					InfoDialog.createProgressDialog(this, "Registrando... por favor espere");
+					DialogFactory.createProgressDialog(this, "Registrando... por favor espere");
 					startService(createCallingIntent(bundle));
 				} else {
 

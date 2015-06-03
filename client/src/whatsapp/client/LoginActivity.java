@@ -71,7 +71,7 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 		final String URI = getIP() + ":" + getPort() + "/" + "auth";
 		bundle.putString("URI", URI);
 		//TODO: esto es auth
-		InfoDialog.createProgressDialog(this, "Registrando... por favor espere");
+		DialogFactory.createProgressDialog(this, "Registrando... por favor espere");
 		startService(createCallingIntent(bundle));
 	}
 
@@ -111,7 +111,7 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 //		}
 //		registerUser();
 
-		InfoDialog.disposeDialog();
+		DialogFactory.disposeDialog();
 		if (resultCode == 0) {
 			JSONObject data = null;
 			try {
@@ -123,7 +123,7 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 			}
 			startActivity(new Intent(this, MainActivity.class));
 		} else {
-			InfoDialog.createAlertDialog(this, "Problema ingresando",
+			DialogFactory.createAlertDialog(this, "Problema ingresando",
 					"Verifique sus datos, en caso de no tener un usuario por favor registrese",
 					LoginActivity.class
 			);
