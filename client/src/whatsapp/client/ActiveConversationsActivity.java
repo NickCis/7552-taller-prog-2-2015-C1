@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -20,49 +21,73 @@ import java.util.HashMap;
 import java.util.List;
 import utils.ConversationEntity;
 import utils.DatabaseHelper;
+import utils.UserAdapter;
 import utils.UserEntity;
 
 public class ActiveConversationsActivity extends Activity implements ServerResultReceiver.Listener {
 
-	StableArrayAdapter adapter;
-	ListView listview;
+	//private StableArrayAdapter adapter;
+	private UserAdapter adapter;
+	private ListView listview;
 	private static boolean showing;
 	private static ActiveConversationsActivity INSTANCE;
+	private ArrayList<RowItem> rowItems;
+	private List<ConversationEntity> conversations;
+	private HashMap<String, Integer> map;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		INSTANCE = this;
 		showing = true;
+		loadConversations();
+		setContentView(R.layout.active_conversations);
+		populateView();
+		bindListeners();
+	}
+
+	private void bindListeners(){
+		listview.setOnItemLongClickListener(new OptionListener());
+		listview.setOnItemClickListener(new ClickListener(this));
+	}
+	
+	private void populateView() {
+		
+		listview = (ListView) findViewById(R.id.activeConversationsListview);
+		//adapter = new StableArrayAdapter(this, android.R.layout.simple_list_item_1, map);
+		//listview.setAdapter(adapter);
+		Drawable img = getResources().getDrawable(R.drawable.img1);
+		rowItems = new ArrayList<RowItem>();
+		if (conversations == null)
+			return;
+		for (int i = 0; i < conversations.size(); i++) {
+			ConversationEntity c = conversations.get(i);
+			UserEntity aux = c.getUser(0);
+
+			RowItem item = new RowItem(aux.getNickname(), img, aux.getUsername(), "ultima conexion", aux.getUserId());
+			rowItems.add(item);
+		}
+		adapter = new UserAdapter(this, rowItems);
+		listview.setAdapter(adapter);
+		registerForContextMenu(this.listview);
+
+	}
+
+	private void loadConversations(){
 		DatabaseHelper dbH = new DatabaseHelper(this);
 		dbH.open();
 		UserEntity uEMe = dbH.createUser(1554587629, "Me", "Me", DatabaseHelper.NORMAL);
-		/*
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-			UserEntity uEMe = dbH.createUser(1554587629, "Me", "Me", DatabaseHelper.NORMAL);
-			UserEntity uE = dbH.createUser(1511111111, "WhatsApp Info", "WhatsApp Info", DatabaseHelper.NORMAL);
-			dbH.createUser(1522222222, "Rodrigo", "Rodri", DatabaseHelper.NORMAL);
-			dbH.createUser(1533333333, "Nico", "Nico", DatabaseHelper.NORMAL);
-			ConversationEntity cE = dbH.createConversation(uE, Calendar.getInstance());
-			dbH.createMessage(cE, uE, null, null, "Bienvenido a Whatsapp", dbH.NOT_SEEN);
-			dbH.createMessage(cE, uEMe, null, null, "Hola!!!", dbH.NOT_SEEN);
-			dbH.createMessage(cE, uEMe, null, null, "Como estas?", dbH.NOT_SEEN);
-			dbH.createMessage(cE, uE, null, null, "Bien, y vos?", dbH.NOT_SEEN);
-		*/
-		setContentView(R.layout.active_conversations);
-
-		listview = (ListView) findViewById(R.id.activeConversationsListview);
-
-		HashMap<String, Integer> map = new HashMap<String, Integer>();
-		for (ConversationEntity cE : dbH.fetchAllConversations()) {
-			map.put(cE.getUser(0).getNickname(), cE.getConversationId());
+		map = new HashMap<String, Integer>();
+		List<ConversationEntity> conversationsAux = dbH.fetchAllConversations();
+		if (conversationsAux!= null){
+			for (ConversationEntity cE : conversationsAux) {
+				map.put(cE.getUser(1).getNickname(), cE.getConversationId());
+			}
+			
+			conversations = (conversationsAux);
 		}
 		dbH.close();
-		adapter = new StableArrayAdapter(this, android.R.layout.simple_list_item_1, map);
-		listview.setAdapter(adapter);
-
-		listview.setOnItemLongClickListener(new OptionListener());
-		listview.setOnItemClickListener(new ClickListener(this));
+		
 	}
 
 	public void onReceiveResult(int resultCode, Bundle resultData) {
@@ -72,17 +97,23 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 	public void informNuevo(String nuevo) {
 		if (adapter.contains(nuevo)){
 			int idx = adapter.getPosition(nuevo);
+			//TODO:
+			// CUANDO DEVUELVE ALGO DEVUELVE UN RELATIVE LAYOUT, VER COMO CAMBIAR ESO CUANDO ME LLEGUE UNA NOTIFIACION
 			TextView v = (TextView)listview.getChildAt(idx);
-			v.setTextAppearance(this, R.style.textview_notificated);
+			//v.setTextAppearance(this, R.style.textview_notificated);
 
 			
 		}else{
 			DatabaseHelper dbH = new DatabaseHelper(this);
 			dbH.open();
 			ConversationEntity ce = dbH.fetchConversation(nuevo);
-			adapter.add(ce.getUser(1).getNickname());
-			adapter.addToMap(ce.getUser(1).getNickname(), ce.getUser(1).getUserId());
-
+			UserEntity aux = ce.getUser(1);
+			//TODO: sacar
+			Drawable img = getResources().getDrawable(R.drawable.img1);
+			RowItem item = new RowItem(aux.getNickname(), img, aux.getUsername(), "ultima conexion", aux.getUserId());
+			adapter.add(item);
+			adapter.notifyDataSetChanged();
+			//adapter.addToMap(ce.getUser(1).getNickname(), ce.getUser(1).getUserId());
 		}
 
 	}
@@ -96,9 +127,9 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 		}
 
 		public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-			StableArrayAdapter sAA = (StableArrayAdapter) parent.getAdapter();
-			final int conversationID = (int) sAA.getItemId(position);
-			final String conversationOf = adapter.getItem(position);
+			//StableArrayAdapter sAA = (StableArrayAdapter) parent.getAdapter();
+			RowItem item = adapter.getItem(position);
+			final String conversationOf = item.getUserName();
 			view.animate().setDuration(500).alpha(0).withEndAction(new Runnable() {
 				@Override
 				public void run() {
@@ -124,7 +155,9 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 
 					public void onClick(DialogInterface arg0, int id) {
 						//adapterView.get
-						String itemSelected = adapter.getItem(idx);
+						//UserEntity ue = (UserEntity) adapter.getItem(idx);
+						RowItem item = adapter.getItem(idx);
+						String itemSelected = item.getUserName();
 						adapter.remove(itemSelected);
 						adapter.notifyDataSetChanged();
 					}
@@ -160,6 +193,7 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 		return INSTANCE;
 	}
 
+/*
 	private class StableArrayAdapter extends ArrayAdapter<String> {
 
 		HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
@@ -181,10 +215,6 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 
 		@Override
 		public void remove(String object) {
-			/* 
-			 * Esto es lo mas cercano que podemos hacer todavia pero no me cierra, porque deberia remover por ID y no por nickname
-			 * Con nicknames repetidos podria fallar el hashing
-			 */
 
 			Integer conversationId = this.mIdMap.get(object);
 			if (conversationId != null) {
@@ -206,4 +236,5 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 			return true;
 		}
 	}
+	*/
 }

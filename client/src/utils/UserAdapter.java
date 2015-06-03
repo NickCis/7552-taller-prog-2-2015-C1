@@ -23,13 +23,17 @@ public class UserAdapter extends BaseAdapter {
 		this.usuarios = rowItems;
 	}
 
+	public void add(RowItem item){
+		this.usuarios.add(item);
+	}
+
 	@Override
 	public int getCount() {
 		return usuarios.size();
 	}
 
-	@Override
-	public Object getItem(int position) {
+
+	public RowItem getItem(int position){
 		return usuarios.get(position);
 	}
 
@@ -107,4 +111,19 @@ public class UserAdapter extends BaseAdapter {
 		this.usuarios.remove(rowItem);
 	}
 
+	public boolean contains(String item){
+		for (RowItem usuario : usuarios) {
+			if (usuario.contains(item))
+				return true;
+		}
+		return false;
+	}
+
+	public int getPosition(String item){
+		for (int i = 0 ; i< usuarios.size() ; i++) {
+			if (usuarios.get(i).contains(item))
+				return i;
+		}
+		return -1;
+	}
 }

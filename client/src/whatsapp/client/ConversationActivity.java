@@ -115,7 +115,7 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 		String ip = ConfigurationManager.getInstance().getString(this, ConfigurationManager.SAVED_IP);
 		String port = ConfigurationManager.getInstance().getString(this, ConfigurationManager.SAVED_PORT);
 		//TODO: Manejar bien esto
-		String to = this.cE.getUser(0).getUsername();
+		String to = this.cE.getUser(1).getUsername();
 		String URI = ip + ":" + port + "/" + "user/" + to + "/messages";
 		bundle.putString("URI", URI);
 		bundle.putSerializable("params", params);

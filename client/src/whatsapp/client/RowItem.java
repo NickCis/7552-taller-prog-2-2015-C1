@@ -50,4 +50,8 @@ public class RowItem {
 	public String getUserName(){
 		return this.userName;
 	}
+
+	public boolean contains(String item){
+		return item.equals(userName);
+	}
 }

@@ -67,7 +67,8 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 
 	private void addActionListeners() {
 		viewUsuarios.setOnItemClickListener(new ClickListener(this));
-		viewUsuarios.setOnItemLongClickListener(new OptionListener());
+		//TODO: Integrar con lo de mati
+		//viewUsuarios.setOnItemLongClickListener(new OptionListener());
 		bindDialog();
 	}
 
@@ -203,6 +204,7 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 			List<UserEntity> users = new ArrayList<UserEntity>();
 			users.add(list.get(position));
 			users.add(dbH.fetchUser(dbH.USERID_ME));
+			//TODO : ESTO ANDA BIEN ? 
 			ConversationEntity cE = dbH.fetchConversation(new ConversationEntity(users));
 			if (cE == null) {
 				cE = dbH.createConversation(users, Calendar.getInstance());
@@ -255,6 +257,8 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 		public void onClick(DialogInterface arg0, int arg1) {
 			this.contact = edit.getText().toString();
 			dialog.dismiss();
+			Logger.getLogger(UsersActivity.class.getName()).log(Level.INFO, "ENTRE AL SEND");
+			System.out.println("entreeeeefsdfasdfsadf");
 			send();
 
 		}
@@ -264,10 +268,12 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 			HashMap<String, String> params = new HashMap<String, String>();
 			String access_token = ConfigurationManager.getInstance().getString(UsersActivity.this, ConfigurationManager.ACCESS_TOKEN);
 			params.put("users[]", contact);
+			params.put("access_token",access_token);
 			bundle.putSerializable("params", params);
 			String ip = ConfigurationManager.getInstance().getString(UsersActivity.this, ConfigurationManager.SAVED_IP);
 			String port = ConfigurationManager.getInstance().getString(UsersActivity.this, ConfigurationManager.SAVED_PORT);
-			String URI = ip + ":" + port + "/contacts?acess_token="+access_token;
+			//String URI = ip + ":" + port + "/contacts?access_token="+access_token;
+			String URI = ip + ":" + port + "/contacts";
 			bundle.putString("URI", URI);
 			bundle.putSerializable("params", params);
 			Intent intent = new Intent(UsersActivity.this, POSTService.class);
