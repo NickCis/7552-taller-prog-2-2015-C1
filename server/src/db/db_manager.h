@@ -85,6 +85,7 @@ class DBManager {
 		std::unique_ptr<rocksdb::DB> db; ///< Instancia de la db
 		std::vector < std::unique_ptr < rocksdb::ColumnFamilyHandle > > cfs; ///< vector con todas las instancias de column families
 		DbComparator comparator; //< Clase comparadora
+		DbComparatorReverse comparatorReverse; //< Clase comparadora
 
 		/** Crea la db.
 		 * @param s[out]: estado de error de la creacion de la db

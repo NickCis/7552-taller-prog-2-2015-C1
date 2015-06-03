@@ -19,6 +19,13 @@ class DbIterator {
 			this->hasToUnPack = true;
 		}
 
+		/** mueve el iterador para atras
+		 */
+		void prev(){
+			this->it->Prev();
+			this->hasToUnPack = true;
+		}
+
 		/** Va a la primera notifcacion. La verdad no tiene mucha utilidad, se puede usar para listar todos las notificaiciones
 		 * de todos los usuarios. (mueve el iterador)
 		 */

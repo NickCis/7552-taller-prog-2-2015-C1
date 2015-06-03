@@ -7,6 +7,11 @@
 #include <cstring>
 #include <algorithm>
 
+#ifndef _BSD_SOURCE
+#define _BSD_SOURCE
+#endif
+#include <endian.h>
+
 #include <rocksdb/write_batch.h>
 
 extern "C" {

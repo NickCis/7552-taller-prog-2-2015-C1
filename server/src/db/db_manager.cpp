@@ -28,7 +28,7 @@ using rocksdb::ColumnFamilyOptions;
 using rocksdb::kDefaultColumnFamilyName;
 
 const DBManager::ColumnFamilyDescriptor DBManager::ColumnFamilyDescriptors[] = {
-	{ "messages", COMPARATOR_DEFAULT, MERGE_DEFAULT },
+	{ "messages", COMPARATOR_DB_COMPARATOR_REVERSE, MERGE_DEFAULT },
 	{ "users", COMPARATOR_DB_COMPARATOR, MERGE_DB_USER },
 	{ "notifications", COMPARATOR_DB_COMPARATOR, MERGE_DEFAULT },
 	{ "access_tokens", COMPARATOR_DEFAULT, MERGE_DEFAULT },
@@ -40,6 +40,9 @@ void DBManager::columnFamilyOptionsFromDescriptor(const DBManager::ColumnFamilyD
 	switch(cfd.comparator){
 		case COMPARATOR_DB_COMPARATOR:
 			cfo.comparator = &this->comparator;
+			break;
+		case COMPARATOR_DB_COMPARATOR:
+			cfo.comparator = &this->comparatorReverse;
 			break;
 		default:
 			break;
