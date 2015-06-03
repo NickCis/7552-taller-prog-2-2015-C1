@@ -41,7 +41,7 @@ void DBManager::columnFamilyOptionsFromDescriptor(const DBManager::ColumnFamilyD
 		case COMPARATOR_DB_COMPARATOR:
 			cfo.comparator = &this->comparator;
 			break;
-		case COMPARATOR_DB_COMPARATOR:
+		case COMPARATOR_DB_COMPARATOR_REVERSE:
 			cfo.comparator = &this->comparatorReverse;
 			break;
 		default:

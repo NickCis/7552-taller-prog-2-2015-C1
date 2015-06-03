@@ -121,7 +121,7 @@ string Message::getId() const {
 
 string Message::toJson() const {
 	stringstream ss;
-	ss << "{\"id\":\"" << this->getId() << "\",\"from\":\"" << this->from << "\",\"message\":\"" << this->msg << "\",\"arrived\":" << this->arrived << ",\"read\":" << this->read << ",\"time\":" << this->getTime();
+	ss << "{\"id\":\"" << this->getId() << "\",\"to\":\"" << this->to << "\",\"from\":\"" << this->from << "\",\"message\":\"" << this->msg << "\",\"arrived\":" << this->arrived << ",\"read\":" << this->read << ",\"time\":" << this->getTime();
 
 	if(this->has_file) // TODO:
 		ss << ",\"file\":\"proximamente\",\"file_type\":\"proximamente\"";
@@ -175,4 +175,29 @@ void Message::Iterator::seek(const string& u1, const string& u2){
 	oser << '/';
 
 	DbIterator<Message>::seek(key);
+}
+
+void Message::Iterator::seek(const string& u1, const string& u2, const string& id){
+	string key;
+	OSerializer oser(key);
+	if(u1 < u2)
+		oser << ConstStrNoPrefix(u1) << '/' << ConstStrNoPrefix(u2);
+	else
+		oser << ConstStrNoPrefix(u2) << '/' << ConstStrNoPrefix(u1);
+
+	oser << '/';
+
+	vector<char> bin = hex2bin(id);
+	uint64_t _id;
+	if(bin.size() != sizeof(_id)){
+		this->prefix = "/////////";
+		return ;
+	}
+
+	memcpy((void*) &_id, (void*) bin.data(), sizeof(_id));
+
+	oser << _id;
+
+	DbIterator<Message>::seek(key);
+	this->prefix.resize(this->prefix.size() - sizeof(_id));
 }

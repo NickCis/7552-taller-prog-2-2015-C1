@@ -88,6 +88,7 @@ class Message::Iterator : public DbIterator<Message>{
 		 * @param from: usuario 2
 		 */
 		void seek(const std::string&, const std::string&);
+		void seek(const std::string&, const std::string&, const std::string& id);
 
 	protected:
 		/** Constructor
