@@ -23,28 +23,29 @@ void MessagesNode::executeGet(MgConnection& conn, const char* url){
 
 	string last_id = conn.getVarStr("last_id");
 	if(last_id.size()){
-		it->seek(user, loggedUser, last_id);
-		it->prev();
+		it.seek(user, loggedUser, last_id);
+		if(it.valid())
+			it.next();
 	}else{
-		it->seekToLast(user, loggedUser);
+		it.seek(user, loggedUser);
 	}
 
 	conn.sendStatus(MgConnection::STATUS_CODE_OK);
 	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
 	conn.printfData("{\"messages\":[");
 
-	for(int counter = 0; it->valid() && limit > counter ; it->prev(), counter++){
+	for(int counter = 0; it.valid() && limit > counter ; it.next(), counter++){
 	//for(it->seek(user, loggedUser); it->valid() && limit-- > 0; it->next(), first = false)
-		conn.printfData("%s%s", counter == 0 ? "" : ",", it->value().toJson().c_str());
-		last_id = it->value().getId();
+		conn.printfData("%s%s", counter == 0 ? "" : ",", it.value().toJson().c_str());
+		last_id = it.value().getId();
 	}
 
 	conn.printfData("],\"next\":\"/user/%s/messages?limit=%d&last_id=%s&access_token=%s\"}", user.c_str(), limit, last_id.c_str(), conn.getVarStr("access_token").c_str());
 }
 
 void MessagesNode::executePost(MgConnection& conn, const char* url){
-	Message msg;
-	Status s = Message::Put(conn.getParameter("user"), conn.getParameter("logged_user"), conn.getVarStr("message"), msg);
+	Message msg = Message::Now(conn.getParameter("user"), conn.getParameter("logged_user"), conn.getVarStr("message"));
+	Status s = msg.put();
 
 	if(! s.ok()){
 		conn.sendStatus(MgConnection::STATUS_CODE_BAD_REQUEST);

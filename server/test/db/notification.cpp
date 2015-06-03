@@ -1,6 +1,7 @@
 #include "helper.h"
 #include "../catch.hpp"
 #include "../../src/db/notification.h"
+#include "../../src/db/db_comparator.h"
 
 #include <vector>
 #include <string>
@@ -9,7 +10,8 @@ using namespace std;
 using namespace rocksdb;
 
 TEST_CASE( "La clase Notification funciona correctamente", "[Notification]" ) {
-	DB* db = NewDB();
+	DbComparator cmp;
+	DB* db = NewDB(&cmp, (ContactListMergeOperator*) NULL);
 	Notification::SetDB(db, db->DefaultColumnFamily());
 
 	vector<uint64_t> ids;
