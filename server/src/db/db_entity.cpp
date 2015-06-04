@@ -48,6 +48,7 @@ rocksdb::Status DbEntity::put(const rocksdb::Slice& key, const rocksdb::Slice& v
 }
 
 rocksdb::Status DbEntity::merge(const std::string& value){
+	this->packKey();
 	return this->merge(rocksdb::Slice(this->key), rocksdb::Slice(value));
 } 
 

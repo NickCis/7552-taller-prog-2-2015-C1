@@ -64,7 +64,7 @@ void Notification::packKey(string& key){
 }
 
 void Notification::packValue(string& value){
-	OSerializer(value) << this->type << this->data;
+	OSerializer(value) << this->t << this->type << this->data;
 }
 
 bool Notification::unPack(const string& key, const string& value){
@@ -72,7 +72,7 @@ bool Notification::unPack(const string& key, const string& value){
 	keySerializer >> StrNoPrefix(this->owner, key.size()-1-sizeof(this->id)) >> Ignore('/') >> this->id;
 
 	ISerializer valueSerializer(value);
-	valueSerializer >> this->type >> this->data;
+	valueSerializer >> this->t >> this->type >> this->data;
 
 	return ! (keySerializer.error() || valueSerializer.error() );
 }
@@ -118,6 +118,12 @@ string Notification::TypeToStr(const NotificationType& type){
 			return "message";
 		case NOTIFICATION_ACK:
 			return "ack";
+		case NOTIFICATION_AVATAR:
+			return "avatar";
+		case NOTIFICATION_PROFILE:
+			return "profile";
+		case NOTIFICATION_CHECKIN:
+			return "checkin";
 		default:
 			return "unknown";
 	}

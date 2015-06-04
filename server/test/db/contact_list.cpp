@@ -1,7 +1,8 @@
 #include "helper.h"
 #include "../catch.hpp"
 #include "../../src/db/contact_list.h"
-#include "../../src/db/contact_list_merge_operator.h"
+#include "../../src/db/suscriber_list.h"
+#include "../../src/db/list_merge_operator.h"
 
 #include <vector>
 #include <string>
@@ -9,9 +10,11 @@
 using namespace std;
 using namespace rocksdb;
 
+
 TEST_CASE( "La clase ContactList funciona correctamente?", "[ContactList]" ) {
-	DB* db = NewDB(NULL, new ContactListMergeOperator);
+	DB* db = NewDB(NULL, new ListMergeOperator);
 	ContactList::SetDB(db, db->DefaultColumnFamily());
+	SuscriberList::SetDB(db, db->DefaultColumnFamily());
 
 	SECTION( "ContactList" ) {
 		{
@@ -29,6 +32,8 @@ TEST_CASE( "La clase ContactList funciona correctamente?", "[ContactList]" ) {
 			for(auto it=contactList.getList().begin(); it!=contactList.getList().end(); it++){
 				REQUIRE( (*it) == to_string(i++) );
 			}
+
+			REQUIRE( i == 5 );
 		}
 
 		/*SECTION( "Tengo que poder borrar contactos de la lista" )*/ {

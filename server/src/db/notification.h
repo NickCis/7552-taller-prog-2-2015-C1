@@ -22,7 +22,10 @@ class Notification : public DbEntity  {
 		 */
 		typedef enum {
 			NOTIFICATION_MESSAGE=0, ///< Tipo mensaje
-			NOTIFICATION_ACK ///< Tipo ACK
+			NOTIFICATION_ACK, ///< Tipo ACK
+			NOTIFICATION_AVATAR, ///< Tipo Avatar
+			NOTIFICATION_PROFILE, ///< Tipo Profile
+			NOTIFICATION_CHECKIN ///< Tipo checkin
 		} NotificationType;
 
 		/** Constructor

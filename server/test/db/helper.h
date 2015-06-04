@@ -1,7 +1,7 @@
 #ifndef __DB_HELPER_H__
 #include <rocksdb/db.h>
 #include <rocksdb/options.h>
-#include "../src/db/contact_list_merge_operator.h"
+#include "../src/db/list_merge_operator.h"
 
 extern "C" {
 	#include <sys/time.h>
@@ -29,6 +29,6 @@ rocksdb::DB* NewDB(rocksdb::Comparator* comparator, T* mergeOperator){
 }
 
 rocksdb::DB* NewDB(){
-	return NewDB((rocksdb::Comparator*) NULL, (ContactListMergeOperator*) NULL);
+	return NewDB((rocksdb::Comparator*) NULL, (ListMergeOperator*) NULL);
 }
 #endif

@@ -1,12 +1,12 @@
-#ifndef __CONTACT_LIST_MERGE_OPERATOR_H__
-#define __CONTACT_LIST_MERGE_OPERATOR_H__
+#ifndef __LIST_MERGE_OPERATOR_H__
+#define __LIST_MERGE_OPERATOR_H__
 
 #include <string>
 
 #include <rocksdb/slice.h>
 #include <rocksdb/merge_operator.h>
 
-class ContactListMergeOperator : public rocksdb::AssociativeMergeOperator {
+class ListMergeOperator : public rocksdb::AssociativeMergeOperator {
 	public:
 		bool Merge(const rocksdb::Slice& key,
 				const rocksdb::Slice* existing_value,

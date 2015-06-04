@@ -4,6 +4,7 @@
 
 #include "../db/profile.h"
 #include "../util/log.h"
+#include "../util/notifier.h"
 
 using std::string;
 
@@ -73,4 +74,6 @@ void ProfileNode::executePost(MgConnection& conn, const char* url){
 	conn.sendStatus(MgConnection::STATUS_CODE_CREATED);
 	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
 	conn.printfData("{\"success\":true}");
+
+	Notifier::OnChangeProfile(loggedUser);
 }

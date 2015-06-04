@@ -1,4 +1,4 @@
-#include "contact_list_merge_operator.h"
+#include "list_merge_operator.h"
 
 #include "../util/serializer.h"
 
@@ -7,7 +7,7 @@ using std::string;
 using rocksdb::Slice;
 using rocksdb::Logger;
 
-bool ContactListMergeOperator::Merge(const Slice&,
+bool ListMergeOperator::Merge(const Slice&,
 		const Slice* existing_value,
 		const Slice& value,
 		string* new_value,
@@ -28,7 +28,7 @@ bool ContactListMergeOperator::Merge(const Slice&,
 	return false;
 }
 
-bool ContactListMergeOperator::push_back(const rocksdb::Slice* existing_value,
+bool ListMergeOperator::push_back(const rocksdb::Slice* existing_value,
 		const rocksdb::Slice& value,
 		std::string* new_value) const {
 	OSerializer ser(*new_value);
@@ -50,7 +50,7 @@ bool ContactListMergeOperator::push_back(const rocksdb::Slice* existing_value,
 	return true;
 }
 
-bool ContactListMergeOperator::erase(const rocksdb::Slice* existing_value,
+bool ListMergeOperator::erase(const rocksdb::Slice* existing_value,
 		const rocksdb::Slice& value,
 		std::string* new_value) const {
 
@@ -71,6 +71,6 @@ bool ContactListMergeOperator::erase(const rocksdb::Slice* existing_value,
 	return true;
 }
 
-const char* ContactListMergeOperator::Name() const{
-	return "ContactListMergeOperator";
+const char* ListMergeOperator::Name() const{
+	return "ListMergeOperator";
 }

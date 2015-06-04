@@ -1,35 +1,16 @@
 #include "contact_list.h"
+#include "suscriber_list.h"
 #include "../util/serializer.h"
 
 #include "profile.h"
 
 #include <sstream>
-#include <cstdlib>
-#include <cstring>
-#include <algorithm>
 
-#include <rocksdb/write_batch.h>
-
-extern "C" {
-	#include <sys/time.h>
-}
-
-using std::copy;
-using std::memcmp;
 using std::vector;
 using std::string;
-using std::to_string;
-using std::shared_ptr;
 using std::stringstream;
 
-using rocksdb::DB;
-using rocksdb::Slice;
 using rocksdb::Status;
-using rocksdb::Iterator;
-using rocksdb::WriteBatch;
-using rocksdb::ReadOptions;
-using rocksdb::WriteOptions;
-using rocksdb::ColumnFamilyHandle;
 
 DB_ENTITY_DEF(ContactList)
 
@@ -39,22 +20,9 @@ void ContactList::packKey(string& key){
 	key = this->key;
 }
 
-void ContactList::packValue(string& value){
-	OSerializer ser(value);
-	for(auto it=this->contactList.begin(); it !=  this->contactList.end(); it++)
-		ser << (*it);
-}
-
 bool ContactList::unPack(const string& key, const string& value){
 	this->key = key;
-
-	ISerializer valueSerializer(value);
-	string contact;
-	while(!(valueSerializer >> contact).error()){
-		this->contactList.push_back(contact);
-	}
-
-	return true;
+	return DbList::unPack(key, value);
 }
 
 string ContactList::toJson() const {
@@ -63,7 +31,7 @@ string ContactList::toJson() const {
 
 	bool first=true;
 	Profile p;
-	for(auto it=this->contactList.begin(); it!=this->contactList.end(); it++){
+	for(auto it=this->list.begin(); it!=this->list.end(); it++){
 		if(first)
 			first = false;
 		else
@@ -84,22 +52,31 @@ void ContactList::setOwner(const string& o){
 	this->key = o;
 }
 
-Status ContactList::push_back(const std::string& user){
-	this->contactList.push_back(user);
-	return this->merge(string("p")+user);
+rocksdb::Status ContactList::push_back(const std::string& u){
+	SuscriberList sl;
+	sl.setOwner(u);
+	Status s = sl.push_back(this->getOwner());
+	if(!s.ok())
+		return s;
+
+	s = DbList::push_back(u);
+	if(s.ok())
+		return s;
+
+	return sl.erase(this->getOwner());
 }
 
-Status ContactList::erase(const std::string& user){
-	for(auto it=this->contactList.begin(); it != this->contactList.end(); it++){
-		if((*it) == user){
-			this->contactList.erase(it);
-			break;
-		}
-	}
+rocksdb::Status ContactList::erase(const std::string& u){
+	SuscriberList sl;
+	sl.setOwner(u);
 
-	return this->merge(string("e")+user);
-}
+	Status s = sl.erase(this->getOwner());
+	if(!s.ok())
+		return s;
 
-const vector<string>& ContactList::getList() const {
-	return this->contactList;
+	s = DbList::erase(u);
+	if(s.ok())
+		return s;
+
+	return sl.push_back(this->getOwner());
 }

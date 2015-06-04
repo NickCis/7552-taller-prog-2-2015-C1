@@ -5,8 +5,9 @@
 
 #include <rocksdb/slice.h>
 #include <rocksdb/merge_operator.h>
+#include "list_merge_operator.h"
 
-class UserMergeOperator : public rocksdb::AssociativeMergeOperator {
+class UserMergeOperator : public ListMergeOperator {
 	public:
 		bool Merge(const rocksdb::Slice& key,
 				const rocksdb::Slice* existing_value,

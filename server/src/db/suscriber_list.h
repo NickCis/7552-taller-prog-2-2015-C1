@@ -1,5 +1,5 @@
-#ifndef __CONTACT_LIST_H__
-#define __CONTACT_LIST_H__
+#ifndef __SUSCRIBER_LIST_H__
+#define __SUSCRIBER_LIST_H__
 
 #include <string>
 #include <vector>
@@ -11,15 +11,15 @@
 #include "db_entity.h"
 #include "db_list.h"
 
-/** Clase que maneja las notificaciones en la db
+/** Clase que maneja las suscripciones de usuarios para los cambios de otros
  */
-class ContactList : public DbList  {
-	DB_ENTITY_CLASS(ContactList)
+class SuscriberList : public DbList  {
+	DB_ENTITY_CLASS(SuscriberList)
 
 	public:
 		/** Constructor
 		 */
-		ContactList();
+		SuscriberList();
 
 		std::string toJson() const; ///< Representacion en JSON
 
@@ -28,10 +28,10 @@ class ContactList : public DbList  {
 
 		bool unPack(const std::string& key, const std::string& value);
 
-		rocksdb::Status push_back(const std::string&);
-		rocksdb::Status erase(const std::string&);
+		rocksdb::Status get(const std::string& key);
 
 	protected:
+		std::string owner;
 		void packKey(std::string& key);
 };
 
