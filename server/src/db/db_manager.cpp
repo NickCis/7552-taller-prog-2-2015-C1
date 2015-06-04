@@ -8,6 +8,7 @@
 #include "avatar.h"
 #include "profile.h"
 #include "checkin.h"
+#include "suscriber_list.h"
 #include "user_merge_operator.h"
 
 #include <cstring>
@@ -127,6 +128,7 @@ void DBManager::setEnviroment(){
 	Avatar::SetDB(this->db.get(), this->cfs[DBManager::COLUMN_FAMILY_USERS].get());
 	Profile::SetDB(this->db.get(), this->cfs[DBManager::COLUMN_FAMILY_USERS].get());
 	Checkin::SetDB(this->db.get(), this->cfs[DBManager::COLUMN_FAMILY_USERS].get());
+	SuscriberList::SetDB(this->db.get(), this->cfs[DBManager::COLUMN_FAMILY_USERS].get());
 
 	AccessToken::SetDB(this->db.get(), this->cfs[DBManager::COLUMN_FAMILY_ACCESS_TOKENS].get());
 	Message::SetDB(this->db.get(), this->cfs[DBManager::COLUMN_FAMILY_MESSAGES].get());

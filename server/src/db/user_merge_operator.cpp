@@ -23,6 +23,8 @@ bool UserMergeOperator::Merge(const Slice& key,
 
 	if(has_suffix(s, "/profile"))
 		return this->profile(key, existing_value, value, new_value, logger);
+	else if(has_suffix(s, "/suscriber"))
+		return ListMergeOperator::Merge(key, existing_value, value, new_value, logger);
 
 	return false;
 }

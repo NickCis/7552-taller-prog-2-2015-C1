@@ -1,4 +1,5 @@
 #include "contact_list.h"
+#include "suscriber_list.h"
 #include "../util/serializer.h"
 
 #include "profile.h"
@@ -49,4 +50,33 @@ const string& ContactList::getOwner() const{
 
 void ContactList::setOwner(const string& o){
 	this->key = o;
+}
+
+rocksdb::Status ContactList::push_back(const std::string& u){
+	SuscriberList sl;
+	sl.setOwner(u);
+	Status s = sl.push_back(this->getOwner());
+	if(!s.ok())
+		return s;
+
+	s = DbList::push_back(u);
+	if(s.ok())
+		return s;
+
+	return sl.erase(this->getOwner());
+}
+
+rocksdb::Status ContactList::erase(const std::string& u){
+	SuscriberList sl;
+	sl.setOwner(u);
+
+	Status s = sl.erase(this->getOwner());
+	if(!s.ok())
+		return s;
+
+	s = DbList::erase(u);
+	if(s.ok())
+		return s;
+
+	return sl.push_back(this->getOwner());
 }

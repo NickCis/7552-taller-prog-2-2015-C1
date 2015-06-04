@@ -1,6 +1,7 @@
 #include "helper.h"
 #include "../catch.hpp"
 #include "../../src/db/contact_list.h"
+#include "../../src/db/suscriber_list.h"
 #include "../../src/db/list_merge_operator.h"
 
 #include <vector>
@@ -9,9 +10,11 @@
 using namespace std;
 using namespace rocksdb;
 
+
 TEST_CASE( "La clase ContactList funciona correctamente?", "[ContactList]" ) {
 	DB* db = NewDB(NULL, new ListMergeOperator);
 	ContactList::SetDB(db, db->DefaultColumnFamily());
+	SuscriberList::SetDB(db, db->DefaultColumnFamily());
 
 	SECTION( "ContactList" ) {
 		{

@@ -28,6 +28,9 @@ class ContactList : public DbList  {
 
 		bool unPack(const std::string& key, const std::string& value);
 
+		rocksdb::Status push_back(const std::string&);
+		rocksdb::Status erase(const std::string&);
+
 	protected:
 		void packKey(std::string& key);
 };
