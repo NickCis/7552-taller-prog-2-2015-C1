@@ -61,7 +61,7 @@ class DBManager {
 		 */
 		typedef enum MergeOperator {
 			MERGE_DEFAULT=0, ///< Merge operador por default
-			MERGE_DB_CONTACT_LIST, ///< Merge operator usado por la ContactList (una lista con push_back y erase)
+			MERGE_DB_LIST, ///< Merge operator usado por la List (una lista con push_back y erase)
 			MERGE_DB_USER ///< Merge operator usado por Profile (permite actualizar el last_activity)
 		} MergeOperator;
 

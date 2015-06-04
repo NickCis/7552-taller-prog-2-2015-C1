@@ -4,7 +4,7 @@
 #include "message.h"
 #include "notification.h"
 #include "contact_list.h"
-#include "contact_list_merge_operator.h"
+#include "list_merge_operator.h"
 #include "avatar.h"
 #include "profile.h"
 #include "checkin.h"
@@ -32,7 +32,7 @@ const DBManager::ColumnFamilyDescriptor DBManager::ColumnFamilyDescriptors[] = {
 	{ "users", COMPARATOR_DB_COMPARATOR, MERGE_DB_USER },
 	{ "notifications", COMPARATOR_DB_COMPARATOR, MERGE_DEFAULT },
 	{ "access_tokens", COMPARATOR_DEFAULT, MERGE_DEFAULT },
-	{ "contact_list", COMPARATOR_DEFAULT, MERGE_DB_CONTACT_LIST },
+	{ "contact_list", COMPARATOR_DEFAULT, MERGE_DB_LIST },
 	{ NULL, COMPARATOR_DEFAULT, MERGE_DEFAULT }
 };
 
@@ -49,8 +49,8 @@ void DBManager::columnFamilyOptionsFromDescriptor(const DBManager::ColumnFamilyD
 	}
 
 	switch(cfd.mergeOperator){
-		case MERGE_DB_CONTACT_LIST:
-			cfo.merge_operator.reset(new ContactListMergeOperator);
+		case MERGE_DB_LIST:
+			cfo.merge_operator.reset(new ListMergeOperator);
 			break;
 		case MERGE_DB_USER:
 			cfo.merge_operator.reset(new UserMergeOperator);

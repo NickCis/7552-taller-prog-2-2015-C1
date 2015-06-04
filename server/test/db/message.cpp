@@ -16,7 +16,7 @@ using namespace rocksdb;
 
 TEST_CASE( "La clase Message funciona correctamente", "[Message]" ) {
 	DbComparatorReverse cmp;
-	DB* db = NewDB(&cmp, (ContactListMergeOperator*) NULL);
+	DB* db = NewDB(&cmp, (ListMergeOperator*) NULL);
 	Message::SetDB(db, db->DefaultColumnFamily());
 
 	vector<uint64_t> ids;

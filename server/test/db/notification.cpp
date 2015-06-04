@@ -11,7 +11,7 @@ using namespace rocksdb;
 
 TEST_CASE( "La clase Notification funciona correctamente", "[Notification]" ) {
 	DbComparator cmp;
-	DB* db = NewDB(&cmp, (ContactListMergeOperator*) NULL);
+	DB* db = NewDB(&cmp, (ListMergeOperator*) NULL);
 	Notification::SetDB(db, db->DefaultColumnFamily());
 
 	vector<uint64_t> ids;
