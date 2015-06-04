@@ -7,6 +7,9 @@ package whatsapp.client;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import model.NotificationService;
@@ -39,4 +42,45 @@ public class MainActivity extends TabActivity {
 		tabHost.addTab(activeConversationSpec);
 		tabHost.addTab(usersSpec);
 	}
+        
+        @Override
+        public boolean onCreateOptionsMenu(Menu menu) {
+            // Inflate the menu items for use in the action bar
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.action_bar, menu);
+            return super.onCreateOptionsMenu(menu);
+        }
+        
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            // Handle presses on the action bar items
+            switch (item.getItemId()) {
+                case R.id.action_search:
+                    openSearch();
+                    return true;
+                case R.id.action_profile:
+                    openProfile();
+                    return true;
+                case R.id.action_settings:
+                    openSettings();
+                    return true;
+                default:
+                    return super.onOptionsItemSelected(item);
+            }
+        }
+        
+        public void openSearch()
+        {
+            
+        }
+        
+        public void openProfile()
+        {
+            startActivity(new Intent(this, ProfileConfigurationActivity.class));
+        }
+        
+        public void openSettings()
+        {
+            
+        }
 }

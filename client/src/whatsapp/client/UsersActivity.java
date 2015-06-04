@@ -154,14 +154,11 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 	}
 
 	private void loadUsers() {
-		DatabaseHelper dbH = new DatabaseHelper(this);
-		dbH.open();
-
-		users = new ArrayList<UserEntity>();
-		users.remove(dbH.fetchUser(DatabaseHelper.USERID_ME));
-		users.addAll(dbH.fetchAllUsers());
-		//users.remove(dbH.fetchUser(dbH.USERID_ME));
-		dbH.close();
+            DatabaseHelper dbH = new DatabaseHelper(this);
+            dbH.open();
+            users = dbH.fetchAllUsers();
+            users.remove(dbH.fetchUser(DatabaseHelper.USERID_ME));
+            dbH.close();
 
 	}
 
