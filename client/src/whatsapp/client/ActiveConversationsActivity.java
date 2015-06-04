@@ -76,7 +76,9 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 	private void loadConversations(){
 		DatabaseHelper dbH = new DatabaseHelper(this);
 		dbH.open();
-		UserEntity uEMe = dbH.createUser(1554587629, "Me", "Me", DatabaseHelper.NORMAL);
+		UserEntity uEMe = null;
+		if (dbH.fetchUser(DatabaseHelper.USERID_ME) == null)
+			uEMe = dbH.createUser(1554587629, "Me", "Me", DatabaseHelper.NORMAL);
 		map = new HashMap<String, Integer>();
 		List<ConversationEntity> conversationsAux = dbH.fetchAllConversations();
 		if (conversationsAux!= null){
@@ -99,7 +101,7 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 			int idx = adapter.getPosition(nuevo);
 			//TODO:
 			// CUANDO DEVUELVE ALGO DEVUELVE UN RELATIVE LAYOUT, VER COMO CAMBIAR ESO CUANDO ME LLEGUE UNA NOTIFIACION
-			TextView v = (TextView)listview.getChildAt(idx);
+			//TextView v = (TextView)listview.getChildAt(idx);
 			//v.setTextAppearance(this, R.style.textview_notificated);
 
 			
@@ -111,7 +113,7 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 			//TODO: sacar
 			Drawable img = getResources().getDrawable(R.drawable.img1);
 			RowItem item = new RowItem(aux.getNickname(), img, aux.getUsername(), "ultima conexion", aux.getUserId());
-			adapter.add(item);
+			rowItems.add(item);
 			adapter.notifyDataSetChanged();
 			//adapter.addToMap(ce.getUser(1).getNickname(), ce.getUser(1).getUserId());
 		}
@@ -148,7 +150,7 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 
 	private class OptionListener implements AdapterView.OnItemLongClickListener {
 
-		public boolean onItemLongClick(AdapterView<?> adapterView, final View arg1, final int idx, long arg3) {
+		public boolean onItemLongClick(final AdapterView<?> adapterView, final View arg1, final int idx, long arg3) {
 			DialogFactory.createOkCancelDialog(ActiveConversationsActivity.this,
 				"Eliminar conversación", "¿Está seguro que desea eliminar la conversación?",
 				new DialogInterface.OnClickListener() {
@@ -158,7 +160,12 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 						//UserEntity ue = (UserEntity) adapter.getItem(idx);
 						RowItem item = adapter.getItem(idx);
 						String itemSelected = item.getUserName();
-						adapter.remove(itemSelected);
+						DatabaseHelper dbh = new DatabaseHelper(ActiveConversationsActivity.this);
+						dbh.open();
+						dbh.deleteConversation(dbh.fetchConversation(itemSelected));
+						dbh.close();
+						rowItems.remove(idx);
+						//populateView();
 						adapter.notifyDataSetChanged();
 					}
 				});
@@ -171,6 +178,8 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 	protected void onResume() {
 		super.onResume();
 		showing = true;
+		loadConversations();
+		populateView();
 	}
 
 	@Override

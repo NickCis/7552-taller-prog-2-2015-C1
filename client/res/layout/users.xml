@@ -9,7 +9,7 @@
     android:padding="15dip"
     android:textSize="18sp"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:dividerHeight="2px"
     android:divider="#c0c0c0"
     />

@@ -7,21 +7,45 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import java.util.AbstractList;
+import java.util.ArrayList;
 import whatsapp.client.R;
 import whatsapp.client.RowItem;
 
-public class UserAdapter extends BaseAdapter {
+public class UserAdapter extends ArrayAdapter {
 
 	Context context;
 	List<RowItem> usuarios;
 
-	public UserAdapter(Context context, List<RowItem> rowItems) {
+	public UserAdapter(Context context, int resource, Object[] objects) {
+		super(context, resource, objects);
+		usuarios.add((RowItem) objects[1]);
+	}
+
+	public UserAdapter(Context ctx, Object[] objects){
+		super(ctx,-1,objects);
+		this.context = ctx;
+		usuarios = new ArrayList<RowItem>();
+		for (int i =0 ; i<objects.length ; i++)
+			usuarios.add((RowItem) objects[i]);
+	}
+
+
+	public UserAdapter(Context ctx, ArrayList<RowItem> array ){
+		super(ctx,-1,array.toArray());
+		this.context = ctx;
+		usuarios = array;
+	}
+
+/*
+	public UserAdapter(Context context, List<RowItem> rowItems, int a ) {
 		this.context = context;
 		this.usuarios = rowItems;
 	}
+		*/
 
 	public void add(RowItem item){
 		this.usuarios.add(item);
@@ -40,6 +64,11 @@ public class UserAdapter extends BaseAdapter {
 	@Override
 	public long getItemId(int position) {
 		return usuarios.indexOf(getItem(position));
+	}
+
+	public void clear() {
+		for (int i = 0 ; usuarios.size()!=0 ; )
+			this.usuarios.remove(i);
 	}
 
 	/* private view holder class */
@@ -90,10 +119,12 @@ public class UserAdapter extends BaseAdapter {
 		return convertView;
 	}
 
+
 	/**
 	 * Metodo para remover usuarios en la lista de usuario por nombre
 	 * @param name 
 	 */
+	/*
 	public void remove(String name){
 		for (RowItem usuario : usuarios) {
 			if (usuario.getUserName().equalsIgnoreCase(name)){
@@ -110,6 +141,7 @@ public class UserAdapter extends BaseAdapter {
 	public void remove(RowItem rowItem){
 		this.usuarios.remove(rowItem);
 	}
+	*/
 
 	public boolean contains(String item){
 		for (RowItem usuario : usuarios) {
