@@ -30,7 +30,8 @@ typedef struct Configuration {
 		threads(1),
 		logFile("-"),
 		logLevel("debug"),
-		dbPath("/tmp/test_db")
+		dbPath("/tmp/test_db"),
+		sslPath("")
 	{}
 
 	int port;
@@ -38,16 +39,18 @@ typedef struct Configuration {
 	string logFile;
 	string logLevel;
 	string dbPath;
+	string sslPath;
 } Configuration;
 
 void usage(char *name){
 	Configuration config;
 	cout << "Usage: " << name << " [OPTION]\n"
-			<< "  -p, --port=puerto\t\tEspecificar el puerto a utilizar [default: " << config.port << "]\n"
-			<< "  -l, --log-file=file\t\tEspecificar path de archivo de log '-' para stdout [default: " << config.logFile << "]\n"
-			<< "  -L, --log-level=level\t\tEspecificar nivel de log (error, warn, info, debug) [default: " << config.logLevel << "]\n"
-			<< "  -t, --threads=num\t\tCantidad de threads [default: " << config.threads << "]\n"
-			<< "  -d, --db-path=level\t\tPath de la base de datos [default: " << config.dbPath << "]\n";
+			<< "  -p, --port=puerto\t\tEspecificar el puerto a utilizar [default: " << config.port << "]" << endl
+			<< "  -l, --log-file=file\t\tEspecificar path de archivo de log '-' para stdout [default: " << config.logFile << "]" << endl
+			<< "  -L, --log-level=level\t\tEspecificar nivel de log (error, warn, info, debug) [default: " << config.logLevel << "]" << endl
+			<< "  -t, --threads=num\t\tCantidad de threads [default: " << config.threads << "]" << endl
+			<< "  -d, --db-path=level\t\tPath de la base de datos [default: " << config.dbPath << "]" << endl
+			<< "  -s, --ssl=file\t\tPath del certificado ssl. Si es vacio no se usara [default: " << config.sslPath << "]" << endl;
 }
 
 int parse_cmd(int argc, char *argv[], Configuration& config){
@@ -60,13 +63,14 @@ int parse_cmd(int argc, char *argv[], Configuration& config){
 		{"log-level", required_argument, 0, 'L'},
 		{"threads", required_argument, 0, 't'},
 		{"db-path", required_argument, 0, 'd'},
+		{"ssl", required_argument, 0, 's'},
 		{"help", no_argument, 0, 'h'},
 		{0, 0, 0, 0}
 	};
 
 	int option_index = 0;
 
-	while((c = getopt_long (argc, argv, "hp:l:L:t:d:", long_options, &option_index))){
+	while((c = getopt_long (argc, argv, "hp:l:L:t:d:s:", long_options, &option_index))){
 		if (c == -1)
 			break;
 
@@ -94,6 +98,10 @@ int parse_cmd(int argc, char *argv[], Configuration& config){
 
 			case 'p':
 				config.port = atoi(optarg);
+				break;
+
+			case 's':
+				config.sslPath = optarg;
 				break;
 
 			case '?':
@@ -146,10 +154,19 @@ int main(int argc, char* argv[]){
 	Log(Log::LogMsgInfo) << "\t* logFile: " << config.logFile;
 	Log(Log::LogMsgInfo) << "\t* logLevel: " << config.logLevel;
 	Log(Log::LogMsgInfo) << "\t* dbPath: " << config.dbPath;
+	Log(Log::LogMsgInfo) << "\t* ssl: " << config.sslPath;
 
-	WAServer server(config.threads);
-	server.setPort(config.port);
+	WAServer server;
 
+	server.setThreadNumber(config.threads);
+
+	const char *ret = server.setListeningConfig(config.port, config.sslPath);
+	if(ret){
+		Log(Log::LogMsgError) << "Error seteando configuracion de escucha :: " << ret;
+		return -1;
+	}
+
+	Log(Log::LogMsgInfo) << "Running...";
 	server.run();
 
 	while(running)

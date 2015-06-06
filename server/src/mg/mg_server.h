@@ -17,22 +17,28 @@ extern "C" {
 class MgServer {
 	public:
 		/** Constructor
-		 * @param threads: cantidad de threads a utilizar
 		 */
-		MgServer(int threads = 1);
+		MgServer();
 		~MgServer();
 
-		/** 
+		/** Setea la configuracion de escucha
+		 * @param port: puerto
+		 * @param path al certificado ssl
 		 * @return NULL si todo bien, si no error leible
 		 */
-		const char* setPort(int port=80);
+		const char* setListeningConfig(int port=80, const std::string& ssl=std::string(""));
 
 		/** Setea opciones, abstraccion de mg_set_option
 		 */
 		const char* setOption(const std::string& name, const std::string& value);
 		const char* setOption(const char*name, const char*value);
 
-		/** Arranca servidor
+		/** Setear la cantidad de threads a correr
+		 */
+		void setThreadNumber(size_t);
+
+		/** Arranca servidor.
+		 * Es no bloqueante!
 		 */
 		void run();
 
@@ -41,6 +47,7 @@ class MgServer {
 		void stop();
 
 	protected:
+		struct mg_server* createInstance();
 		/** Handler que usa el mg_create_server para despachar las conecciones
 		 */
 		static int handlerCaller(struct mg_connection*, enum mg_event);
@@ -57,6 +64,7 @@ class MgServer {
 		std::vector<pthread_t> threads; ///< vector de threads corriendo
 
 		int running;
+		size_t threadsNumber;
 };
 
 #endif

@@ -3,13 +3,11 @@
 using std::string;
 using std::to_string;
 
-MgServer::MgServer(int threads) : running(0) {
-	struct mg_server *server;
-
-	for(int i=0; i < threads; i++){
-		server = mg_create_server((void *) this, MgServer::handlerCaller);
-		this->servers.push_back(server);
-	}
+MgServer::MgServer() :
+	running(0),
+	threadsNumber(1)
+{
+	this->servers.push_back(this->createInstance());
 }
 
 MgServer::~MgServer(){
@@ -17,23 +15,14 @@ MgServer::~MgServer(){
 		this->stop();
 }
 
-const char* MgServer::setPort(int port){
-	auto it = this->servers.begin();
-	const char *ret;
+const char* MgServer::setListeningConfig(int port, const string& ssl){
+	string port_ssl;
+	if(ssl.size())
+		port_ssl = string("ssl://")+to_string(port)+string(":")+ssl;
+	else
+		port_ssl = to_string(port);
 
-	if(it == this->servers.end())
-		return NULL;
-
-
-	if((ret = mg_set_option((*it), "listening_port", to_string(port).c_str())))
-		return ret;
-
-	it++;
-	for(;it != this->servers.end(); it++){
-		mg_copy_listeners(this->servers[0], (*it));
-	}
-
-	return NULL;
+	return this->setOption("listening_port", port_ssl.c_str());
 }
 
 const char* MgServer::setOption(const string& name, const string& value){
@@ -41,21 +30,23 @@ const char* MgServer::setOption(const string& name, const string& value){
 }
 
 const char* MgServer::setOption(const char*name, const char*value){
-	const char *ret ;
-	for(auto it=this->servers.begin(); it != this->servers.end(); it++){
-		if((ret = mg_set_option((*it), name, value)) != NULL)
-			return ret;
-	}
+	if(this->running)
+		return "server is already running";
 
-	return NULL;
+	return mg_set_option(this->servers[0], name, value);
 }
 
 void MgServer::run(){
 	this->running = 1;
 
 	pthread_t t;
-	for(auto it=this->servers.begin(); it != this->servers.end(); it++){
-		pthread_create(&t, NULL, MgServer::threadHandler, *it);
+	for(size_t i=0; i < this->threadsNumber; i++){
+		if(this->servers.size() < i+1){
+			struct mg_server* sv = this->createInstance();
+			mg_copy_listeners(this->servers[0], sv);
+			this->servers.push_back(sv);
+		}
+		pthread_create(&t, NULL, MgServer::threadHandler, this->servers[i]);
 		this->threads.push_back(t);
 	}
 }
@@ -84,4 +75,13 @@ void* MgServer::threadHandler(void* arg){
 		mg_poll_server(server, 1000);
 
 	return NULL;
+}
+
+struct mg_server* MgServer::createInstance(){
+	return mg_create_server((void *) this, MgServer::handlerCaller);
+}
+
+void MgServer::setThreadNumber(size_t t){
+	if(!this->running && t > 1)
+		this->threadsNumber = t;
 }

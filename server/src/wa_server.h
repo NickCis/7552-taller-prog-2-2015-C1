@@ -6,7 +6,7 @@
 
 class WAServer : public MgServer {
 	public:
-		WAServer(int threads=1);
+		WAServer();
 
 	protected:
 		RootNode root;

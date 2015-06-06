@@ -1,7 +1,7 @@
 #include "wa_server.h"
 #include "util/log.h"
 
-WAServer::WAServer(int threads) : MgServer(threads) {
+WAServer::WAServer() {
 }
 
 int WAServer::handler(MgConnection& conn, enum mg_event ev){
@@ -12,8 +12,9 @@ int WAServer::handler(MgConnection& conn, enum mg_event ev){
 		case MG_REQUEST:
 			Log(Log::LogMsgDebug) << "[" << conn->remote_ip << "] " << conn->request_method << " " << conn->uri << " " << conn->query_string;
 
-			if(root.handle(conn, conn->uri))
+			if(root.handle(conn, conn->uri)){
 				return MG_TRUE;
+			}
 			return MG_FALSE;
 			break;
 
