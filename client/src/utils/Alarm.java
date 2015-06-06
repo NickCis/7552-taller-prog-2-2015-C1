@@ -155,27 +155,23 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 	}
 
 	private void processMessage(JSONObject data) {
-		if (ConversationActivity.isShowing()) {
-			try {
+		try {
+			write(data.getJSONObject("data"));
+			if (ConversationActivity.isShowing()) {
 				//ConversationActivity.getInstance().addMsgs(ce);
 				String txt = data.getJSONObject("data").getString("message");
 				ConversationActivity.getInstance().addMsgs(txt);
-			} catch (JSONException ex) {
-				Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
+				
 			}
-
-		} 
-		else if (ActiveConversationsActivity.isShowing()){
-			try {
-				write(data.getJSONObject("data"));
+			else if (ActiveConversationsActivity.isShowing()){
 				ActiveConversationsActivity.getInstance().informNuevo(data.getJSONObject("data").getString("from"));
-			} catch (JSONException ex) {
-				Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
+			}
+			else {
+				sendNotification(data);
 			}
 			
-		}
-		else {
-			sendNotification(data);
+		} catch (JSONException ex) {
+			Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
@@ -185,8 +181,6 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 		try {
 			from = data.getJSONObject("data").getString("from");
 			txt = data.getJSONObject("data").getString("message");
-			write(data.getJSONObject("data"));
-
 		} catch (JSONException ex) {
 			Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
 		}

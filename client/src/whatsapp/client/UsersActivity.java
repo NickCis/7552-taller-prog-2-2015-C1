@@ -234,7 +234,8 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 			dbH.open();
 			List<UserEntity> list = dbH.fetchAllUsers();
 			List<UserEntity> users = new ArrayList<UserEntity>();
-			users.add(list.get(position));
+			//el primer usuario es Me
+			users.add(list.get(position+1));
 			users.add(dbH.fetchUser(dbH.USERID_ME));
 			//TODO : ESTO ANDA BIEN ? 
 			ConversationEntity cE = dbH.fetchConversation(new ConversationEntity(users));
