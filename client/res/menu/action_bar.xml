@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/CustomActionBarTheme">
+    <item android:id="@+id/action_search"
+          android:icon="@drawable/search_gray"
+          android:title="@string/action_search"
+          android:showAsAction="ifRoom" />
+    <!-- Settings, should always be in the overflow -->
+    <item android:id="@+id/action_settings"
+          android:title="@string/action_settings"
+          android:showAsAction="never" />
+    <item android:id="@+id/action_profile"
+          android:title="@string/action_profile"
+          android:showAsAction="never" />
+</menu>

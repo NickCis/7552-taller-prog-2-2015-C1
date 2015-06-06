@@ -6,11 +6,12 @@
 
 	<ListView xmlns:android="http://schemas.android.com/apk/res/android"
 		  android:id="@+id/activeConversationsListview"
-		  android:longClickable="true"
 		  android:padding="15dip"
-		  android:textColor="#000000"
-		  android:textSize="20sp" 
+		  android:textSize="18sp"
 		  android:layout_width="fill_parent"
-		  android:layout_height="wrap_content"/>
+		  android:layout_height="match_parent"
+		  android:dividerHeight="2px"
+		  android:divider="#c0c0c0"
+	/>
 
 </RelativeLayout>

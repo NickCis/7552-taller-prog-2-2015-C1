@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.POSTService;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import utils.ConfigurationManager;
@@ -83,6 +84,7 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 	}
 
 	private void populateView() {
+		viewUsuarios= (ListView) findViewById(R.id.usersListview);
 		Drawable img = getResources().getDrawable(R.drawable.img1);
 		rowItems = new ArrayList<RowItem>();
 		if (users == null)
@@ -132,9 +134,9 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 					public void run() {
 						vista.setAlpha(1);
 						Intent intent = new Intent(uA, ConversationActivity.class);
-						Bundle bundle = new Bundle();
-						bundle.putInt("conversationId", conversationID);
-						intent.putExtra("whatsapp.client.ConversationActivity.data", bundle);
+						//Bundle bundle = new Bundle();
+						//bundle.putInt("conversationId", conversationID);
+						intent.putExtra("conversationId", conversationID);
 						startActivity(intent);
 					}
 				});
@@ -152,12 +154,36 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 	}
 
 	private void loadUsers() {
-		DatabaseHelper dbH = new DatabaseHelper(this);
-		dbH.open();
+            DatabaseHelper dbH = new DatabaseHelper(this);
+            dbH.open();
+            users = dbH.fetchAllUsers();
+            users.remove(dbH.fetchUser(DatabaseHelper.USERID_ME));
+            dbH.close();
 
-		users = dbH.fetchAllUsers();
-		//users.remove(dbH.fetchUser(dbH.USERID_ME));
-		dbH.close();
+	}
+
+	private void mostrarErroneo(String usuarioNoEncontroado){
+		System.out.println(usuarioNoEncontroado);
+		//TODO : mostrar en un dialogo
+		//ERROR , [usuario] inexistente
+
+	}
+
+	private void agregar(String usuarioEncontrado){
+		DatabaseHelper dbh = new DatabaseHelper(this);
+		//TODO: Sacar esto
+		Drawable img = getResources().getDrawable(R.drawable.img1);
+		dbh.open();
+		UserEntity fetchUser = dbh.fetchUser(usuarioEncontrado);
+		if (fetchUser == null){
+			UserEntity ue = dbh.createUser(0, usuarioEncontrado, usuarioEncontrado, DatabaseHelper.NORMAL);
+			users.add(ue);
+			RowItem item = new RowItem(usuarioEncontrado, img, "", "ultima conexion", 0);
+
+			rowItems.add(item);
+			adapter.notifyDataSetChanged();
+		}
+			
 
 	}
 
@@ -165,8 +191,15 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 		if (resultCode == 0) {
 			try {
 				JSONObject data = new JSONObject(resultData.getString("data"));
-					Bundle bundle = new Bundle();
-					HashMap<String, String> params = new HashMap<String, String>();
+				data.get("error");
+				JSONArray error = (JSONArray) data.get("error");
+				if (error.length()!=0){
+					mostrarErroneo((String)error.get(0));
+					return;
+				}
+				JSONArray success = (JSONArray) data.get("success");
+				agregar((String)success.get(0));
+
 			
 				/*if (!data.contains("access_token")) {
 				 Bundle bundle = new Bundle();
@@ -200,7 +233,6 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 			DatabaseHelper dbH = new DatabaseHelper(this.context);
 			dbH.open();
 			List<UserEntity> list = dbH.fetchAllUsers();
-			list.remove(dbH.fetchUser(dbH.USERID_ME));
 			List<UserEntity> users = new ArrayList<UserEntity>();
 			users.add(list.get(position));
 			users.add(dbH.fetchUser(dbH.USERID_ME));
@@ -217,9 +249,9 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 				public void run() {
 					view.setAlpha(1);
 					Intent intent = new Intent(context, ConversationActivity.class);
-					Bundle bundle = new Bundle();
-					bundle.putInt("conversationId", conversationID);
-					intent.putExtra("whatsapp.client.ConversationActivity.data", bundle);
+					//Bundle bundle = new Bundle();
+					//bundle.putInt("conversationId", conversationID);
+					intent.putExtra("conversationId", conversationID);
 					startActivity(intent);
 				}
 			});

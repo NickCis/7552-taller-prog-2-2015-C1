@@ -29,4 +29,14 @@
     <style name="textview_notificated">
 	    <item name="android:textStyle">bold</item>
     </style>
+    
+    <style name="CustomActionBarTheme"
+           parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarStyle">@style/ActionBar</item>
+    </style>
+
+    <style name="ActionBar"
+           parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">#FFF3832C</item>
+    </style>
 </resources>

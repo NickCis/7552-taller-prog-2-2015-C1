@@ -1,0 +1,101 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/loginbgimg"
+    android:id="@+id/profileConfigurationLayout">
+    
+    <LinearLayout
+        android:id="@+id/userProfileAvatarBackground"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginBottom="-16dp"
+        android:background="#FF000000">
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/userProfileInformation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/userProfileAvatarBackground"
+        android:gravity="left"
+        android:paddingTop="32dp"
+        android:paddingBottom="32dp">
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FF000000"
+            android:text="About"
+            android:textStyle="bold"
+            android:textSize="17dp" />
+        
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#FF2FC9EC"/>
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FF2FC9EC"
+            android:text="NickName"
+            android:textStyle="bold"
+            android:textSize="17dp" />
+        
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#FF2FC9EC"/>
+        
+        <TextView
+            android:id="@+id/userProfileInformation_NickName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:textColor="#FF434343"/>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#FF2FC9EC"/>
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FF2FC9EC"
+            android:text="Ultima conexion"
+            android:textStyle="bold"
+            android:textSize="17dp" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#FF2FC9EC"/>
+        
+        <TextView
+            android:id="@+id/userProfileInformation_LastConnection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:textColor="#FF434343"/>
+        
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#FF2FC9EC"/>
+                
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/userProfileAvatar"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:src="@drawable/img1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-16dp"
+        android:layout_above="@+id/userProfileInformation"/>
+</RelativeLayout>
