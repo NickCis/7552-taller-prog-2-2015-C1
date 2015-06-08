@@ -69,7 +69,7 @@ if(CHECK_COVERAGE)
 	set_target_properties(coverage PROPERTIES COMPILE_FLAGS "-fprofile-arcs -ftest-coverage -g -O0")
 	target_link_libraries(coverage ${ROCKSDB_LIBRARIES} -fprofile-arcs)
 	if(OPENSSL_FOUND)
-		target_link_libraries(server ${OPENSSL_LIBRARIES})
+		target_link_libraries(coverage ${OPENSSL_LIBRARIES})
 	endif()
 
 	add_custom_command(TARGET coverage POST_BUILD COMMAND ./coverage)
