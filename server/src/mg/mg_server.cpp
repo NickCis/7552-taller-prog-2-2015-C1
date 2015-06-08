@@ -63,8 +63,38 @@ void MgServer::stop(){
 
 int MgServer::handlerCaller(struct mg_connection *conn, enum mg_event ev){
 	MgServer* mgServer = (MgServer*) conn->server_param;
-	MgConnection mgConnection(conn);
-	return mgServer->handler(mgConnection, ev);
+
+	if(conn->connection_param == NULL)
+		conn->connection_param = (void*) new MgConnection(conn);
+
+	return mgServer->handler((MgConnection*) conn->connection_param, ev);
+}
+
+enum mg_result MgServer::handler(MgConnection* conn, enum mg_event ev){
+	switch(ev){
+		case MG_AUTH:
+			return this->handlerAuth(*conn);
+		case MG_REQUEST:
+			return this->handlerRequest(*conn);
+		case MG_CLOSE:
+			return this->handlerClose(conn);
+
+		default:
+			return MG_FALSE;
+	}
+}
+
+enum mg_result MgServer::handlerAuth(MgConnection&){
+	return MG_TRUE;
+}
+
+enum mg_result MgServer::handlerClose(MgConnection* conn){
+	if(conn){
+		(*conn)->connection_param = NULL;
+		delete conn;
+	}
+
+	return MG_FALSE;
 }
 
 void* MgServer::threadHandler(void* arg){
@@ -84,4 +114,13 @@ struct mg_server* MgServer::createInstance(){
 void MgServer::setThreadNumber(size_t t){
 	if(!this->running && t > 1)
 		this->threadsNumber = t;
+}
+
+void MgServer::doConnection(std::function<bool(MgConnection&)> check, std::function<void(MgConnection&)> cb){
+	for(auto it=servers.begin(); it != servers.end(); it++){
+		for(struct mg_connection *conn = NULL; (conn = mg_next(*it, conn)) != NULL;){
+			if(check(*((MgConnection*) conn->connection_param)))
+				cb(*((MgConnection*) conn->connection_param));
+		}
+	}
 }

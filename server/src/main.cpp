@@ -13,6 +13,7 @@ extern "C" {
 
 #include "db/db_manager.h"
 #include "util/log.h"
+#include "util/notifier.h"
 
 using std::cout;
 using std::endl;
@@ -157,6 +158,7 @@ int main(int argc, char* argv[]){
 	Log(Log::LogMsgInfo) << "\t* ssl: " << config.sslPath;
 
 	WAServer server;
+	Notifier::setServer(&server);
 
 	server.setThreadNumber(config.threads);
 

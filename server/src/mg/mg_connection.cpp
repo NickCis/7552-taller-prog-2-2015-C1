@@ -14,11 +14,16 @@ using std::strlen;
 static const char* CONTENT_TYPES[] = {
 	"application/json", // CONTENT_TYPE_JSON
 	"text/html", // CONTENT_TYPE_HTML
-	"image/jpg" // CONTENT_TYPE_JPG
+	"image/jpg", // CONTENT_TYPE_JPG
+	"text/event-stream" // CONTENT_TYPE_JPG
 };
 
-MgConnection::MgConnection(struct mg_connection *c) : conn(c), multipartOffset(0) {
-
+#include <iostream>
+MgConnection::MgConnection(struct mg_connection *c) :
+	conn(c),
+	multipartOffset(0),
+	response(MG_TRUE)
+{
 }
 
 void MgConnection::sendStatus(MgConnection::StatusCodes code){
@@ -73,6 +78,22 @@ const std::string& MgConnection::getParameter(const string& key){
 
 void MgConnection::setParameter(const std::string& key, const string& value){
 	this->parameters[key] = value;
+}
+
+void MgConnection::setResponse(enum mg_result r){
+	this->response = r;
+}
+
+enum mg_result MgConnection::getResponse(){
+	return this->response;
+}
+
+const char* MgConnection::getHeader(const string& name){
+	return this->getHeader(name.c_str());
+}
+
+const char* MgConnection::getHeader(const char* name){
+	return mg_get_header(this->conn, name);
 }
 
 string MgConnection::getVarStr(const char* varName, int n, size_t max){

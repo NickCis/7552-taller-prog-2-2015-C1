@@ -4,22 +4,12 @@
 WAServer::WAServer() {
 }
 
-int WAServer::handler(MgConnection& conn, enum mg_event ev){
-	switch (ev) {
-		case MG_AUTH:
-			return MG_TRUE;
+enum mg_result WAServer::handlerRequest(MgConnection& conn){
+	Log(Log::LogMsgDebug) << "[" << conn->remote_ip << "] " << conn->request_method << " " << conn->uri << " " << conn->query_string;
 
-		case MG_REQUEST:
-			Log(Log::LogMsgDebug) << "[" << conn->remote_ip << "] " << conn->request_method << " " << conn->uri << " " << conn->query_string;
+	conn.setResponse(MG_TRUE);
+	if(root.handle(conn, conn->uri))
+		return conn.getResponse();
 
-			if(root.handle(conn, conn->uri)){
-				return MG_TRUE;
-			}
-			return MG_FALSE;
-			break;
-
-		default:
-			return MG_FALSE;
-			break;
-	}
+	return MG_FALSE;
 }

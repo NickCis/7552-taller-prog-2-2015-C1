@@ -105,6 +105,10 @@ const string& Notification::getData() const{
 	return this->data;
 }
 
+const string& Notification::getOwner() const{
+	return this->owner;
+}
+
 string Notification::toJson() const {
 	stringstream ss;
 	ss << "{\"id\":\"" << this->getId() << "\",\"time\":\"" << this->t << "\",\"type\":\"" << Notification::TypeToStr(this->type) << "\",\"data\":" << this->data << "}";

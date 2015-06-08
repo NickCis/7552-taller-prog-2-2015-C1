@@ -40,6 +40,7 @@ class MgConnection {
 			CONTENT_TYPE_JSON=0, ///< Se envia un JSON
 			CONTENT_TYPE_HTML, ///< Se envia un HTML
 			CONTENT_TYPE_JPG, ///< Se envia un JPG
+			CONTENT_TYPE_EVENT_STREAM, ///< para stream
 			CONTENT_TYPE_TOTAL
 		} ContentTypes;
 
@@ -91,6 +92,19 @@ class MgConnection {
 		 */
 		void setParameter(const std::string& key, const std::string& value);
 
+		/** Setea la respuesta de la conneccion
+		 * @param response
+		 */
+		void setResponse(enum mg_result);
+		enum mg_result getResponse();
+
+		/** Devuelve el valor de un header de la conneccion http
+		 * @param nombre del header
+		 * @return NULL si no esta presente, o el valor del mismo
+		 */
+		const char* getHeader(const std::string&);
+		const char* getHeader(const char*);
+
 		/** Obtiene un parametro de la url o de post (si es url encoded)
 		 * @param varName: nombre del parametro
 		 * @param n: posicion del valor @see mg_get_var_n(), para la primera aparicion usar 0
@@ -118,6 +132,7 @@ class MgConnection {
 		struct mg_connection *conn; ///< Instacia de mg_connection
 		std::map<std::string, std::string> parameters; ///< map de los parametros guardados por el usuario
 		int multipartOffset;
+		enum mg_result response;
 };
 
 #endif

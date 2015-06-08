@@ -334,6 +334,7 @@ int ns_resolve(const char *domain_name, char *ip_addr_buf, size_t buf_len);
 #define NS_CALLOC calloc
 #endif
 
+#define NS_MAX_SOCKETPAIR_ATTEMPTS  10
 #define NS_CTL_MSG_MESSAGE_SIZE     (8 * 1024)
 #define NS_READ_BUFFER_SIZE         2048
 #define NS_UDP_RECEIVE_BUFFER_SIZE  2000
@@ -1107,7 +1108,9 @@ time_t ns_mgr_poll(struct ns_mgr *mgr, int milli) {
   tv.tv_sec = milli / 1000;
   tv.tv_usec = (milli % 1000) * 1000;
 
-  if (select((int) max_fd + 1, &read_set, &write_set, NULL, &tv) > 0) {
+  if (select((int) max_fd + 1, &read_set, &write_set, NULL, &tv) < 0) {
+    return 0;
+  } else {
     // select() might have been waiting for a long time, reset current_time
     // now to prevent last_io_time being set to the past.
     current_time = time(NULL);
@@ -1258,9 +1261,12 @@ void ns_mgr_init(struct ns_mgr *s, void *user_data) {
 #endif
 
 #ifndef NS_DISABLE_SOCKETPAIR
-  do {
-    ns_socketpair2(s->ctl, SOCK_DGRAM);
-  } while (s->ctl[0] == INVALID_SOCKET);
+  {
+    int attempts = 0, max_attempts = NS_MAX_SOCKETPAIR_ATTEMPTS;
+    do {
+      ns_socketpair2(s->ctl, SOCK_DGRAM);
+    } while (s->ctl[0] == INVALID_SOCKET && ++attempts < max_attempts);
+  }
 #endif
 
 #ifdef NS_ENABLE_SSL
@@ -2325,9 +2331,17 @@ static void open_cgi_endpoint(struct connection *conn, const char *prog) {
   // Try to create socketpair in a loop until success. ns_socketpair()
   // can be interrupted by a signal and fail.
   // TODO(lsm): use sigaction to restart interrupted syscall
-  do {
-    ns_socketpair(fds);
-  } while (fds[0] == INVALID_SOCKET);
+  {
+    int attempts = 0, max_attempts = NS_MAX_SOCKETPAIR_ATTEMPTS;
+    do {
+      ns_socketpair(fds);
+    } while (fds[0] == INVALID_SOCKET && ++attempts < max_attempts);
+
+    if (fds[0] == INVALID_SOCKET) {
+      closesocket(fds[0]);
+      send_http_error(conn, 500, "ns_socketpair() failed");
+    }
+  }
 
   if (start_process(conn->server->config_options[CGI_INTERPRETER],
                     prog, blk.buf, blk.vars, dir, fds[1]) != 0) {
@@ -5439,14 +5453,19 @@ static void iter2(struct ns_connection *nc, int ev, void *param) {
 void mg_wakeup_server_ex(struct mg_server *server, mg_handler_t cb,
                          const char *fmt, ...) {
   va_list ap;
+  va_start(ap, fmt);
+  mg_vwakeup_server_ex(server, cb, fmt, ap);
+  va_end(ap);
+}
+
+void mg_vwakeup_server_ex(struct mg_server *server, mg_handler_t cb,
+                         const char *fmt, va_list ap) {
   char buf[8 * 1024];
   int len;
 
   // Encode callback (cb) into a buffer
   len = snprintf(buf, sizeof(buf), "%p ", cb);
-  va_start(ap, fmt);
   len += vsnprintf(buf + len, sizeof(buf) - len, fmt, ap);
-  va_end(ap);
 
   // "len + 1" is to include terminating \0 in the message
   ns_broadcast(&server->ns_mgr, iter2, buf, len + 1);

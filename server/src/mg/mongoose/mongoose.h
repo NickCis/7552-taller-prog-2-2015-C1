@@ -98,6 +98,7 @@ void mg_copy_listeners(struct mg_server *from, struct mg_server *to);
 struct mg_connection *mg_next(struct mg_server *, struct mg_connection *);
 void mg_wakeup_server(struct mg_server *);
 void mg_wakeup_server_ex(struct mg_server *, mg_handler_t, const char *, ...);
+void mg_vwakeup_server_ex(struct mg_server *, mg_handler_t, const char *, va_list);
 struct mg_connection *mg_connect(struct mg_server *, const char *);
 
 // Connection management functions

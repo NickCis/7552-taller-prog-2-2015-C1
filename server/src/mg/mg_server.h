@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <functional>
 
 extern "C" {
 	#include <pthread.h>
@@ -46,6 +47,8 @@ class MgServer {
 		 */
 		void stop();
 
+		void doConnection(std::function<bool(MgConnection&)>, std::function<void(MgConnection&)>);
+
 	protected:
 		struct mg_server* createInstance();
 		/** Handler que usa el mg_create_server para despachar las conecciones
@@ -58,7 +61,16 @@ class MgServer {
 
 		/** Hanlder que maneja la coneccion
 		 */
-		virtual int handler(MgConnection& conn, enum mg_event ev) = 0;
+		virtual enum mg_result handler(MgConnection* conn, enum mg_event ev);
+		/** Handler para evento MG_AUTH
+		 */
+		virtual enum mg_result handlerAuth(MgConnection& conn);
+		/** Handler para evento MG_REQUEST
+		 */
+		virtual enum mg_result handlerRequest(MgConnection& conn) = 0;
+		/** Handler para evento MG_CLOSE
+		 */
+		virtual enum mg_result handlerClose(MgConnection* conn);
 
 		std::vector<struct mg_server*> servers; ///< Vector de servers utilizados (uno por cada thread)
 		std::vector<pthread_t> threads; ///< vector de threads corriendo

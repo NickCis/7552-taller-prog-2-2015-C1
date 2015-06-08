@@ -2,6 +2,8 @@
 #define __NOTIFIER_H__
 
 #include <string>
+#include "../mg/mg_server.h"
+#include "../db/notification.h"
 
 class Notifier {
 	public:
@@ -19,6 +21,13 @@ class Notifier {
 		 * @param usuario que hizo un checkin
 		 */
 		static void OnCheckIn(const std::string&);
+
+		static void setServer(MgServer*);
+
+	protected:
+		static MgServer* mgServer;
+		static void add_push_notification(const std::string& u, const Notification::NotificationType& type, const std::string& json);
+
 };
 
 #endif

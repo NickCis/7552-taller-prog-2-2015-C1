@@ -3,6 +3,7 @@
 #include <cstdlib>
 
 #include "../db/notification.h"
+#include "../util/log.h"
 
 using std::string;
 
@@ -13,7 +14,24 @@ NotificationNode::NotificationNode() : WAMethodAuthNode("notification") {
 
 void NotificationNode::executeGet(MgConnection& conn, const char* url){
 	string loggedUser = conn.getParameter("logged_user");
+
 	auto it = Notification::NewIterator();
+
+	if(conn.getHeader("Accept") != NULL && strcmp("text/event-stream", conn.getHeader("Accept")) == 0){
+		conn.setParameter("sse", "yes");
+		if(conn.getHeader("Last-Event-ID") != NULL){
+			string lastId = conn.getHeader("Last-Event-ID");
+			Notification::DeleteUpTo(loggedUser, lastId);
+		}
+
+		conn.sendStatus(MgConnection::STATUS_CODE_OK);
+		conn.sendContentType(MgConnection::CONTENT_TYPE_EVENT_STREAM);
+		for(it.seek(loggedUser); it.valid(); it.next())
+			conn.printfData("id: %s\ndata: %s\n\n", it.value().getId().c_str(), it.value().toJson().c_str());
+
+		conn.setResponse(MG_MORE);
+		return;
+	}
 
 	conn.sendStatus(MgConnection::STATUS_CODE_OK);
 	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);

@@ -48,6 +48,7 @@ class Notification : public DbEntity  {
 		const uint64_t& getIdBin() const; ///< Id en formato binario
 		std::string getId() const; ///< id en formato hexa
 		const time_t& getTime() const; ///< timestamp de la notificacion
+		const std::string& getOwner() const; ///< Devuelve el due~no de la notificacion
 		std::string toJson() const; ///< Representacion en JSON
 
 

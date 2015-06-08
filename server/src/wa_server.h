@@ -10,6 +10,6 @@ class WAServer : public MgServer {
 
 	protected:
 		RootNode root;
-		int handler(MgConnection& conn, enum mg_event ev);
+		enum mg_result handlerRequest(MgConnection& conn);
 };
 #endif
