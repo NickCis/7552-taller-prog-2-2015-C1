@@ -6,20 +6,20 @@
     android:id="@+id/profileConfigurationLayout">
     
     <LinearLayout
-        android:id="@+id/userProfileAvatarBackground"
+        android:id="@+id/userProfileConfigurationAvatarBackground"
         android:layout_width="match_parent"
-        android:layout_height="75dp"
+        android:layout_height="300dp"
         android:orientation="vertical"
         android:gravity="center"
-        android:layout_marginBottom="-16dp"
         android:background="#FF000000">
     </LinearLayout>
+    
     <LinearLayout
-        android:id="@+id/userProfileInformation"
+        android:id="@+id/userProfileConfigurationInformation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_below="@+id/userProfileAvatarBackground"
+        android:layout_below="@+id/userProfileConfigurationAvatarBackground"
         android:gravity="left"
         android:paddingTop="32dp"
         android:paddingBottom="32dp">
@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#FF000000"
-            android:text="About"
+            android:text="@string/profile_configuration_status"
             android:textStyle="bold"
             android:textSize="17dp" />
         
@@ -37,65 +37,34 @@
             android:layout_height="1dp"
             android:background="#FF2FC9EC"/>
         
-        <TextView
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/statusConfiguration"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#FF2FC9EC"
-            android:text="NickName"
-            android:textStyle="bold"
-            android:textSize="17dp" />
-        
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="#FF2FC9EC"/>
-        
-        <TextView
-            android:id="@+id/userProfileInformation_NickName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:gravity="center"
-            android:textColor="#FF434343"/>
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="#FF2FC9EC"/>
-        
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#FF2FC9EC"
-            android:text="Ultima conexion"
-            android:textStyle="bold"
-            android:textSize="17dp" />
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="#FF2FC9EC"/>
-        
-        <TextView
-            android:id="@+id/userProfileInformation_LastConnection"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:gravity="center"
-            android:textColor="#FF434343"/>
-        
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="#FF2FC9EC"/>
-                
+            android:inputType="text"
+            android:layout_alignParentLeft="true"
+            android:layout_gravity="center"
+            android:textColor="#FF000000"
+        />      
     </LinearLayout>
     <ImageView
         android:id="@+id/userProfileAvatar"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:src="@drawable/img1"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="-16dp"
-        android:layout_above="@+id/userProfileInformation"/>
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="50dp"
+        android:layout_above="@+id/userProfileConfigurationInformation"
+        android:src="#FFC3C3C3"/>
+    
+    <Button
+        android:id="@+id/buttonAvatarChange"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_above="@id/userProfileConfigurationInformation"
+        android:background="@drawable/choose_image_gray"
+        android:onClick="addImage"
+    />
 </RelativeLayout>
