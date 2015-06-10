@@ -120,14 +120,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return new UserEntity((int)userId, username, nickname, phone, status);
     }
     
-    public boolean deleteUser(Integer userId) {
-        boolean result = mDb.delete(DATABASE_USER_TABLE, KEY_USERID + "=?",new String[]{"" + userId}) > 0; 
-        return result;
+    public boolean deleteUser(Integer userId) 
+    {
+        return mDb.delete(DATABASE_USER_TABLE, KEY_USERID + "=?",new String[]{"" + userId}) > 0;
     }
     
-    public boolean deleteUser(UserEntity user) {
-        boolean result = mDb.delete(DATABASE_USER_TABLE, KEY_USERID + "=?",new String[]{"" + user.getUserId()}) > 0;
-        return result;
+    public boolean deleteUser(UserEntity user) 
+    {
+        return mDb.delete(DATABASE_USER_TABLE, KEY_USERID + "=?",new String[]{"" + user.getUserId()}) > 0;
     }
     
     public List<UserEntity> fetchAllUsers() {
@@ -241,9 +241,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return result;
     }
     
-    public boolean deleteConversation(ConversationEntity conversation) {
-        boolean result = mDb.delete(DATABASE_CONVERSATION_TABLE, KEY_CONVERSATIONID + "=" + conversation.getConversationId(), null) > 0; 
-        return result;
+    public boolean deleteConversation(ConversationEntity conversation) 
+    { 
+        return mDb.delete(DATABASE_CONVERSATION_TABLE, KEY_CONVERSATIONID + "=?", new String[]{"" + conversation.getConversationId()}) > 0;
     }
     
     public List<ConversationEntity> fetchAllConversations() {
@@ -375,9 +375,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return new MediaEntity((int) mediaId, location, type);
     }
     
-    public boolean deleteMedia(Integer mediaId) { 
-        boolean result = mDb.delete(DATABASE_MEDIA_TABLE, KEY_MEDIAID + "=?",new String[]{"" + mediaId}) > 0;
-        return result;
+    public boolean deleteMedia(Integer mediaId) 
+    { 
+        return mDb.delete(DATABASE_MEDIA_TABLE, KEY_MEDIAID + "=?",new String[]{"" + mediaId}) > 0;
     }
     
     public List<MediaEntity> fetchAllMedia() { 
@@ -442,15 +442,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
           return new MessageEntity(conversation, user, media, date, content, status);
     }
     
-    public boolean deleteMessage(ConversationEntity conversation, UserEntity user, Calendar date) { 
-        boolean result = this.mDb.delete(DATABASE_MESSAGE_TABLE, KEY_CONVERSATIONID + " =? AND " + KEY_USERID + " =? AND " + KEY_TIMESTAMP + " =? ", new String[]{"" + conversation.getConversationId(), "" + user.getUserId(), date.getTime().toString()}) > 0; 
-        return result;
+    public boolean deleteMessage(ConversationEntity conversation, UserEntity user, Calendar date) 
+    { 
+        return this.mDb.delete(DATABASE_MESSAGE_TABLE, KEY_CONVERSATIONID + " =? AND " + KEY_USERID + " =? AND " + KEY_TIMESTAMP + " =? ", new String[]{"" + conversation.getConversationId(), "" + user.getUserId(), date.getTime().toString()}) > 0;
     }
     
     public boolean deleteMessages(ConversationEntity conversation)
     {
-        boolean result = this.mDb.delete(DATABASE_MESSAGE_TABLE, KEY_CONVERSATIONID + " =? ", new String[]{"" + conversation.getConversationId()}) > 0;
-        return result;
+        return this.mDb.delete(DATABASE_MESSAGE_TABLE, KEY_CONVERSATIONID + " =? ", new String[]{"" + conversation.getConversationId()}) > 0;
     }
     
     public List<MessageEntity> fetchAllMessages() {
