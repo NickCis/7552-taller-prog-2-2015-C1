@@ -85,7 +85,7 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 		Bundle bundle = createBundle(context);
 		intent.putExtra("rec", receiver);
 		intent.putExtra("info", bundle);
-		context.startService(intent);
+		//context.startService(intent);
 	}
 
 	public void onReceiveResult(int resultCode, Bundle resultData) {

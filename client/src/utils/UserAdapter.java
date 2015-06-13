@@ -87,7 +87,7 @@ public class UserAdapter extends ArrayAdapter {
 
 		LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
-		if (convertView == null) {
+		//if (convertView == null) {
 
 			convertView = mInflater.inflate(R.layout.list_item, null);
 			holder = new ViewHolder();
@@ -108,13 +108,14 @@ public class UserAdapter extends ArrayAdapter {
 			holder.member_name.setText(row_pos.getNickName());
 			
 			
-			holder.status.setText(row_pos.getStatus());
+			holder.status.setText(row_pos.getUserName());
 			holder.contactType.setText(row_pos.getStatus());
 
 			convertView.setTag(holder);
-		} else {
+		//} else {
+		if (convertView != null) 
 			holder = (ViewHolder) convertView.getTag();
-		}
+		//}
 
 		return convertView;
 	}
