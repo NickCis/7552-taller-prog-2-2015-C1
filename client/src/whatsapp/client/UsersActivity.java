@@ -319,7 +319,7 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 
 		public boolean onItemLongClick(final AdapterView<?> adapterView, final View arg1,final int idx, long arg3) {
 			DialogFactory.createOkCancelDialog(UsersActivity.this, 
-					"Eliminar conversación", "¿Está seguro que desea eliminar la conversación?",
+					"Eliminar Usuario", "¿Está seguro que desea eliminar el usuario seleccionado?",
 					new DialogInterface.OnClickListener() {
 
 				public void onClick(DialogInterface arg0, int id) {

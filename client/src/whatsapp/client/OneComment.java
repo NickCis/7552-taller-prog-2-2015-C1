@@ -6,12 +6,21 @@ package whatsapp.client;
  */
 public class OneComment {
 	public boolean left;
-	public String comment;
+	public boolean sent;
+	private String comment;
 
 	public OneComment(boolean left, String comment) {
 		super();
 		this.left = left;
 		this.comment = comment;
+	}
+
+	public void setSentStatus(boolean status){
+		this.sent = status;
+	}
+
+	public String getComment(){
+		return comment;
 	}
 
 }

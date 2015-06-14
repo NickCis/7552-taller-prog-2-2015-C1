@@ -8,9 +8,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import java.util.HashMap;
@@ -55,9 +57,6 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 		editText1.setOnKeyListener(new View.OnKeyListener() {
 			public boolean onKey(View arg0, int keyCode, KeyEvent event) {
 				if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-					dbH.open();
-					dbH.createMessage(cE, dbH.fetchUser(DatabaseHelper.USERID_ME), null, null, editText1.getText().toString(), DatabaseHelper.NOT_RECIEVED);
-					dbH.close();
 					String msg;
 					adapter.add(new OneComment(true, msg = editText1.getText().toString()));
 					send(msg);
@@ -65,6 +64,18 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 					return true;
 				}
 				return false;
+			}
+		});
+		lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int idx, long arg3) {
+				OneComment item = adapter.getItem(idx);
+				if (!item.sent){
+					send(item.getComment());
+					DialogFactory.createProgressDialog(ConversationActivity.this, "Reenviando");
+				}
+
+				return true;
 			}
 		});
 
@@ -108,6 +119,8 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 	void send(String msg) {
 		Bundle bundle = new Bundle();
 		HashMap<String, String> params = new HashMap<String, String>();
+		ServerResultReceiver receiver = new ServerResultReceiver(new Handler());
+		receiver.setListener(this);
 		String access_token = ConfigurationManager.getInstance().getString(this, ConfigurationManager.ACCESS_TOKEN);
 		params.put("access_token", access_token);
 		params.put("message", msg);
@@ -122,12 +135,37 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 		Intent intent = new Intent(this, POSTService.class);
 		//TODO: Se le tiene q asociar un listener para q vuelva ? 
 		intent.putExtra("info", bundle);
+		intent.putExtra("rec", receiver);
 		startService(intent);
 	}
 
 	public void onReceiveResult(int resultCode, Bundle resultData) {
 		//TODO: La respuesta del servidor tiene que estar aca para que sea concordante con el resto 
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		DialogFactory.disposeDialog();
+
+		if (resultCode == 0){
+			HashMap h = (HashMap) resultData.getSerializable("params");
+			String message = (String) h.get("message");
+			OneComment comment = adapter.getItem(message);
+			if (!comment.sent){
+				comment.setSentStatus(true);
+				adapter.setSent(comment);
+				adapter.notifyDataSetChanged();
+			}
+			dbH.open();
+			dbH.createMessage(cE, dbH.fetchUser(DatabaseHelper.USERID_ME), null, null, message, DatabaseHelper.SEEN);
+			dbH.close();
+		}else if (resultCode == 1){
+			HashMap h = (HashMap) resultData.getSerializable("params");
+			String message = (String) h.get("message");
+			OneComment comment = adapter.getItem(message);
+			comment.setSentStatus(false);
+			adapter.setNotSent(comment);
+			adapter.notifyDataSetChanged();
+		
+		}
+		
+
 	}
 
 	@Override
