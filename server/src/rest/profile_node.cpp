@@ -26,6 +26,8 @@ void ProfileNode::executeGet(MgConnection& conn, const char* url){
 		return;
 	}
 
+	conn.sendStatus(MgConnection::STATUS_CODE_OK);
+	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
 	conn.printfData("%s", profile.toJson().c_str());
 }
 
