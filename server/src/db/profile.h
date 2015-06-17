@@ -31,6 +31,10 @@ class Profile : public DbEntity  {
 		const std::string& getOwner() const;
 		const std::string& getNick() const;
 		const bool& getOnline() const;
+		/** Devuelve el estado online del usuario. Es decir, ademas de fijarse si el usuario esta configurado como
+		 * conectado o desconectado, utiliza logica de last activity
+		 */
+		bool getOnlineStatus() const;
 		const std::string& getStatus() const;
 		const time_t& getStatusTime() const;
 		const time_t& getLastActivity() const;

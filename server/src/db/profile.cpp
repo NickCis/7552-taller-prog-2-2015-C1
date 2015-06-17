@@ -11,6 +11,11 @@ extern "C" {
 	#include <sys/time.h>
 }
 
+/** Tiempo de ultima actividad para suponer que el usuario esta desconectado
+ * 5 * 60 = 300
+ */
+#define ONLINE_TIMEOUT (300)
+
 using std::copy;
 using std::memcmp;
 using std::vector;
@@ -33,7 +38,7 @@ DB_ENTITY_DEF(Profile)
 Profile::Profile() :
 	owner(""),
 	nick(""),
-	online(false),
+	online(true),
 	status(""),
 	status_time(0),
 	last_activity(0)
@@ -62,7 +67,7 @@ Status Profile::get(const string& key){
 
 string Profile::toJson() const{
 	stringstream ss;
-	ss << "{\"username\":\"" << this->owner << "\",\"nickname\":\"" << this->nick << "\",\"online\":" << (this->online ? "true" : "false")
+	ss << "{\"username\":\"" << this->owner << "\",\"nickname\":\"" << this->nick << "\",\"online\":" << (this->getOnlineStatus() ? "true" : "false")
 		<< ",\"last_activity\":" << this->last_activity << ",\"status\":{\"time\":" << this->status_time << ",\"text\":\"" << this->status << "\"}}";
 	return ss.str();
 }
@@ -94,6 +99,10 @@ const std::string& Profile::getNick() const{
 
 const bool& Profile::getOnline() const{
 	return this->online;
+}
+
+bool Profile::getOnlineStatus() const{
+	return this->online && ( (time(NULL) - this->last_activity) > ONLINE_TIMEOUT);
 }
 
 const std::string& Profile::getStatus() const{

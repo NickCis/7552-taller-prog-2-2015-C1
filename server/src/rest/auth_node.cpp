@@ -34,5 +34,5 @@ void AuthNode::executePost(MgConnection& conn, const char*){
 
 	conn.sendStatus(MgConnection::STATUS_CODE_BAD_REQUEST);
 	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
-	conn.printfData("{ \"message\": \"%s\",  \"error_user_msg\": \"Problemas con el logeo\"}", s.ToString().c_str());
+	conn.printfData("{\"error\":{\"message\":\"%s\",\"error_user_msg\":\"Problemas con el logeo\",\"code\":400}}", s.ToString().c_str());
 }
