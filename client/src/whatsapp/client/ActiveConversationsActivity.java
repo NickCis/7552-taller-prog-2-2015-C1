@@ -56,73 +56,73 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 		listview = (ListView) findViewById(R.id.activeConversationsListview);
 		//adapter = new StableArrayAdapter(this, android.R.layout.simple_list_item_1, map);
 		//listview.setAdapter(adapter);
-		Drawable img = getResources().getDrawable(R.drawable.img1);
-		rowItems = new ArrayList<RowItem>();
-		if (conversations == null)
-			return;
-		for (int i = 0; i < conversations.size(); i++) {
-			ConversationEntity c = conversations.get(i);
-			UserEntity aux = c.getUser(0);
+			Drawable img = getResources().getDrawable(R.drawable.img1);
+			rowItems = new ArrayList<RowItem>();
+			if (conversations == null)
+				return;
+			for (int i = 0; i < conversations.size(); i++) {
+				ConversationEntity c = conversations.get(i);
+				UserEntity aux = c.getUser(0);
 
-			RowItem item = new RowItem(aux.getNickname(), img, aux.getUsername(), "ultima conexion", aux.getUserId());
-			rowItems.add(item);
-		}
-		adapter = new UserAdapter(this, rowItems);
-		listview.setAdapter(adapter);
-		registerForContextMenu(this.listview);
-
-	}
-
-	private void loadConversations(){
-		DatabaseHelper dbH = new DatabaseHelper(this);
-		dbH.open();
-		UserEntity uEMe = null;
-		if (dbH.fetchUser(DatabaseHelper.USERID_ME) == null)
-			uEMe = dbH.createUser(1554587629, "Me", "Me", DatabaseHelper.NORMAL);
-		map = new HashMap<String, Integer>();
-		List<ConversationEntity> conversationsAux = dbH.fetchAllConversations();
-		if (conversationsAux!= null){
-			for (ConversationEntity cE : conversationsAux) {
-				map.put(cE.getUser(1).getNickname(), cE.getConversationId());
+				RowItem item = new RowItem(aux.getNickname(), img, aux.getUsername(), "ultima conexion", aux.getUserId());
+				rowItems.add(item);
 			}
-			
-			conversations = (conversationsAux);
+			adapter = new UserAdapter(this, rowItems);
+			listview.setAdapter(adapter);
+			registerForContextMenu(this.listview);
+
 		}
-		dbH.close();
-		
-	}
 
-	public void onReceiveResult(int resultCode, Bundle resultData) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public void informNuevo(String nuevo) {
-		if (adapter.contains(nuevo)){
-			int idx = adapter.getPosition(nuevo);
-			//TODO:
-			// CUANDO DEVUELVE ALGO DEVUELVE UN RELATIVE LAYOUT, VER COMO CAMBIAR ESO CUANDO ME LLEGUE UNA NOTIFIACION
-			//TextView v = (TextView)listview.getChildAt(idx);
-			//v.setTextAppearance(this, R.style.textview_notificated);
-
-			
-		}else{
+		private void loadConversations(){
 			DatabaseHelper dbH = new DatabaseHelper(this);
 			dbH.open();
-			ConversationEntity ce = dbH.fetchConversation(nuevo);
-			UserEntity aux = ce.getUser(1);
-			//TODO: sacar
-			Drawable img = getResources().getDrawable(R.drawable.img1);
-			RowItem item = new RowItem(aux.getNickname(), img, aux.getUsername(), "ultima conexion", aux.getUserId());
-			rowItems.add(item);
-			adapter.notifyDataSetChanged();
-			//adapter.addToMap(ce.getUser(1).getNickname(), ce.getUser(1).getUserId());
+			UserEntity uEMe = null;
+			if (dbH.fetchUser(DatabaseHelper.USERID_ME) == null)
+				uEMe = dbH.createUser(1554587629, "Me", "Me", DatabaseHelper.NORMAL);
+			map = new HashMap<String, Integer>();
+			List<ConversationEntity> conversationsAux = dbH.fetchAllConversations();
+			if (conversationsAux!= null){
+				for (ConversationEntity cE : conversationsAux) {
+					map.put(cE.getUser(1).getNickname(), cE.getConversationId());
+				}
+				
+				conversations = (conversationsAux);
+			}
+			dbH.close();
+			
 		}
 
-	}
+		public void onReceiveResult(int resultCode, Bundle resultData) {
+			throw new UnsupportedOperationException("Not supported yet.");
+		}
 
-	private class ClickListener implements AdapterView.OnItemClickListener {
+		public void informNuevo(String nuevo) {
+			if (adapter.contains(nuevo)){
+				int idx = adapter.getPosition(nuevo);
+				//TODO:
+				// CUANDO DEVUELVE ALGO DEVUELVE UN RELATIVE LAYOUT, VER COMO CAMBIAR ESO CUANDO ME LLEGUE UNA NOTIFIACION
+				//TextView v = (TextView)listview.getChildAt(idx);
+				//v.setTextAppearance(this, R.style.textview_notificated);
 
-		private Context context;
+				
+			}else{
+				DatabaseHelper dbH = new DatabaseHelper(this);
+				dbH.open();
+				ConversationEntity ce = dbH.fetchConversation(nuevo);
+				UserEntity aux = ce.getUser(1);
+				//TODO: sacar
+				Drawable img = getResources().getDrawable(R.drawable.img1);
+				RowItem item = new RowItem(aux.getNickname(), img, aux.getUsername(), "ultima conexion", aux.getUserId());
+				rowItems.add(item);
+				adapter.notifyDataSetChanged();
+				//adapter.addToMap(ce.getUser(1).getNickname(), ce.getUser(1).getUserId());
+			}
+
+		}
+
+		private class ClickListener implements AdapterView.OnItemClickListener {
+
+			private Context context;
 
 		public ClickListener(Context context) {
 			this.context = context;

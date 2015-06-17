@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.style.ImageSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,21 @@ public class DiscussArrayAdapter extends ArrayAdapter<OneComment> {
 		return this.comentarios.get(index);
 	}
 
+	public OneComment getItem(String item){
+		for (OneComment comment : comentarios)
+			if (comment.getComment().equals(item))
+				return comment;
+		return null;
+	}
+
+	public void setNotSent(OneComment comment){
+		campoEscritura.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.red_exclamation_icon, 0, 0, 0);
+	}
+
+	public void setSent(OneComment comment){
+		campoEscritura.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
+	}
+
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View row = convertView;
 		if (row == null) {
@@ -51,10 +67,12 @@ public class DiscussArrayAdapter extends ArrayAdapter<OneComment> {
 
 		campoEscritura = (TextView) row.findViewById(R.id.comment);
 
-		campoEscritura.setText(coment.comment);
+		campoEscritura.setText(coment.getComment());
 
 		campoEscritura.setBackgroundResource(coment.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
 		wrapper.setGravity(coment.left ? Gravity.LEFT : Gravity.RIGHT);
+
+
 
 		return row;
 	}

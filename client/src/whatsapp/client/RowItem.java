@@ -10,6 +10,15 @@ public class RowItem {
 	private String userName;
 	private String contactType;
 
+	public RowItem(){
+	
+	}
+
+	public RowItem(String username){
+		this.userName = username;
+	}
+	
+
 	public RowItem(String nickName, Drawable avatar, String userName,String contactType, int id) {
 
 		this.nickName = nickName;
@@ -32,7 +41,7 @@ public class RowItem {
 	}
 
 	public void setStatus(String status) {
-		this.userName = status;
+		this.contactType = status;;
 	}
 
 	public String getContactType() {
@@ -45,6 +54,10 @@ public class RowItem {
 
 	public Drawable getAvatar() {
 		return avatar;
+	}
+
+	public void setAvatar(Drawable d){
+		avatar=d;
 	}
 
 	public String getUserName(){
