@@ -20,7 +20,7 @@ void WAParentNode::execute(MgConnection& conn, const char* url){
 	}
 }
 
-bool WAParentNode::preExecute(MgConnection& conn, const char*& url){
+bool WAParentNode::preExecute(MgConnection&, const char*& url){
 	url += this->uri.length();
 	return true;
 }

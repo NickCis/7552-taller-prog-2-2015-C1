@@ -13,7 +13,7 @@ using rocksdb::Status;
 CheckinNode::CheckinNode() : WAMethodAuthNode("checkin") {
 }
 
-void CheckinNode::executeGet(MgConnection& conn, const char* url){
+void CheckinNode::executeGet(MgConnection& conn, const char*){
 	string user = conn.getParameter("user");
 
 	Checkin checkin;
@@ -29,7 +29,7 @@ void CheckinNode::executeGet(MgConnection& conn, const char* url){
 	conn.printfData("%s", checkin.toJson().c_str());
 }
 
-void CheckinNode::executePost(MgConnection& conn, const char* url){
+void CheckinNode::executePost(MgConnection& conn, const char*){
 	string user = conn.getParameter("user");
 	string loggedUser = conn.getParameter("logged_user");
 

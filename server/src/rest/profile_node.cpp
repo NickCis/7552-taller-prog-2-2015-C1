@@ -13,7 +13,7 @@ using rocksdb::Status;
 ProfileNode::ProfileNode() : WAMethodAuthNode("profile") {
 }
 
-void ProfileNode::executeGet(MgConnection& conn, const char* url){
+void ProfileNode::executeGet(MgConnection& conn, const char*){
 	string user = conn.getParameter("user");
 
 	Profile profile;
@@ -31,7 +31,7 @@ void ProfileNode::executeGet(MgConnection& conn, const char* url){
 	conn.printfData("%s", profile.toJson().c_str());
 }
 
-void ProfileNode::executePost(MgConnection& conn, const char* url){
+void ProfileNode::executePost(MgConnection& conn, const char*){
 	string user = conn.getParameter("user");
 	string loggedUser = conn.getParameter("logged_user");
 

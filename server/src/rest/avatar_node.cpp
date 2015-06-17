@@ -14,7 +14,7 @@ using rocksdb::Status;
 AvatarNode::AvatarNode() : WAMethodAuthNode("avatar") {
 }
 
-void AvatarNode::executeGet(MgConnection& conn, const char* url){
+void AvatarNode::executeGet(MgConnection& conn, const char*){
 	string user = conn.getParameter("user");
 
 	Avatar avatar;
@@ -34,7 +34,7 @@ void AvatarNode::executeGet(MgConnection& conn, const char* url){
 		conn.send_data(avatar.getData().c_str(), avatar.getData().size());
 }
 
-void AvatarNode::executePost(MgConnection& conn, const char* url){
+void AvatarNode::executePost(MgConnection& conn, const char*){
 	string user = conn.getParameter("user");
 	string loggedUser = conn.getParameter("logged_user");
 

@@ -12,7 +12,7 @@ using rocksdb::Status;
 AuthNode::AuthNode() : WAMethodNode("auth") {
 }
 
-void AuthNode::executePost(MgConnection& conn, const char* url){
+void AuthNode::executePost(MgConnection& conn, const char*){
 	string u = conn.getVarStr("user");
 	string p = conn.getVarStr("pass");
 	User user;

@@ -40,7 +40,7 @@ void Avatar::packValue(string& value){
 	OSerializer(value) << this->t << this->data;
 }
 
-bool Avatar::unPack(const string& key, const string& value){
+bool Avatar::unPack(const string&, const string& value){
 	ISerializer valueSerializer(value);
 	valueSerializer >> this->t >> this->data;
 

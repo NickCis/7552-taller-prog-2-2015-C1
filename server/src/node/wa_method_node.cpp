@@ -34,7 +34,7 @@ void WAMethodNode::executeDelete(MgConnection& conn, const char* url){
 	this->methodNotAllowed(conn, url);
 }
 
-void WAMethodNode::methodNotAllowed(MgConnection& conn, const char* url){
+void WAMethodNode::methodNotAllowed(MgConnection& conn, const char*){
 	conn.sendStatus(MgConnection::STATUS_CODE_METHOD_NOT_ALLOWED);
 	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
 	conn.printfData("{ \"message\": \" Method: '%s' en '%s' no manejado\", \"code\": 404, \"error_user_msg\": \"Ups... No se encontro!\" }", conn->request_method, conn->uri);

@@ -12,7 +12,7 @@ using rocksdb::Status;
 MessagesNode::MessagesNode() : WAMethodAuthNode("messages") {
 }
 
-void MessagesNode::executeGet(MgConnection& conn, const char* url){
+void MessagesNode::executeGet(MgConnection& conn, const char*){
 	string user = conn.getParameter("user");
 	string loggedUser = conn.getParameter("logged_user");
 	auto it = Message::NewIterator();
@@ -43,7 +43,7 @@ void MessagesNode::executeGet(MgConnection& conn, const char* url){
 	conn.printfData("],\"next\":\"/user/%s/messages?limit=%d&last_id=%s&access_token=%s\"}", user.c_str(), limit, last_id.c_str(), conn.getVarStr("access_token").c_str());
 }
 
-void MessagesNode::executePost(MgConnection& conn, const char* url){
+void MessagesNode::executePost(MgConnection& conn, const char*){
 	Message msg = Message::Now(conn.getParameter("user"), conn.getParameter("logged_user"), conn.getVarStr("message"));
 	Status s = msg.put();
 
