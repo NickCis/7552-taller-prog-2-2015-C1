@@ -1,5 +1,4 @@
 #include "message.h"
-#include "notification.h"
 #include "../util/bin2hex.h"
 #include "../util/serializer.h"
 

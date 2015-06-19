@@ -4,9 +4,15 @@
 #include <string>
 #include "../mg/mg_server.h"
 #include "../db/notification.h"
+#include "../db/message.h"
 
 class Notifier {
 	public:
+		/** Notifica acerca de un cambio de avatar
+		 * @param usuario que cambio de avatar
+		 */
+		static void OnMessage(const Message&);
+
 		/** Notifica acerca de un cambio de avatar
 		 * @param usuario que cambio de avatar
 		 */

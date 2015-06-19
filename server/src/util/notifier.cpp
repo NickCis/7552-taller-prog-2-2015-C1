@@ -19,7 +19,6 @@ MgServer* Notifier::mgServer = NULL;
 bool sse_check(MgConnection& conn, Notification& n){
 	if(conn.getParameter("sse") == "yes" && n.getOwner() == conn.getParameter("logged_user"))
 		return true;
-
 	return false;
 }
 
@@ -34,6 +33,10 @@ void Notifier::add_push_notification(const string& u, const Notification::Notifi
 		std::bind(sse_check, std::placeholders::_1, std::ref(n)),
 		std::bind(sse_push, std::placeholders::_1, std::ref(n))
 	);
+}
+
+void Notifier::OnMessage(const Message& msg){
+	add_push_notification(msg.getTo(), Notification::NOTIFICATION_MESSAGE, msg.toJson());
 }
 
 void Notifier::OnChangeAvatar(const string& u){
