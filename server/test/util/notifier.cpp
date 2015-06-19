@@ -73,6 +73,23 @@ TEST_CASE( "Probando Notifier", "[Notifier]" ) {
 		REQUIRE( i == 1 );
 	}
 
+	SECTION("OnMessageAck"){
+		Message msg = Message::Now("foo", "pepe", "message");
+		msg.setArrived();
+		msg.setRead();
+
+		Notifier::OnMessageAck(msg);
+		auto it = Notification::NewIterator();
+		it.seek("pepe");
+
+		int i;
+		for(i=0; it.valid(); it.next(), i++){
+			REQUIRE( it.value().getData() == msg.toJson() );
+		}
+
+		REQUIRE( i == 1 );
+	}
+
 	SECTION("OnChangeProfile"){
 		Profile p;
 		p.setOwner("pepe");

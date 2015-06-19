@@ -54,6 +54,9 @@ class Message : public DbEntity {
 		void setTo(const std::string&); ///< Setea destinatario del mensaje
 		void setMsg(const std::string&); ///< Setea el mensaje
 
+		void setRead(); ///< Setea el mensaje
+		void setArrived(); ///< Setea el mensaje
+
 		bool unPack(const std::string& key, const std::string& value);
 
 		/** Get, antes se debe setear el From y To.

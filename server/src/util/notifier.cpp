@@ -39,6 +39,10 @@ void Notifier::OnMessage(const Message& msg){
 	add_push_notification(msg.getTo(), Notification::NOTIFICATION_MESSAGE, msg.toJson());
 }
 
+void Notifier::OnMessageAck(const Message& msg){
+	add_push_notification(msg.getFrom(), Notification::NOTIFICATION_ACK, msg.toJson());
+}
+
 void Notifier::OnChangeAvatar(const string& u){
 	SuscriberList sl;
 	sl.get(u);
