@@ -195,6 +195,7 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 
 	private void mostrarErroneo(String usuarioNoEncontroado){
 		System.out.println(usuarioNoEncontroado);
+		DialogFactory.createAlertDialog(this, "Usuario no encontrado", "El nombre de usuario: " +usuarioNoEncontroado + " no esta registrado, verifique e intente nuevamente");
 		//TODO : mostrar en un dialogo
 		//ERROR , [usuario] inexistente
 
@@ -275,6 +276,8 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 			} catch (JSONException ex) {
 				Logger.getLogger(RegisterActivity.class.getName()).log(Level.SEVERE, null, ex);
 			}
+		}else if (resultCode == 1){
+			DialogFactory.createAlertDialog(UsersActivity.this, "Error de conexion", "Hubo un problema en la conexion, pruebe de nuevo mas tarde");
 		}
 	}
 
