@@ -3,6 +3,7 @@
 #include <cstdlib>
 
 #include "../db/message.h"
+#include "../util/notifier.h"
 
 using std::atoi;
 using std::string;
@@ -57,4 +58,6 @@ void MessagesNode::executePost(MgConnection& conn, const char*){
 	conn.sendStatus(MgConnection::STATUS_CODE_CREATED);
 	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
 	conn.printfData("{ \"id\": \"%s\", \"time\": %d }", msg.getId().c_str(), msg.getTime());
+
+	Notifier::OnMessage(msg);
 }
