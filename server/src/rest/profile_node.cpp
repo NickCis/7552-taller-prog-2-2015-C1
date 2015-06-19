@@ -77,5 +77,5 @@ void ProfileNode::executePost(MgConnection& conn, const char*){
 	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
 	conn.printfData("{\"success\":true}");
 
-	Notifier::OnChangeProfile(loggedUser);
+	Notifier::OnChangeProfile(profile);
 }
