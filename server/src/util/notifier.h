@@ -5,6 +5,8 @@
 #include "../mg/mg_server.h"
 #include "../db/notification.h"
 #include "../db/message.h"
+#include "../db/profile.h"
+#include "../db/checkin.h"
 
 class Notifier {
 	public:
@@ -21,12 +23,12 @@ class Notifier {
 		/** Notifica acerca de un cambio en el perfil
 		 * @param usuario que cambio cosas en el perfil
 		 */
-		static void OnChangeProfile(const std::string&);
+		static void OnChangeProfile(const Profile&);
 
 		/** Notifica acerca de un checkin
 		 * @param usuario que hizo un checkin
 		 */
-		static void OnCheckIn(const std::string&);
+		static void OnCheckIn(const Checkin&);
 
 		static void setServer(MgServer*);
 

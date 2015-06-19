@@ -49,24 +49,19 @@ void Notifier::OnChangeAvatar(const string& u){
 		add_push_notification(*it, Notification::NOTIFICATION_AVATAR, ss.str());
 }
 
-void Notifier::OnChangeProfile(const string& u){
+void Notifier::OnChangeProfile(const Profile& p){
 	SuscriberList sl;
-	sl.get(u);
+	sl.get(p.getOwner());
 
-	Profile p;
-	p.get(u);
 	string json = p.toJson();
-
 	for(auto it=sl.getList().begin(); it != sl.getList().end(); it++)
 		add_push_notification(*it, Notification::NOTIFICATION_PROFILE, json);
 }
 
-void Notifier::OnCheckIn(const string& u){
+void Notifier::OnCheckIn(const Checkin& c){
 	SuscriberList sl;
-	sl.get(u);
+	sl.get(c.getOwner());
 
-	Checkin c;
-	c.get(u);
 	string json = c.toJson();
 	for(auto it=sl.getList().begin(); it != sl.getList().end(); it++)
 		add_push_notification(*it, Notification::NOTIFICATION_CHECKIN, json);
