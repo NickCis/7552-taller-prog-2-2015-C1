@@ -12,6 +12,8 @@ class MessagesNode : public WAMethodAuthNode {
 	protected:
 		void executePost(MgConnection& conn, const char* url);
 		void executeGet(MgConnection& conn, const char* url);
+		bool executeAck(MgConnection& conn, const char*, const std::string& user, const std::string& loggedUser);
+		void executeAckArrivedRead(MgConnection& conn, bool read, const std::string& user, const std::string& loggedUser);
 };
 
 #endif

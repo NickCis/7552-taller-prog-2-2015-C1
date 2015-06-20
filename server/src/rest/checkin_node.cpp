@@ -64,5 +64,5 @@ void CheckinNode::executePost(MgConnection& conn, const char*){
 	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
 	conn.printfData("{\"success\":true}");
 
-	Notifier::OnCheckIn(loggedUser);
+	Notifier::OnCheckIn(checkin);
 }

@@ -141,6 +141,15 @@ void Message::setMsg(const string& msg) {
 	this->msg = msg;
 }
 
+void Message::setRead(){
+	if(this->read == 0)
+		this->read = time(NULL);
+}
+void Message::setArrived(){
+	if(this->arrived == 0)
+		this->arrived = time(NULL);
+}
+
 Status Message::get(const string& id) {
 	vector<char> bin = hex2bin(id);
 
