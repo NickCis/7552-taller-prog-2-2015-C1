@@ -4967,7 +4967,7 @@ static void close_local_endpoint(struct connection *conn) {
   // (IP addresses & ports, server_param) must survive. Nullify the rest.
   c->request_method = c->uri = c->http_version = c->query_string = NULL;
   c->num_headers = c->status_code = c->is_websocket = c->content_len = 0;
-  c->connection_param = c->callback_param = NULL;
+  c->callback_param = NULL;
 
   if (keep_alive) {
     on_recv_data(conn);  // Can call us recursively if pipelining is used
@@ -5453,19 +5453,14 @@ static void iter2(struct ns_connection *nc, int ev, void *param) {
 void mg_wakeup_server_ex(struct mg_server *server, mg_handler_t cb,
                          const char *fmt, ...) {
   va_list ap;
-  va_start(ap, fmt);
-  mg_vwakeup_server_ex(server, cb, fmt, ap);
-  va_end(ap);
-}
-
-void mg_vwakeup_server_ex(struct mg_server *server, mg_handler_t cb,
-                         const char *fmt, va_list ap) {
   char buf[8 * 1024];
   int len;
 
   // Encode callback (cb) into a buffer
   len = snprintf(buf, sizeof(buf), "%p ", cb);
+  va_start(ap, fmt);
   len += vsnprintf(buf + len, sizeof(buf) - len, fmt, ap);
+  va_end(ap);
 
   // "len + 1" is to include terminating \0 in the message
   ns_broadcast(&server->ns_mgr, iter2, buf, len + 1);

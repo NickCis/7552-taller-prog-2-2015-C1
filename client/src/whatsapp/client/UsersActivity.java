@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,17 +24,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.toolbox.ImageRequest;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.GETService;
 import model.POSTService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import services.AppController;
 import utils.ConfigurationManager;
 import utils.ConversationEntity;
 import utils.DatabaseHelper;
@@ -47,11 +55,17 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 	ListView viewUsuarios;
 	Button agregar;
 	UsersActivity uA;
+	UserEntity ueAux;
+	RowItem rowItemAux;
+	private static UsersActivity INSTANCE;
+	private static boolean showing;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
             this.uA = this;
+	    showing = true;
             super.onCreate(savedInstanceState);
+	    INSTANCE = this;
             setContentView(R.layout.users);
             viewUsuarios = (ListView) findViewById(R.id.usersListview);
 	    agregar = (Button) findViewById(R.id.buttonAgregar);
@@ -85,13 +99,15 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 
 	private void populateView() {
 		viewUsuarios= (ListView) findViewById(R.id.usersListview);
-		Drawable img = getResources().getDrawable(R.drawable.img1);
+		//Drawable img = getResources().getDrawable(R.drawable.img1);
 		rowItems = new ArrayList<RowItem>();
 		if (users == null)
 			return;
 		for (int i = 0; i < users.size(); i++) {
 			UserEntity aux = users.get(i);
-			RowItem item = new RowItem(aux.getNickname(), img, aux.getUsername(), "ultima conexion", aux.getUserId());
+			Drawable img = new BitmapDrawable(getResources(), aux.getAvatar());
+			String status = aux.getStatus() == DatabaseHelper.CONNECTED  ? "online" : "offline";
+			RowItem item = new RowItem(aux.getNickname(), img, aux.getUsername(), status, aux.getUserId());
 			rowItems.add(item);
 		}
 		adapter = new UserAdapter(this, rowItems);
@@ -110,8 +126,8 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 	@Override
 	public boolean onContextItemSelected(MenuItem item) 
 	{
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		DatabaseHelper dbH = DatabaseHelper.getInstance(this);
+		final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		final DatabaseHelper dbH = DatabaseHelper.getInstance(this);
 		dbH.open();
 		List<UserEntity> list = dbH.fetchAllUsers();
 		list.remove(dbH.getUserMe());
@@ -149,6 +165,25 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 				intent.putExtra("whatsapp.client.ProfileActivity.data", bundle);
 				startActivity(intent);
 				break;
+
+			case R.id.delete:
+				DialogFactory.createOkCancelDialog(UsersActivity.this,
+					"Eliminar conversación", "¿Está seguro que desea eliminar la conversación?",
+					new DialogInterface.OnClickListener() {
+						
+						public void onClick(DialogInterface arg0, int id) {
+							//String itemSelected = ((RowItem) adapter.getItem(idx)).getUserName();
+							RowItem rowItem = (RowItem) adapter.getItem(info.position);
+							if (dbH.fetchConversation(rowItem.getUserName()) != null)
+								dbH.deleteConversation(dbH.fetchConversation(rowItem.getUserName()));
+							dbH.deleteUser(dbH.fetchUser(rowItem.getUserName()));
+							dbH.close();
+							rowItems.remove(rowItem);
+							adapter.notifyDataSetChanged();
+							//adapter.remove(itemSelected);
+							//adapter.remove(rowItem);
+						}
+					});
 		}
 		return true;
 	}
@@ -164,61 +199,101 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 
 	private void mostrarErroneo(String usuarioNoEncontroado){
 		System.out.println(usuarioNoEncontroado);
+		DialogFactory.createAlertDialog(this, "Usuario no encontrado", "El nombre de usuario: " +usuarioNoEncontroado + " no esta registrado, verifique e intente nuevamente");
 		//TODO : mostrar en un dialogo
 		//ERROR , [usuario] inexistente
 
 	}
 
-	private void agregar(String usuarioEncontrado){
-		DatabaseHelper dbH = DatabaseHelper.getInstance(this);
+	private void agregar(){
+		DatabaseHelper dbh = DatabaseHelper.getInstance(this);
 		//TODO: Sacar esto
-		Drawable img = getResources().getDrawable(R.drawable.img1);
-		dbH.open();
-		UserEntity fetchUser = dbH.fetchUser(usuarioEncontrado);
+		dbh.open();
+		UserEntity fetchUser = dbh.fetchUser(ueAux.getUsername());
 		if (fetchUser == null){
-			UserEntity ue = dbH.createUser(0, usuarioEncontrado, usuarioEncontrado, DatabaseHelper.NORMAL);
+			UserEntity ue = dbh.createUser(0, ueAux.getUsername(), ueAux.getNickname(), ueAux.getStatus());
 			users.add(ue);
-			RowItem item = new RowItem(usuarioEncontrado, img, "", "ultima conexion", 0);
-
-			rowItems.add(item);
-			adapter.notifyDataSetChanged();
 		}
-			
-
 	}
 
 	public void onReceiveResult(int resultCode, Bundle resultData) {
 		if (resultCode == 0) {
+			int type = resultData.getInt("type");
+			JSONObject data;
+			String username = null;
 			try {
-				JSONObject data = new JSONObject(resultData.getString("data"));
-				data.get("error");
-				JSONArray error = (JSONArray) data.get("error");
-				if (error.length()!=0){
-					mostrarErroneo((String)error.get(0));
-					return;
-				}
-				JSONArray success = (JSONArray) data.get("success");
-				agregar((String)success.get(0));
+				data = new JSONObject(resultData.getString("data"));
+				switch(type){
+					case 0:
+						data.get("error");
+						JSONArray error = (JSONArray) data.get("error");
+						if (error.length()!=0){
+							mostrarErroneo((String)error.get(0));
+							return;
+						}
+						JSONArray success = (JSONArray) data.get("success");
+						
+						ueAux = new UserEntity(username = (String)success.get(0));
+						rowItemAux = new RowItem(username);
+						rowItems.add(rowItemAux);
+						fetchInfo(username);
+						break;
+					case 1:
+						updateProfile(data);
+						updateRow(rowItemAux);
+						agregar();
 
-			
-				/*if (!data.contains("access_token")) {
-				 Bundle bundle = new Bundle();
-				 bundle.putString("username", user);
-				 bundle.putString("password", pass);
-				 URI = getIP() + ":" + getPort() + "/" + "auth";
-				 bundle.putString("URI", URI);
-				 //TODO: esto es auth
-				 InfoDialog.createProgressDialog(this, "Registrando... por favor espere");
-				 startService(createCallingIntent(bundle));
-				 } else{
-				 //Tengo access token, vengo de auth -> tengo q ir a conversaciones y guardar token
-				 LoginActivity.storeAcessToken(this,data);
-				
-				 }*/
+				}
 			} catch (JSONException ex) {
 				Logger.getLogger(RegisterActivity.class.getName()).log(Level.SEVERE, null, ex);
 			}
+		}else if (resultCode == 1){
+			DialogFactory.createAlertDialog(UsersActivity.this, "Error de conexion", "Hubo un problema en la conexion, pruebe de nuevo mas tarde");
 		}
+	}
+
+	public void updateRow(RowItem row){
+		updateRow(row,null);
+	}
+
+	public void updateRow(RowItem row, UserEntity ue){
+		if (ue == null)
+			ue = ueAux;
+		String statusShow = ue.getStatus() == DatabaseHelper.CONNECTED  ? "online" : "offline";
+		row.setNickName(ue.getNickname());
+		row.setStatus(statusShow);
+		if (ue.getAvatar()!=null){
+			Drawable d = new BitmapDrawable(getResources(), ueAux.getAvatar());
+			rowItemAux.setAvatar(d);
+		}
+		adapter.notifyDataSetChanged();
+		
+	}
+
+	public void updateProfile(JSONObject data){
+		try{
+			String username = data.getString("username");
+			String nickname = data.getString("nickname");
+			boolean connected = data.getBoolean("online");
+			long lastActivity = data.getLong("last_activity");
+			JSONObject status = data.getJSONObject("status");
+			long lastStatus = status.getLong("time");
+			String statusText = status.getString("text");
+			ueAux.setNickname(nickname);
+			ueAux.setStatus(connected ? DatabaseHelper.CONNECTED : DatabaseHelper.DISCONNECTED);
+		}catch(JSONException ex){}
+	}
+
+	public void updateView(String username){
+		int idx = getIdxUser(username);
+		DatabaseHelper dbh = DatabaseHelper.getInstance(this);
+		dbh.open();
+		UserEntity ue = dbh.fetchUser(username);
+		if (idx != -1){
+			RowItem row = rowItems.get(idx);
+			updateRow(row,ue);
+		}
+		dbh.close();
 	}
 
 	private class ClickListener implements AdapterView.OnItemClickListener {
@@ -262,7 +337,7 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 
 		public boolean onItemLongClick(final AdapterView<?> adapterView, final View arg1,final int idx, long arg3) {
 			DialogFactory.createOkCancelDialog(UsersActivity.this, 
-					"Eliminar conversación", "¿Está seguro que desea eliminar la conversación?",
+					"Eliminar Usuario", "¿Está seguro que desea eliminar el usuario seleccionado?",
 					new DialogInterface.OnClickListener() {
 
 				public void onClick(DialogInterface arg0, int id) {
@@ -278,24 +353,100 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 	
 	}
 
+	private void fetchInfo(String username){
+		fetchAvatar(username);
+		fetchProfile(username);
+	}
+
+	private void fetchProfile(String username){
+		send("user/"+username+"/profile",null,1,1);
+	}
+
+	//TODO: sacar de aca
+	private void fetchAvatar(final String username){
+		String ip = ConfigurationManager.getInstance().getString(UsersActivity.this, ConfigurationManager.SAVED_IP);
+		String port = ConfigurationManager.getInstance().getString(UsersActivity.this, ConfigurationManager.SAVED_PORT);
+		String access_token = ConfigurationManager.getInstance().getString(UsersActivity.this, ConfigurationManager.ACCESS_TOKEN);
+		String URI = ip + ":" + port + "/user/" + username +"/avatar?access_token="+access_token;
+		//send("user/"+username+"/avatar",null,2,1);
+		ImageRequest imreq = new ImageRequest(URI, new Response.Listener<Bitmap>() {
+			public void onResponse(Bitmap t) {
+				ueAux.setAvatar(t);
+				Drawable d = new BitmapDrawable(getResources(), ueAux.getAvatar());
+				rowItemAux.setAvatar(d);
+				adapter.notifyDataSetChanged();
+			}
+		}, 0,0, null, null);
+		AppController.getInstance().addToRequestQueue(imreq);
+	}
+
+	public int getIdxUser(String username){
+		for (int i = 0 ; i < rowItems.size() ; i++){
+			if (rowItems.get(i).getUserName().equals(username))
+				return i;
+		}
+		return -1;
+	}
+
+
+	//TODO: arreglar esto , el tipo de request no deberia ser un parametro ,tendria q usar polimorfismo
+	private void send(String endpoint,HashMap<String,String>params,int type,int request){
+		Class<?> clase = null;
+		switch(request){
+			case 0:
+				clase = POSTService.class;
+				break;
+			case 1:
+				clase = GETService.class;
+				break;
+		}
+		
+		Bundle b = createCommonBundle(params,type);
+		ServerResultReceiver receiver = new ServerResultReceiver(new Handler());
+		Intent intent = new Intent(UsersActivity.this, clase);
+		receiver.setListener(UsersActivity.this);
+		
+		String ip = ConfigurationManager.getInstance().getString(UsersActivity.this, ConfigurationManager.SAVED_IP);
+		String port = ConfigurationManager.getInstance().getString(UsersActivity.this, ConfigurationManager.SAVED_PORT);
+		String URI = ip + ":" + port + "/" + endpoint;
+		b.putString("URI", URI);
+		
+		intent.putExtra("rec", receiver);
+		intent.putExtra("info", b);
+		startService(intent);
+	}
+	
+	private Bundle createCommonBundle(HashMap<String,String> params,int type){
+		Bundle bundle = new Bundle();
+		String access_token = ConfigurationManager.getInstance().getString(UsersActivity.this, ConfigurationManager.ACCESS_TOKEN);
+		if (params == null)
+			params = new HashMap<String, String>();
+		//params.put("users[]", contact);
+		params.put("access_token",access_token);
+		bundle.putSerializable("params", params);
+		bundle.putInt("type", type);
+		return bundle;
+	}
 	private class AgregarListener implements OnClickListener{
-		private String contact;
 		private EditText edit;
 		private AlertDialog dialog;
-
+		private String contact;
+		
 		AgregarListener(){
 			this.edit = new EditText(UsersActivity.this);
 		}
-
+		
 		public void onClick(DialogInterface arg0, int arg1) {
-			this.contact = edit.getText().toString();
+			contact = edit.getText().toString();
 			dialog.dismiss();
-			Logger.getLogger(UsersActivity.class.getName()).log(Level.INFO, "ENTRE AL SEND");
-			System.out.println("entreeeeefsdfasdfsadf");
-			send();
-
+			HashMap<String,String> params = new HashMap<String, String>();
+			params.put("users[]", contact);
+			send("contacts",params,0,0);
 		}
-
+		
+		
+		
+		/*
 		private void send(){
 			Bundle bundle = new Bundle();
 			HashMap<String, String> params = new HashMap<String, String>();
@@ -303,6 +454,7 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 			params.put("users[]", contact);
 			params.put("access_token",access_token);
 			bundle.putSerializable("params", params);
+			bundle.putInt("type", 0);
 			String ip = ConfigurationManager.getInstance().getString(UsersActivity.this, ConfigurationManager.SAVED_IP);
 			String port = ConfigurationManager.getInstance().getString(UsersActivity.this, ConfigurationManager.SAVED_PORT);
 			//String URI = ip + ":" + port + "/contacts?access_token="+access_token;
@@ -317,6 +469,7 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 			intent.putExtra("info", bundle);
 			startService(intent);
 		}
+		*/
 
 		private void setInput(EditText edit) {
 			this.edit = edit;
@@ -333,6 +486,33 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 				return this.edit;
 		}
 	}
-	
 
+	public static UsersActivity getInstance() {
+		return INSTANCE;
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		showing = true;
+		loadUsers();
+		populateView();
+	}
+
+
+	@Override
+	protected void onDestroy() {
+		showing = false;
+		super.onDestroy();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause(); //To change body of generated methods, choose Tools | Templates.
+		showing = false;
+	}
+
+	public boolean isShowing(){
+		return showing;
+	}
 }

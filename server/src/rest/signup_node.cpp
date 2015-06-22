@@ -14,7 +14,7 @@ using rocksdb::Status;
 SignupNode::SignupNode() : WAMethodNode("signup") {
 }
 
-void SignupNode::executePost(MgConnection& conn, const char* url){
+void SignupNode::executePost(MgConnection& conn, const char*){
 	User u;
 	u.setUsername(conn.getVarStr("user"));
 	u.setPassword(conn.getVarStr("pass"));

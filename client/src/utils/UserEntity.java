@@ -26,6 +26,10 @@ public class UserEntity {
         this.phone = phone;
         this.status = status;
     }
+
+    public UserEntity(String username){
+    	this.username = username;
+    }
     
 	public void setAvatar(Bitmap img){
 		this.avatar = img;

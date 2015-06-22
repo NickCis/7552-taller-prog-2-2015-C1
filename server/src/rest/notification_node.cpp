@@ -12,7 +12,7 @@ using rocksdb::Status;
 NotificationNode::NotificationNode() : WAMethodAuthNode("notification") {
 }
 
-void NotificationNode::executeGet(MgConnection& conn, const char* url){
+void NotificationNode::executeGet(MgConnection& conn, const char*){
 	string loggedUser = conn.getParameter("logged_user");
 
 	auto it = Notification::NewIterator();
@@ -44,7 +44,7 @@ void NotificationNode::executeGet(MgConnection& conn, const char* url){
 	conn.printfData("]}");
 }
 
-void NotificationNode::executeDelete(MgConnection& conn, const char* url){
+void NotificationNode::executeDelete(MgConnection& conn, const char*){
 	string loggedUser = conn.getParameter("logged_user");
 	string lastId = conn.getVarStr("id");
 	if(lastId.size() < sizeof(uint64_t) * 2){ // TODO: este control lo deberia hacer messages!

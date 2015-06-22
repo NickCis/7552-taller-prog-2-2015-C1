@@ -13,7 +13,7 @@ using rocksdb::Status;
 ProfileNode::ProfileNode() : WAMethodAuthNode("profile") {
 }
 
-void ProfileNode::executeGet(MgConnection& conn, const char* url){
+void ProfileNode::executeGet(MgConnection& conn, const char*){
 	string user = conn.getParameter("user");
 
 	Profile profile;
@@ -26,10 +26,12 @@ void ProfileNode::executeGet(MgConnection& conn, const char* url){
 		return;
 	}
 
+	conn.sendStatus(MgConnection::STATUS_CODE_OK);
+	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
 	conn.printfData("%s", profile.toJson().c_str());
 }
 
-void ProfileNode::executePost(MgConnection& conn, const char* url){
+void ProfileNode::executePost(MgConnection& conn, const char*){
 	string user = conn.getParameter("user");
 	string loggedUser = conn.getParameter("logged_user");
 
@@ -75,5 +77,5 @@ void ProfileNode::executePost(MgConnection& conn, const char* url){
 	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
 	conn.printfData("{\"success\":true}");
 
-	Notifier::OnChangeProfile(loggedUser);
+	Notifier::OnChangeProfile(profile);
 }

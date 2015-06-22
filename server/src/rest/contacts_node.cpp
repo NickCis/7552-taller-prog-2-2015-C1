@@ -12,7 +12,7 @@ using rocksdb::Status;
 ContactsNode::ContactsNode() : WAMethodAuthNode("contacts") {
 }
 
-void ContactsNode::executeGet(MgConnection& conn, const char* url){
+void ContactsNode::executeGet(MgConnection& conn, const char*){
 	ContactList cl;
 	if(! cl.get(conn.getParameter("logged_user")).ok()){
 		/*conn.sendStatus(MgConnection::STATUS_CODE_INTERNAL_ERROR);
@@ -31,7 +31,7 @@ void ContactsNode::executeGet(MgConnection& conn, const char* url){
 	conn.printfData("%s", cl.toJson().c_str());
 }
 
-void ContactsNode::executeDelete(MgConnection& conn, const char* url){
+void ContactsNode::executeDelete(MgConnection& conn, const char*){
 	string loggedUser = conn.getParameter("logged_user");
 	ContactList contactList;
 	contactList.setOwner(loggedUser);
@@ -65,7 +65,7 @@ void ContactsNode::executeDelete(MgConnection& conn, const char* url){
 	conn.printfData("{\"success\":[%s],\"error\":[%s]}", success.c_str(), error.c_str());
 }
 
-void ContactsNode::executePost(MgConnection& conn, const char* url){
+void ContactsNode::executePost(MgConnection& conn, const char*){
 	string loggedUser = conn.getParameter("logged_user");
 	ContactList contactList;
 	contactList.setOwner(loggedUser);

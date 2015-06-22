@@ -3,15 +3,13 @@
 #include "profile.h"
 
 #include "../util/serializer.h"
+#include "../util/has_suffix.h"
 
 using std::string;
+using std::has_suffix;
 
 using rocksdb::Slice;
 using rocksdb::Logger;
-
-bool has_suffix(const string &str, const string &suffix){
-	return str.size() >= suffix.size() && str.compare(str.size()-suffix.size(), suffix.size(), suffix) == 0;
-}
 
 bool UserMergeOperator::Merge(const Slice& key,
 		const Slice* existing_value,

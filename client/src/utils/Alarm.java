@@ -13,15 +13,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import static android.content.Context.NOTIFICATION_SERVICE;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import com.android.volley.Response;
+import com.android.volley.toolbox.ImageRequest;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.DELETEService;
@@ -30,9 +29,11 @@ import model.ServerResultReceiver;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import services.AppController;
 import whatsapp.client.ActiveConversationsActivity;
 import whatsapp.client.ConversationActivity;
 import whatsapp.client.R;
+import whatsapp.client.UsersActivity;
 
 /**
  *
@@ -41,7 +42,7 @@ import whatsapp.client.R;
 public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Listener {
 
 	NotificationManager notificationManager;
-	DatabaseHelper dbh ;
+	DatabaseHelper dbH ;
 	private Context context;
 
 	String idDelUltimo;
@@ -62,7 +63,7 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 	public void setAlarm(Context context) {
 		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		Intent i = new Intent(context, Alarm.class);
-		dbh = DatabaseHelper.getInstance(context);
+		dbH = DatabaseHelper.getInstance(context);
 		PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
 		am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000 * 5, pi); // Millisec * Second * Minute
 	}
@@ -100,17 +101,14 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 
 	private Bundle createBundle(Context context) {
 		Bundle bundle = new Bundle();
-
 		String access_token = ConfigurationManager.getInstance().getString(context, ConfigurationManager.ACCESS_TOKEN);
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("access_token", access_token);
-
 		String ip = ConfigurationManager.getInstance().getString(context, ConfigurationManager.SAVED_IP);
 		String port = ConfigurationManager.getInstance().getString(context, ConfigurationManager.SAVED_PORT);
 		final String URI = ip + ":" + port + "/" + "notification";
 		bundle.putString("URI", URI);
 		bundle.putSerializable("params", params);
-
 		return bundle;
 	}
 
@@ -147,10 +145,85 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 			processMessage(data);
 		} else if (type.equals("ack")) {
 			processAck(data);
+		} else if (type.equals("profile")){
+			processProfileChanged(data);
+		} else if (type.equals("avatar")){
+			processAvatarChanged(data);
 		}
 	}
 
+	private void processAvatarChanged(JSONObject data){
+		String username = "";
+		try{
+			data = data.getJSONObject("data");
+			username = data.getString("username");
+			fetchAvatar(username);
+		}catch(JSONException jsone) {}
+	}
+
+	private void fetchAvatar(final String username){
+		String ip = ConfigurationManager.getInstance().getString(context, ConfigurationManager.SAVED_IP);
+		String port = ConfigurationManager.getInstance().getString(context, ConfigurationManager.SAVED_PORT);
+		String access_token = ConfigurationManager.getInstance().getString(context, ConfigurationManager.ACCESS_TOKEN);
+		String URI = ip + ":" + port + "/user/" + username +"/avatar?access_token="+access_token;
+		//send("user/"+username+"/avatar",null,2,1);
+		ImageRequest imreq = new ImageRequest(URI, new Response.Listener<Bitmap>() {
+			public void onResponse(Bitmap t) {
+				updateAvatar(username,t);
+				if (UsersActivity.getInstance()!=null)
+					if (UsersActivity.getInstance().isShowing())
+						UsersActivity.getInstance().updateView(username);
+			}
+		}, 0,0, null, null);
+		AppController.getInstance().addToRequestQueue(imreq);
+	}
+
+
+	private void processProfileChanged(JSONObject data){
+		String username = "";
+		try{
+			data = data.getJSONObject("data");
+			username = data.getString("username");
+			updateProfile(data);
+			if (UsersActivity.getInstance()!= null)
+				if (UsersActivity.getInstance().isShowing())
+					UsersActivity.getInstance().updateView(username);
+			dbH.close();
+		}catch(JSONException ex){}
+	}
+
+	private void updateAvatar(String username,Bitmap b){
+		
+		dbH = DatabaseHelper.getInstance(context);
+		dbH.open();
+		UserEntity fetchUser = dbH.fetchUser(username);
+		fetchUser.setAvatar(b);
+		dbH.updateUser(fetchUser);
+		dbH.close();
+	}
+
+
+	private void updateProfile(JSONObject data){
+		try{
+			dbH = DatabaseHelper.getInstance(context);
+			dbH.open();
+			String username = data.getString("username");
+			UserEntity user = dbH.fetchUser(username);
+			String nickname = data.getString("nickname");
+			boolean connected = data.getBoolean("online");
+			long lastActivity = data.getLong("last_activity");
+			JSONObject status = data.getJSONObject("status");
+			long lastStatus = status.getLong("time");
+			String statusText = status.getString("text");
+			user.setNickname(nickname);
+			user.setStatus(connected ? DatabaseHelper.CONNECTED : DatabaseHelper.DISCONNECTED);
+			dbH.updateUser(user);
+			dbH.close();
+		}catch(JSONException ex){}
+	}
+
 	private void processAck(JSONObject data) {
+		//TODO: Hacer esto ! 
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
@@ -248,8 +321,8 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 	}
 
 	private ConversationEntity write(JSONObject data) {
-		dbh = DatabaseHelper.getInstance(context);
-		dbh.open();
+		dbH = DatabaseHelper.getInstance(context);
+		dbH.open();
 		/*
 		para hacer un fetch de la conversacion necesito el usuario. 
 		si me llega un id de usuario tendria que crear el usuario en la bas de datos y ahi con eso lo q estaria haciedno es agregarlo a la lista de usuarios
@@ -266,10 +339,10 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 		
 		*/
 		try {
-			ConversationEntity ce = dbh.fetchConversation(data.getString("from"));
-			UserEntity ue = dbh.fetchUser(data.getString("from"));
+			ConversationEntity ce = dbH.fetchConversation(data.getString("from"));
+			UserEntity ue = dbH.fetchUser(data.getString("from"));
 			//UserEntity ue = dbh.createUser(0, data.getString("from"), "nick", DatabaseHelper.NORMAL);
-			dbh.createMessage(ce, ue, null, null,data.getString("message") , DatabaseHelper.NOT_SEEN);
+			dbH.createMessage(ce, ue, null, null,data.getString("message") , DatabaseHelper.NOT_SEEN);
 			//Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, "ASDASD");
 			return ce;
 

@@ -4,4 +4,6 @@
         android:title="Start Conversation" android:orderInCategory="1" />
     <item android:id="@+id/profile" android:alphabeticShortcut="b"
         android:title="View User Profile" android:orderInCategory="2" />
+    <item android:id="@+id/delete" android:alphabeticShortcut="b"
+        android:title="Delete User" android:orderInCategory="3" />
 </menu>
