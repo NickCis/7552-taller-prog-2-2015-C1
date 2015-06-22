@@ -30,12 +30,15 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public static final String DATABASE_CONVERSATION_TABLE = "conversation";
     public static final String DATABASE_MEDIA_TABLE = "media";
     public static final String DATABASE_MESSAGE_TABLE = "message";
+    public static final String DATABASE_LOGIN_TABLE = "login";
     public static final String KEY_CONVERSATIONID = "idconversation";
     public static final String KEY_MEDIAID = "idmedia";
     public static final String KEY_USERID = "iduser";
+    public static final String KEY_LOGINID = "idlogin";
     public static final String KEY_DATE = "last_message_time";
     public static final String KEY_PHONE = "phone";
     public static final String KEY_USERNAME = "username";
+    public static final String KEY_ACCESS_TOKEN = "accesstoken";
     public static final String KEY_NICKNAME = "nickname";
     public static final String KEY_STATUS = "status";
     public static final String KEY_LOCATION = "location";
@@ -51,20 +54,28 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public static final short NORMAL = 0;
     public static final short BLOKED = NORMAL + 1;
     
-    public static final int USERID_ME = 1;
+    private UserEntity userMe;
+    private LoginEntity login;
 
     private SQLiteDatabase mDb;
+    
+    private static final String DATABASE_LOGIN_CREATE = "CREATE TABLE " + DATABASE_LOGIN_TABLE + " ("
+            + KEY_LOGINID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + KEY_ACCESS_TOKEN + " TEXT NOT NULL);";
+    
     private static final String DATABASE_USER_CREATE = "CREATE TABLE " + DATABASE_USER_TABLE + " ("
             + KEY_USERID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + KEY_PHONE + " INTEGER NOT NULL, "
             + KEY_USERNAME + " TEXT NOT NULL, "
             + KEY_NICKNAME + " TEXT NOT NULL, "
-            + KEY_STATUS + " SHORT INTEGER NOT NULL);";
+            + KEY_STATUS + " SHORT INTEGER NOT NULL, "
+            + KEY_LOGINID + " INTEGER NOT NULL CONSTRAINT fk_user_idlogin REFERENCES " + DATABASE_LOGIN_TABLE + "(" + KEY_LOGINID + "));";
     
     private static final String DATABASE_CONVERSATION_CREATE = "CREATE TABLE " + DATABASE_CONVERSATION_TABLE + " ("
             + KEY_CONVERSATIONID + " INTEGER NOT NULL, "
             + KEY_USERID + " INTEGER NOT NULL CONSTRAINT fk_conversation_iduser REFERENCES " + DATABASE_USER_TABLE + "(" + KEY_USERID + "), "
             + KEY_DATE + " DATETIME DEFAULT CURRENT_TIMESTAMP, "
+            + KEY_LOGINID + " INTEGER NOT NULL CONSTRAINT fk_conversation_idlogin REFERENCES " + DATABASE_LOGIN_TABLE + "(" + KEY_LOGINID + "), "
             + "PRIMARY KEY(" + KEY_CONVERSATIONID + ", " + KEY_USERID + "));";
     
     private static final String DATABASE_MEDIA_CREATE = "CREATE TABLE " + DATABASE_MEDIA_TABLE + " ("
@@ -81,19 +92,40 @@ public class DatabaseHelper extends SQLiteOpenHelper
             + KEY_STATUS + " SHORT INTEGER DEFAULT " + NOT_SENT + " NOT NULL, "
             + "PRIMARY KEY(" + KEY_CONVERSATIONID + ", " + KEY_USERID + ", " + KEY_TIMESTAMP + "));";
 
-    private final Context context;
+    private Context context;
+    private static DatabaseHelper instance = null;
 
-    public DatabaseHelper (Context context) {
+    public static DatabaseHelper getInstance(Context context)
+    {
+        if (instance == null)
+        {
+            instance = new DatabaseHelper(context);
+        }
+        else
+        {
+            DatabaseHelper dbH = new DatabaseHelper(context);
+            dbH.userMe = instance.userMe;
+            dbH.login = instance.login;
+            instance = dbH;
+        }
+        return instance;
+    }
+    
+    private DatabaseHelper (Context context) 
+    {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
     }
     
-    public void open() throws SQLException {
+    public void open() throws SQLException 
+    {
         this.mDb = this.getWritableDatabase();
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
+    public void onCreate(SQLiteDatabase db) 
+    {
+        db.execSQL(DATABASE_LOGIN_CREATE);
         db.execSQL(DATABASE_USER_CREATE);
         db.execSQL(DATABASE_CONVERSATION_CREATE);
         db.execSQL(DATABASE_MEDIA_CREATE);
@@ -101,7 +133,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) 
+    {
+        db.execSQL("DROP TABLE IF EXISTS " + DATABASE_LOGIN_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + DATABASE_USER_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + DATABASE_CONVERSATION_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + DATABASE_MEDIA_TABLE);
@@ -110,102 +144,200 @@ public class DatabaseHelper extends SQLiteOpenHelper
         onCreate(db);
     }
     
-    public UserEntity createUser(Integer phone, String username, String nickname, Short status) {
-        ContentValues values = new ContentValues(); 
-        values.put(KEY_USERNAME, username);
-        values.put(KEY_NICKNAME, nickname);
-        values.put(KEY_PHONE, phone);
-        values.put(KEY_STATUS, status);
-        long userId = mDb.insert(DATABASE_USER_TABLE, null, values); 
-        return new UserEntity((int)userId, username, nickname, phone, status);
+    public UserEntity login(String accessToken)
+    {
+        this.login = fetchLogin(accessToken);
+        if (this.login == null)
+        {
+            ContentValues values = new ContentValues();
+            values.put(KEY_ACCESS_TOKEN, accessToken);
+            long loginId = mDb.insert(DATABASE_LOGIN_TABLE, null, values);
+            this.login = fetchLogin((int)loginId);
+            this.setUserMe(createUser(11111, accessToken, "Me", this.NORMAL));
+        }
+        else
+        {
+            this.setUserMe(fetchUser(accessToken));
+        }
+        return this.getUserMe();
+    }
+
+    public LoginEntity fetchLogin(String accessToken)
+    {
+        LoginEntity lE = null;
+        Cursor cursor = mDb.query(DATABASE_LOGIN_TABLE, new String[]{KEY_LOGINID, KEY_ACCESS_TOKEN}, KEY_ACCESS_TOKEN + "=?", new String[]{"" + accessToken}, null, null, null);
+        if (cursor != null && cursor.getCount() > 0)
+        {
+            cursor.moveToFirst();
+            lE = new LoginEntity(cursor.getInt(cursor.getColumnIndex(KEY_LOGINID)), cursor.getString(cursor.getColumnIndex(KEY_ACCESS_TOKEN)));
+        }
+        return lE;
+    }
+    
+    public LoginEntity fetchLogin(Integer loginId)
+    {
+        LoginEntity lE = null;
+        Cursor cursor = mDb.query(DATABASE_LOGIN_TABLE, new String[]{KEY_LOGINID, KEY_ACCESS_TOKEN}, KEY_LOGINID + "=?", new String[]{"" + loginId}, null, null, null);
+        if (cursor != null && cursor.getCount() > 0)
+        {
+            cursor.moveToFirst();
+            lE = new LoginEntity(cursor.getInt(cursor.getColumnIndex(KEY_LOGINID)), cursor.getString(cursor.getColumnIndex(KEY_ACCESS_TOKEN)));
+        }
+        return lE;
+    }
+    
+    public LoginEntity fetchLogin(LoginEntity login)
+    {
+        LoginEntity lE = null;
+        if (login != null)
+        {
+            if (login.getLoginId() != null)
+            {
+                lE = fetchLogin(login.getLoginId());
+            }
+            else if (login.getAccessToken() != null)
+            {
+                lE = fetchLogin(login.getAccessToken());
+            }
+        }
+        return lE;
+    }
+    
+    public boolean deleteLogin(Integer loginId)
+    {
+        return mDb.delete(DATABASE_LOGIN_TABLE, KEY_LOGINID + "=?", new String[]{"" + loginId}) > 0;
+    }
+    
+    public boolean deleteLogin(String accessToken)
+    {
+        return mDb.delete(DATABASE_LOGIN_TABLE, KEY_ACCESS_TOKEN + "=?", new String[]{"" + accessToken}) > 0;
+    }
+    
+    public boolean deleteLogin(LoginEntity login) 
+    {
+        return mDb.delete(DATABASE_LOGIN_TABLE, KEY_LOGINID + "=?", new String[]{"" + login.getLoginId()}) > 0;
+    }
+    
+    public UserEntity createUser(Integer phone, String username, String nickname, Short status) 
+    {
+        UserEntity uE = null;
+        if (this.login != null)
+        {
+            ContentValues values = new ContentValues(); 
+            values.put(KEY_USERNAME, username);
+            values.put(KEY_NICKNAME, nickname);
+            values.put(KEY_PHONE, phone);
+            values.put(KEY_STATUS, status);
+            values.put(KEY_LOGINID, this.login.getLoginId());
+            long userId = mDb.insert(DATABASE_USER_TABLE, null, values); 
+            uE = new UserEntity((int)userId, username, nickname, phone, status);
+        }
+        return uE;
     }
     
     public boolean deleteUser(Integer userId) 
     {
-        return mDb.delete(DATABASE_USER_TABLE, KEY_USERID + "=?",new String[]{"" + userId}) > 0;
+        return mDb.delete(DATABASE_USER_TABLE, KEY_USERID + "=?", new String[]{"" + userId}) > 0;
     }
     
     public boolean deleteUser(UserEntity user) 
     {
-        return mDb.delete(DATABASE_USER_TABLE, KEY_USERID + "=?",new String[]{"" + user.getUserId()}) > 0;
+        return mDb.delete(DATABASE_USER_TABLE, KEY_USERID + "=?", new String[]{"" + user.getUserId()}) > 0;
     }
     
-    public List<UserEntity> fetchAllUsers() {
-        Cursor cursor = mDb.query(DATABASE_USER_TABLE, new String[]{KEY_USERID, KEY_USERNAME, KEY_NICKNAME, KEY_PHONE, KEY_STATUS}, null, null, null, null, KEY_USERID + " ASC");
+    public List<UserEntity> fetchAllUsers() 
+    {
         List<UserEntity> list = null;
-        if (cursor != null && cursor.getCount() > 0)
+        if (this.login != null)
         {
-            list = new ArrayList<UserEntity>();
-            cursor.moveToFirst();
-            do
+            Cursor cursor = mDb.query(DATABASE_USER_TABLE, new String[]{KEY_USERID, KEY_USERNAME, KEY_NICKNAME, KEY_PHONE, KEY_STATUS}, KEY_LOGINID + "=?", new String[]{"" + this.login.getLoginId()}, null, null, KEY_USERID + " ASC");
+            if (cursor != null && cursor.getCount() > 0)
             {
-                UserEntity uE = new UserEntity(cursor.getInt(cursor.getColumnIndex(this.KEY_USERID)),
-                        cursor.getString(cursor.getColumnIndex(this.KEY_USERNAME)),
-                        cursor.getString(cursor.getColumnIndex(this.KEY_NICKNAME)),
-                        cursor.getInt(cursor.getColumnIndex(this.KEY_PHONE)),
-                        cursor.getShort(cursor.getColumnIndex(this.KEY_STATUS)));
-                list.add(uE);
-            } while (cursor.moveToNext());
+                list = new ArrayList<UserEntity>();
+                cursor.moveToFirst();
+                do
+                {
+                    UserEntity uE = new UserEntity(cursor.getInt(cursor.getColumnIndex(this.KEY_USERID)),
+                            cursor.getString(cursor.getColumnIndex(this.KEY_USERNAME)),
+                            cursor.getString(cursor.getColumnIndex(this.KEY_NICKNAME)),
+                            cursor.getInt(cursor.getColumnIndex(this.KEY_PHONE)),
+                            cursor.getShort(cursor.getColumnIndex(this.KEY_STATUS)));
+                    list.add(uE);
+                } while (cursor.moveToNext());
+            }
         }
         return list;
     }
     
-    public UserEntity fetchUser(Integer userId) throws SQLException {
-        Cursor cursor = mDb.query(true, DATABASE_USER_TABLE, new String [] 
-             {KEY_USERID, KEY_USERNAME, KEY_NICKNAME, KEY_PHONE, KEY_STATUS}, KEY_USERID + 
-             "=?", new String[]{"" + userId}, null, null, null, null); 
+    public UserEntity fetchUser(Integer userId) throws SQLException 
+    {
         UserEntity uE = null;
+        Cursor cursor = mDb.query(true, DATABASE_USER_TABLE, new String [] 
+             {KEY_USERID, KEY_USERNAME, KEY_NICKNAME, KEY_PHONE, KEY_STATUS, KEY_LOGINID}, KEY_USERID + 
+             "=?", new String[]{"" + userId}, null, null, null, null); 
         if (cursor != null && cursor.getCount() > 0) 
-        { 
+        {
             cursor.moveToFirst();
             uE = new UserEntity(userId,
-                    cursor.getString(cursor.getColumnIndex(this.KEY_USERNAME)),
-                    cursor.getString(cursor.getColumnIndex(this.KEY_NICKNAME)),
-                    cursor.getInt(cursor.getColumnIndex(this.KEY_PHONE)),
-                    cursor.getShort(cursor.getColumnIndex(this.KEY_STATUS)));
-            
-        } 
+                    cursor.getString(cursor.getColumnIndex(KEY_USERNAME)),
+                    cursor.getString(cursor.getColumnIndex(KEY_NICKNAME)),
+                    cursor.getInt(cursor.getColumnIndex(KEY_PHONE)),
+                    cursor.getShort(cursor.getColumnIndex(KEY_STATUS)));
+
+        }
         return uE;
     }
     
-    public UserEntity fetchUser(String userName) throws SQLException {
-        Cursor cursor = mDb.query(true, DATABASE_USER_TABLE, new String [] 
-             {KEY_USERID, KEY_USERNAME, KEY_NICKNAME, KEY_PHONE, KEY_STATUS}, KEY_USERNAME + 
-             "=?", new String[]{"" + userName}, null, null, null, null); 
+    public UserEntity fetchUser(String userName) throws SQLException 
+    {
         UserEntity uE = null;
-        if (cursor != null && cursor.getCount() > 0) 
-        { 
-            cursor.moveToFirst();
-            uE = new UserEntity(cursor.getInt(cursor.getColumnIndex(this.KEY_USERID)),
-                    userName,
-                    cursor.getString(cursor.getColumnIndex(this.KEY_NICKNAME)),
-                    cursor.getInt(cursor.getColumnIndex(this.KEY_PHONE)),
-                    cursor.getShort(cursor.getColumnIndex(this.KEY_STATUS)));
-            
-        } 
+        if (this.login != null)
+        {
+            Cursor cursor = mDb.query(true, DATABASE_USER_TABLE, new String [] 
+                 {KEY_USERID, KEY_USERNAME, KEY_NICKNAME, KEY_PHONE, KEY_STATUS}, KEY_USERNAME + 
+                 "=? AND " + KEY_LOGINID + "=?", new String[]{"" + userName, "" + this.login.getLoginId()}, null, null, null, null);
+            if (cursor != null && cursor.getCount() > 0) 
+            { 
+                cursor.moveToFirst();
+                uE = new UserEntity(cursor.getInt(cursor.getColumnIndex(this.KEY_USERID)),
+                        userName,
+                        cursor.getString(cursor.getColumnIndex(this.KEY_NICKNAME)),
+                        cursor.getInt(cursor.getColumnIndex(this.KEY_PHONE)),
+                        cursor.getShort(cursor.getColumnIndex(this.KEY_STATUS)));
+
+            }
+        }
         return uE;
     }
     
-    public boolean updateUser(UserEntity user) { 
-        ContentValues values = new ContentValues(); 
-        values.put(KEY_PHONE, user.getPhone()); 
-        values.put(KEY_USERNAME, user.getUsername());
-        values.put(KEY_NICKNAME, user.getNickname());
-        values.put(KEY_STATUS, user.getStatus());
-        boolean result = mDb.update(DATABASE_USER_TABLE, values, KEY_USERID + "=?", new String[]{"" + user.getUserId()}) > 0; 
-        return result;
+    public boolean updateUser(UserEntity user) 
+    {
+        if (this.login != null)
+        {
+            ContentValues values = new ContentValues(); 
+            values.put(KEY_PHONE, user.getPhone()); 
+            values.put(KEY_USERNAME, user.getUsername());
+            values.put(KEY_NICKNAME, user.getNickname());
+            values.put(KEY_STATUS, user.getStatus());
+            return mDb.update(DATABASE_USER_TABLE, values, KEY_USERID + "=? AND " + KEY_LOGINID + "=?", new String[]{"" + user.getUserId(), "" + this.login.getLoginId()}) > 0; 
+        }            
+        return false;
     }
     
     private ConversationEntity createConversation(Integer conversationId, UserEntity user, Calendar date)
     {
-        ContentValues initialValues = new ContentValues(); 
-        if (date != null)
+        if (this.login != null)
         {
-            initialValues.put(KEY_DATE, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").format(date.getTime()));
+            ContentValues initialValues = new ContentValues(); 
+            if (date != null)
+            {
+                initialValues.put(KEY_DATE, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").format(date.getTime()));
+            }
+            initialValues.put(KEY_CONVERSATIONID, conversationId);
+            initialValues.put(KEY_USERID, user.getUserId());
+            initialValues.put(KEY_LOGINID, this.login.getLoginId());
+            mDb.insert(DATABASE_CONVERSATION_TABLE, null, initialValues);
         }
-        initialValues.put(KEY_CONVERSATIONID, conversationId);
-        initialValues.put(KEY_USERID, user.getUserId());
-        mDb.insert(DATABASE_CONVERSATION_TABLE, null, initialValues);
         return this.fetchConversation(conversationId);
     }
     
@@ -213,14 +345,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
     {
         List<UserEntity> lista = new ArrayList<UserEntity>();
         lista.add(user);
-        lista.add(this.fetchUser(this.USERID_ME));
+        lista.add(this.getUserMe());
         return this.createConversation(lista, date);
     }
     
     public ConversationEntity createConversation(List<UserEntity> users, Calendar date) 
     {
         ConversationEntity result = null;
-        if (users != null)
+        if (users != null && this.login != null)
         {
             result = new ConversationEntity(this.fetchLastConversationId() + 1, date, users);
             ContentValues initialValues = new ContentValues(); 
@@ -229,6 +361,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 initialValues.put(KEY_DATE, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").format(date.getTime()));
             }
             initialValues.put(KEY_CONVERSATIONID, result.getConversationId());
+            initialValues.put(KEY_LOGINID, this.login.getLoginId());
             
             for (UserEntity user : users)
             {
@@ -243,11 +376,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
     
     public boolean deleteConversation(ConversationEntity conversation) 
     { 
-        return mDb.delete(DATABASE_CONVERSATION_TABLE, KEY_CONVERSATIONID + "=?", new String[]{"" + conversation.getConversationId()}) > 0;
+        return mDb.delete(DATABASE_CONVERSATION_TABLE, KEY_CONVERSATIONID + "=? AND " + KEY_LOGINID + "=?", new String[]{"" + conversation.getConversationId(), "" + this.login.getLoginId()}) > 0;
     }
     
-    public List<ConversationEntity> fetchAllConversations() {
-        Cursor cursor = mDb.query(DATABASE_CONVERSATION_TABLE, new String[]{KEY_CONVERSATIONID, KEY_USERID, KEY_DATE}, null, null, null, null, KEY_DATE + " DESC");
+    public List<ConversationEntity> fetchAllConversations() 
+    {
+        Cursor cursor = mDb.query(DATABASE_CONVERSATION_TABLE, new String[]{KEY_CONVERSATIONID, KEY_USERID, KEY_DATE}, KEY_LOGINID + "=?", new String[]{"" + this.login.getLoginId()}, null, null, KEY_DATE + " DESC");
         List<ConversationEntity> list = new ArrayList<ConversationEntity>();
         if (cursor != null && cursor.getCount() > 0)
         {
@@ -272,7 +406,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return list;
     }
     
-    private ConversationEntity fetchConversation(List<UserEntity> list) throws SQLException {
+    private ConversationEntity fetchConversation(List<UserEntity> list) throws SQLException 
+    {
         String stringUsrList = "";
         for (UserEntity uE : list)
         {
@@ -301,38 +436,41 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return cE;
     }
     
-    public ConversationEntity fetchConversation(ConversationEntity conversation) throws SQLException {
+    public ConversationEntity fetchConversation(ConversationEntity conversation) throws SQLException 
+    {
+        ConversationEntity cE = null;
         if (conversation.getConversationId() == null)
         {
             if (conversation.getUsers() != null)
             {
-                return this.fetchConversation(conversation.getUsers());
-            }
-            else
-            {
-                return null;
+                cE = this.fetchConversation(conversation.getUsers());
             }
         } 
         else 
         {
-            return this.fetchConversation(conversation.getConversationId());
+            cE = this.fetchConversation(conversation.getConversationId());
         }
+        return cE;
     }
 
-    private ConversationEntity fetchConversation(Integer conversationId) throws SQLException {
-        Cursor cursor = mDb.query(true, DATABASE_CONVERSATION_TABLE, new String [] 
-             {KEY_CONVERSATIONID, KEY_USERID, KEY_DATE}, KEY_CONVERSATIONID + 
-             "=?", new String[]{"" + conversationId}, null, null, KEY_DATE + " DESC", null); 
+    private ConversationEntity fetchConversation(Integer conversationId) throws SQLException 
+    {
         ConversationEntity cE = null;
-        if (cursor != null && cursor.getCount() > 0) 
+        if (this.login != null)
         {
-            cursor.moveToFirst();
-            cE = new ConversationEntity(conversationId, cursor.getString(cursor.getColumnIndex(KEY_DATE)));
-            do
+            Cursor cursor = mDb.query(true, DATABASE_CONVERSATION_TABLE, new String [] 
+                 {KEY_CONVERSATIONID, KEY_USERID, KEY_DATE}, KEY_CONVERSATIONID + 
+                 "=?", new String[]{"" + conversationId}, null, null, KEY_DATE + " DESC", null); 
+            if (cursor != null && cursor.getCount() > 0) 
             {
-                cE.addUser(this.fetchUser(cursor.getInt(cursor.getColumnIndex(KEY_USERID))));
-            }while (cursor.moveToNext());
-        } 
+                cursor.moveToFirst();
+                cE = new ConversationEntity(conversationId, cursor.getString(cursor.getColumnIndex(KEY_DATE)));
+                do
+                {
+                    cE.addUser(this.fetchUser(cursor.getInt(cursor.getColumnIndex(KEY_USERID))));
+                }while (cursor.moveToNext());
+            }
+        }
         return cE;
     }
     
@@ -353,18 +491,22 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
     
     public boolean updateConversation(ConversationEntity conversation) {
-        for(UserEntity user : conversation.getUsers())
+        if (this.login != null)
         {
-            ContentValues args = new ContentValues(); 
-            args.put(KEY_USERID, user.getUserId()); 
-            args.put(KEY_DATE, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").format(conversation.getLast_message_time().getTime()));
-            boolean result = mDb.update(DATABASE_CONVERSATION_TABLE, args, KEY_CONVERSATIONID + "=" + conversation.getConversationId(), null) > 0;
-            if (!result) 
+            for(UserEntity user : conversation.getUsers())
             {
-                this.createConversation(conversation.getConversationId(), user, conversation.getLast_message_time());
+                ContentValues args = new ContentValues(); 
+                args.put(KEY_USERID, user.getUserId()); 
+                args.put(KEY_DATE, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").format(conversation.getLast_message_time().getTime()));
+                boolean result = mDb.update(DATABASE_CONVERSATION_TABLE, args, KEY_CONVERSATIONID + "=? AND " + KEY_LOGINID + "=?", new String[]{"" + conversation.getConversationId(), "" + this.login.getLoginId()}) > 0;
+                if (!result) 
+                {
+                    this.createConversation(conversation.getConversationId(), user, conversation.getLast_message_time());
+                }
             }
+            return Boolean.TRUE;
         }
-        return Boolean.TRUE;
+        return Boolean.FALSE;
     }
     
     public MediaEntity createMedia(String location, Short type) {
@@ -537,10 +679,24 @@ public class DatabaseHelper extends SQLiteOpenHelper
 	    }
 	    ArrayList<UserEntity> list = new ArrayList<UserEntity>();
 	    list.add(ue);
-	    list.add(fetchUser(USERID_ME));
+	    list.add(this.getUserMe());
 	    ConversationEntity ce = fetchConversation(list);
 
 	    ce = ( ce != null ) ? ce : createConversation(list,null);
 	    return ce;
+    }
+
+    /**
+     * @return the userMe
+     */
+    public UserEntity getUserMe() {
+        return userMe;
+    }
+
+    /**
+     * @param userMe the userMe to set
+     */
+    public void setUserMe(UserEntity userMe) {
+        this.userMe = userMe;
     }
 }

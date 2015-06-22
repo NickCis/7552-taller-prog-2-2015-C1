@@ -74,11 +74,8 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 	}
 
 	private void loadConversations(){
-		DatabaseHelper dbH = new DatabaseHelper(this);
+		DatabaseHelper dbH = DatabaseHelper.getInstance(this);
 		dbH.open();
-		UserEntity uEMe = null;
-		if (dbH.fetchUser(DatabaseHelper.USERID_ME) == null)
-			uEMe = dbH.createUser(1554587629, "Me", "Me", DatabaseHelper.NORMAL);
 		map = new HashMap<String, Integer>();
 		List<ConversationEntity> conversationsAux = dbH.fetchAllConversations();
 		if (conversationsAux!= null){
@@ -106,7 +103,7 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 
 			
 		}else{
-			DatabaseHelper dbH = new DatabaseHelper(this);
+			DatabaseHelper dbH = DatabaseHelper.getInstance(this);
 			dbH.open();
 			ConversationEntity ce = dbH.fetchConversation(nuevo);
 			UserEntity aux = ce.getUser(1);
@@ -160,10 +157,10 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 						//UserEntity ue = (UserEntity) adapter.getItem(idx);
 						RowItem item = adapter.getItem(idx);
 						String itemSelected = item.getUserName();
-						DatabaseHelper dbh = new DatabaseHelper(ActiveConversationsActivity.this);
-						dbh.open();
-						dbh.deleteConversation(dbh.fetchConversation(itemSelected));
-						dbh.close();
+						DatabaseHelper dbH = DatabaseHelper.getInstance(ActiveConversationsActivity.this);
+						dbH.open();
+						dbH.deleteConversation(dbH.fetchConversation(itemSelected));
+						dbH.close();
 						rowItems.remove(idx);
 						//populateView();
 						adapter.notifyDataSetChanged();

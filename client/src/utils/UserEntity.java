@@ -16,7 +16,7 @@ public class UserEntity {
     private String username;
     private String nickname;
     private Short status;
-	private Bitmap avatar;
+    private Bitmap avatar;
 
     public UserEntity(Integer userId, String username, String nickname, Integer phone, Short status)
     {

@@ -111,16 +111,16 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 	public boolean onContextItemSelected(MenuItem item) 
 	{
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		DatabaseHelper dbH = new DatabaseHelper(this);
+		DatabaseHelper dbH = DatabaseHelper.getInstance(this);
 		dbH.open();
 		List<UserEntity> list = dbH.fetchAllUsers();
-		list.remove(dbH.fetchUser(dbH.USERID_ME));
+		list.remove(dbH.getUserMe());
 		UserEntity uE = list.get(info.position);
 		switch(item.getItemId()){
 			case R.id.conversation:
 				List<UserEntity> users = new ArrayList<UserEntity>();
 				users.add(uE);
-				users.add(dbH.fetchUser(dbH.USERID_ME));
+				users.add(dbH.getUserMe());
 				ConversationEntity cE = dbH.fetchConversation(new ConversationEntity(users));
 				if (cE == null) {
 					cE = dbH.createConversation(users, Calendar.getInstance());
@@ -154,10 +154,10 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 	}
 
 	private void loadUsers() {
-            DatabaseHelper dbH = new DatabaseHelper(this);
+            DatabaseHelper dbH = DatabaseHelper.getInstance(this);
             dbH.open();
             users = dbH.fetchAllUsers();
-            users.remove(dbH.fetchUser(DatabaseHelper.USERID_ME));
+            users.remove(dbH.getUserMe());
             dbH.close();
 
 	}
@@ -170,13 +170,13 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 	}
 
 	private void agregar(String usuarioEncontrado){
-		DatabaseHelper dbh = new DatabaseHelper(this);
+		DatabaseHelper dbH = DatabaseHelper.getInstance(this);
 		//TODO: Sacar esto
 		Drawable img = getResources().getDrawable(R.drawable.img1);
-		dbh.open();
-		UserEntity fetchUser = dbh.fetchUser(usuarioEncontrado);
+		dbH.open();
+		UserEntity fetchUser = dbH.fetchUser(usuarioEncontrado);
 		if (fetchUser == null){
-			UserEntity ue = dbh.createUser(0, usuarioEncontrado, usuarioEncontrado, DatabaseHelper.NORMAL);
+			UserEntity ue = dbH.createUser(0, usuarioEncontrado, usuarioEncontrado, DatabaseHelper.NORMAL);
 			users.add(ue);
 			RowItem item = new RowItem(usuarioEncontrado, img, "", "ultima conexion", 0);
 
@@ -230,13 +230,13 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 		}
 
 		public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-			DatabaseHelper dbH = new DatabaseHelper(this.context);
+			DatabaseHelper dbH = DatabaseHelper.getInstance(context);
 			dbH.open();
 			List<UserEntity> list = dbH.fetchAllUsers();
 			List<UserEntity> users = new ArrayList<UserEntity>();
 			//el primer usuario es Me
 			users.add(list.get(position+1));
-			users.add(dbH.fetchUser(dbH.USERID_ME));
+			users.add(dbH.getUserMe());
 			//TODO : ESTO ANDA BIEN ? 
 			ConversationEntity cE = dbH.fetchConversation(new ConversationEntity(users));
 			if (cE == null) {

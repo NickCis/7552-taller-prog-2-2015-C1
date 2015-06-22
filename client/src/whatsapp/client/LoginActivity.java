@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
+import utils.DatabaseHelper;
 
 public class LoginActivity extends Activity implements ServerResultReceiver.Listener {
 
@@ -117,6 +118,10 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 			try {
 				data = new JSONObject(resultData.getString("data"));
 				String dataString = data.getString("access_token");
+                                DatabaseHelper dbH = DatabaseHelper.getInstance(this);
+                                dbH.open();
+                                dbH.login(dataString);
+                                dbH.close();
 				LoginActivity.storeAccessToken(this, dataString);
 			} catch (JSONException ex) {
 				Logger.getLogger(LoginActivity.class.getName()).log(Level.SEVERE, null, ex);

@@ -13,7 +13,7 @@ public class ProfileActivity extends Activity implements ServerResultReceiver.Li
 	public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.profile);
-            DatabaseHelper dbH = new DatabaseHelper(this);
+            DatabaseHelper dbH = DatabaseHelper.getInstance(this);
             dbH.open();
             UserEntity uE = dbH.fetchUser(getIntent().getExtras().getBundle("whatsapp.client.ProfileActivity.data").getInt("userId"));
             dbH.close();
