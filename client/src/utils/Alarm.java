@@ -14,10 +14,13 @@ import android.content.Context;
 import static android.content.Context.NOTIFICATION_SERVICE;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import com.android.volley.Response;
+import com.android.volley.toolbox.ImageRequest;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -30,9 +33,11 @@ import model.ServerResultReceiver;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import services.AppController;
 import whatsapp.client.ActiveConversationsActivity;
 import whatsapp.client.ConversationActivity;
 import whatsapp.client.R;
+import whatsapp.client.UsersActivity;
 
 /**
  *
@@ -85,7 +90,7 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 		Bundle bundle = createBundle(context);
 		intent.putExtra("rec", receiver);
 		intent.putExtra("info", bundle);
-		//context.startService(intent);
+		context.startService(intent);
 	}
 
 	public void onReceiveResult(int resultCode, Bundle resultData) {
@@ -100,17 +105,14 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 
 	private Bundle createBundle(Context context) {
 		Bundle bundle = new Bundle();
-
 		String access_token = ConfigurationManager.getInstance().getString(context, ConfigurationManager.ACCESS_TOKEN);
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("access_token", access_token);
-
 		String ip = ConfigurationManager.getInstance().getString(context, ConfigurationManager.SAVED_IP);
 		String port = ConfigurationManager.getInstance().getString(context, ConfigurationManager.SAVED_PORT);
 		final String URI = ip + ":" + port + "/" + "notification";
 		bundle.putString("URI", URI);
 		bundle.putSerializable("params", params);
-
 		return bundle;
 	}
 
@@ -147,10 +149,85 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 			processMessage(data);
 		} else if (type.equals("ack")) {
 			processAck(data);
+		} else if (type.equals("profile")){
+			processProfileChanged(data);
+		} else if (type.equals("avatar")){
+			processAvatarChanged(data);
 		}
 	}
 
+	private void processAvatarChanged(JSONObject data){
+		String username = "";
+		try{
+			data = data.getJSONObject("data");
+			username = data.getString("username");
+			fetchAvatar(username);
+		}catch(JSONException jsone) {}
+	}
+
+	private void fetchAvatar(final String username){
+		String ip = ConfigurationManager.getInstance().getString(context, ConfigurationManager.SAVED_IP);
+		String port = ConfigurationManager.getInstance().getString(context, ConfigurationManager.SAVED_PORT);
+		String access_token = ConfigurationManager.getInstance().getString(context, ConfigurationManager.ACCESS_TOKEN);
+		String URI = ip + ":" + port + "/user/" + username +"/avatar?access_token="+access_token;
+		//send("user/"+username+"/avatar",null,2,1);
+		ImageRequest imreq = new ImageRequest(URI, new Response.Listener<Bitmap>() {
+			public void onResponse(Bitmap t) {
+				updateAvatar(username,t);
+				if (UsersActivity.getInstance()!=null)
+					if (UsersActivity.getInstance().isShowing())
+						UsersActivity.getInstance().updateView(username);
+			}
+		}, 0,0, null, null);
+		AppController.getInstance().addToRequestQueue(imreq);
+	}
+
+
+	private void processProfileChanged(JSONObject data){
+		String username = "";
+		try{
+			data = data.getJSONObject("data");
+			username = data.getString("username");
+			updateProfile(data);
+			if (UsersActivity.getInstance()!= null)
+				if (UsersActivity.getInstance().isShowing())
+					UsersActivity.getInstance().updateView(username);
+			dbh.close();
+		}catch(JSONException ex){}
+	}
+
+	private void updateAvatar(String username,Bitmap b){
+		
+		dbh = new DatabaseHelper(context);
+		dbh.open();
+		UserEntity fetchUser = dbh.fetchUser(username);
+		fetchUser.setAvatar(b);
+		dbh.updateUser(fetchUser);
+		dbh.close();
+	}
+
+
+	private void updateProfile(JSONObject data){
+		try{
+			dbh = new DatabaseHelper(context);
+			dbh.open();
+			String username = data.getString("username");
+			UserEntity user = dbh.fetchUser(username);
+			String nickname = data.getString("nickname");
+			boolean connected = data.getBoolean("online");
+			long lastActivity = data.getLong("last_activity");
+			JSONObject status = data.getJSONObject("status");
+			long lastStatus = status.getLong("time");
+			String statusText = status.getString("text");
+			user.setNickname(nickname);
+			user.setStatus(connected ? DatabaseHelper.CONNECTED : DatabaseHelper.DISCONNECTED);
+			dbh.updateUser(user);
+			dbh.close();
+		}catch(JSONException ex){}
+	}
+
 	private void processAck(JSONObject data) {
+		//TODO: Hacer esto ! 
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 

@@ -57,11 +57,15 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 	UsersActivity uA;
 	UserEntity ueAux;
 	RowItem rowItemAux;
+	private static UsersActivity INSTANCE;
+	private static boolean showing;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
             this.uA = this;
+	    showing = true;
             super.onCreate(savedInstanceState);
+	    INSTANCE = this;
             setContentView(R.layout.users);
             viewUsuarios = (ListView) findViewById(R.id.usersListview);
 	    agregar = (Button) findViewById(R.id.buttonAgregar);
@@ -195,6 +199,7 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 
 	private void mostrarErroneo(String usuarioNoEncontroado){
 		System.out.println(usuarioNoEncontroado);
+		DialogFactory.createAlertDialog(this, "Usuario no encontrado", "El nombre de usuario: " +usuarioNoEncontroado + " no esta registrado, verifique e intente nuevamente");
 		//TODO : mostrar en un dialogo
 		//ERROR , [usuario] inexistente
 
@@ -205,13 +210,10 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 		//TODO: Sacar esto
 		dbh.open();
 		UserEntity fetchUser = dbh.fetchUser(ueAux.getUsername());
-
 		if (fetchUser == null){
 			UserEntity ue = dbh.createUser(0, ueAux.getUsername(), ueAux.getNickname(), ueAux.getStatus());
 			users.add(ue);
 		}
-			
-
 	}
 
 	public void onReceiveResult(int resultCode, Bundle resultData) {
@@ -237,45 +239,61 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 						fetchInfo(username);
 						break;
 					case 1:
-						//String username = (String) data.get("username");
-						//TODO : crear los campos en la base para estas cosas,  
-						username = data.getString("username");
-						String nickname = data.getString("nickname");
-						boolean connected = data.getBoolean("online");
-						long lastActivity = data.getLong("last_activity");
-						JSONObject status = data.getJSONObject("status");
-						long lastStatus = status.getLong("time");
-						String statusText = status.getString("text");
-						//RowItem item = rowItems.get(getIdxUser(username));
-						 
-												//guardo en bbdd
-						ueAux.setNickname(nickname);
-						ueAux.setStatus(connected ? DatabaseHelper.CONNECTED : DatabaseHelper.DISCONNECTED);
-						String statusShow = ueAux.getStatus() == DatabaseHelper.CONNECTED  ? "online" : "offline";
-						/*
-						if (rowItemAux == null){
-							rowItemAux = new RowItem(ueAux.getNickname(), null ,ueAux.getUsername() , statusShow, 0);
-							rowItems.add(rowItemAux);
-						}
-						else{
-							rowItemAux.setNickName(ueAux.getNickname());
-							rowItemAux.setStatus(statusShow);
-						}
-						*/
-						rowItemAux.setNickName(ueAux.getNickname());
-						rowItemAux.setStatus(statusShow);
-
-						
-						adapter.notifyDataSetChanged();
-
-
+						updateProfile(data);
+						updateRow(rowItemAux);
 						agregar();
 
 				}
 			} catch (JSONException ex) {
 				Logger.getLogger(RegisterActivity.class.getName()).log(Level.SEVERE, null, ex);
 			}
+		}else if (resultCode == 1){
+			DialogFactory.createAlertDialog(UsersActivity.this, "Error de conexion", "Hubo un problema en la conexion, pruebe de nuevo mas tarde");
 		}
+	}
+
+	public void updateRow(RowItem row){
+		updateRow(row,null);
+	}
+
+	public void updateRow(RowItem row, UserEntity ue){
+		if (ue == null)
+			ue = ueAux;
+		String statusShow = ue.getStatus() == DatabaseHelper.CONNECTED  ? "online" : "offline";
+		row.setNickName(ue.getNickname());
+		row.setStatus(statusShow);
+		if (ue.getAvatar()!=null){
+			Drawable d = new BitmapDrawable(getResources(), ueAux.getAvatar());
+			rowItemAux.setAvatar(d);
+		}
+		adapter.notifyDataSetChanged();
+		
+	}
+
+	public void updateProfile(JSONObject data){
+		try{
+			String username = data.getString("username");
+			String nickname = data.getString("nickname");
+			boolean connected = data.getBoolean("online");
+			long lastActivity = data.getLong("last_activity");
+			JSONObject status = data.getJSONObject("status");
+			long lastStatus = status.getLong("time");
+			String statusText = status.getString("text");
+			ueAux.setNickname(nickname);
+			ueAux.setStatus(connected ? DatabaseHelper.CONNECTED : DatabaseHelper.DISCONNECTED);
+		}catch(JSONException ex){}
+	}
+
+	public void updateView(String username){
+		int idx = getIdxUser(username);
+		DatabaseHelper dbh = new DatabaseHelper(this);
+		dbh.open();
+		UserEntity ue = dbh.fetchUser(username);
+		if (idx != -1){
+			RowItem row = rowItems.get(idx);
+			updateRow(row,ue);
+		}
+		dbh.close();
 	}
 
 	private class ClickListener implements AdapterView.OnItemClickListener {
@@ -468,6 +486,33 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 				return this.edit;
 		}
 	}
-	
 
+	public static UsersActivity getInstance() {
+		return INSTANCE;
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		showing = true;
+		loadUsers();
+		populateView();
+	}
+
+
+	@Override
+	protected void onDestroy() {
+		showing = false;
+		super.onDestroy();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause(); //To change body of generated methods, choose Tools | Templates.
+		showing = false;
+	}
+
+	public boolean isShowing(){
+		return showing;
+	}
 }
