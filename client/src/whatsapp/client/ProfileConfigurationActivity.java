@@ -8,16 +8,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import utils.DatabaseHelper;
 
 /**
  *
@@ -31,7 +28,13 @@ public class ProfileConfigurationActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_configuration);
         ImageView imageView = (ImageView) findViewById(R.id.userProfileAvatar);
-        
+        DatabaseHelper dbH = DatabaseHelper.getInstance(this);
+        dbH.open();
+        if (dbH.getUserMe().getAvatar() != null)
+        {
+            imageView.setImageBitmap(dbH.getUserMe().getAvatar());
+        }
+        dbH.close();
     }
     
     public void addImage(View v)
@@ -50,7 +53,12 @@ public class ProfileConfigurationActivity extends Activity
                 if (resultCode == Activity.RESULT_OK) 
                 {
                     ImageView imageView = (ImageView) findViewById(R.id.userProfileAvatar);
-                    imageView.setImageBitmap(decodeFile(data.getStringExtra("filepath"), 200,200));
+                    DatabaseHelper dbH = DatabaseHelper.getInstance(this);
+                    dbH.open();
+                    dbH.getUserMe().setAvatar(decodeFile(data.getStringExtra("filepath"), 200,200));
+                    dbH.updateUser(dbH.getUserMe());
+                    imageView.setImageBitmap(dbH.getUserMe().getAvatar());
+                    dbH.close();
                 }
                 break; 
             } 
