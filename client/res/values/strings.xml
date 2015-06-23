@@ -14,4 +14,5 @@
     <string name="action_profile">Profile</string>
     <string name="action_checkin">Checkin</string>
     <string name="profile_configuration_status">Status</string>
+    <string name="profile_configuration_nickname">Nickname</string>
 </resources>

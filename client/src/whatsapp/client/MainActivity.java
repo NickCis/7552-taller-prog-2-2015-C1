@@ -24,13 +24,9 @@ import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import model.NotificationService;
 import model.POSTService;
 import model.ServerResultReceiver;
-import org.json.JSONException;
-import org.json.JSONObject;
 import utils.ConfigurationManager;
 
 /**

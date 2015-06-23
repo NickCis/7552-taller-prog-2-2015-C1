@@ -10,12 +10,12 @@ package utils;
  */
 public class LoginEntity {
     private Integer loginId;
-    private String accessToken;
+    private String username;
 
-    public LoginEntity(Integer loginId, String accessToken)
+    public LoginEntity(Integer loginId, String username)
     {
         this.loginId = loginId;
-        this.accessToken = accessToken;
+        this.username = username;
     }
     
     /**
@@ -35,15 +35,15 @@ public class LoginEntity {
     /**
      * @return the accessToken
      */
-    public String getAccessToken() {
-        return accessToken;
+    public String getUsername() {
+        return username;
     }
 
     /**
-     * @param accessToken the username to set
+     * @param username the username to set
      */
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class LoginEntity {
             return false;
         LoginEntity other = (LoginEntity) obj;
         if(!this.loginId.equals(other.loginId)) return false;
-        if(!this.accessToken.equals(other.accessToken)) return false;
+        if(!this.username.equals(other.username)) return false;
         
         return true;
     }
@@ -63,7 +63,7 @@ public class LoginEntity {
     public int hashCode() {
         int hash = 7;
         hash = 41 * hash + (this.loginId != null ? this.loginId.hashCode() : 0);
-        hash = 41 * hash + (this.accessToken != null ? this.accessToken.hashCode() : 0);
+        hash = 41 * hash + (this.username != null ? this.username.hashCode() : 0);
         return hash;
     }
     
