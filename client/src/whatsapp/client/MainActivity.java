@@ -209,13 +209,8 @@ public class MainActivity extends TabActivity implements ServerResultReceiver.Li
 	}
 	
 	public void onReceiveResult(int resultCode, Bundle resultData) {
-		if (resultCode == 0){
-			try {
-				JSONObject data = new JSONObject(resultData.getString("data"));
-				//TODO: meter esto en la base de datos
-			} catch (JSONException ex) {
-				Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
-			}
+		if (resultCode != 0){
+			DialogFactory.createAlertDialog(this, "No se pudo hacer checkin", "Intente de nuevo mas tarde",MainActivity.class);
 		}
 	}
 	
