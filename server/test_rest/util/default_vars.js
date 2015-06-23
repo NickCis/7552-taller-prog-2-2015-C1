@@ -1,4 +1,4 @@
-var frisby = require('frisby');
+var chakram = require("chakram");
 
 function Args(c){
 	this.c = c || {}
@@ -7,7 +7,12 @@ function Args(c){
 Args.prototype.toString = function(){
 	var args = [];
 	Object.keys(this.c).forEach(function(k){
-		args.push(encodeURIComponent(k)+'='+encodeURIComponent(this.c[k]));
+		if(this.c[k] instanceof Array)
+			this.c[k].forEach(function(e){
+				args.push(encodeURIComponent(k)+'[]='+encodeURIComponent(e));
+			}, this);
+		else
+			args.push(encodeURIComponent(k)+'='+encodeURIComponent(this.c[k]));
 	}, this);
 
 	return "?"+args.join("&");
@@ -26,39 +31,36 @@ module.exports = {
 	args: function(c){
 		return new Args(c);
 	},
+	urlEncode: function(c){
+		return (new Args(c)).toString().substr(1);
+	},
+	get errorSchema() {
+		return {
+			properties: {
+				error: {
+					type: "object",
+					properties: {
+						code: "number",
+						msg: "string",
+						error_user_msg: "string"
+					},
+					required: [ "code", "message", "error_user_msg" ]
+				}
+			},
+			required: ["error"]
+		};
+	},
 	get randomUsername() {
 		return "username_" + parseInt(Math.random() * 10000);
 	},
-	loginCredentials: function(cb){
-		var username = this.randomUsername;
+	userCredentials: function(u, p){
+		var user = u || this.randomUsername,
+			pass = p || "123456";
 
-		frisby.create('Creo Usuario')
-			.post(this.buildUrl('signup'), {
-				user: username,
-				pass: '123456'
-			})
-			.expectStatus(201)
-			.expectJSONTypes({
-				success: Boolean
-			})
-			.expectJSON({
-				success: true
-			})
-			.afterJSON((function(){
-				frisby.create('Obtengo Access Token')
-					.post(this.buildUrl('auth'), {
-						user: username,
-						pass: '123456'
-					})
-					.expectStatus(201)
-					.expectJSONTypes({
-						access_token: String
-					})
-					.afterJSON(function(json){
-						cb(username, json.access_token);
-					})
-					.toss();
-			}).bind(this))
-			.toss();
+		return chakram.post(this.buildUrl("signup"), false, {form: {user: user, pass: pass}}).then((function(response){
+			return chakram.post(this.buildUrl("auth"), false, {form:{user: user, pass: pass}});
+		}).bind(this)).then(function(response){
+			return {user: user, pass: pass, access_token: response.body.access_token};
+		});
 	}
 };

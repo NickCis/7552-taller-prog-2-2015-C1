@@ -41,6 +41,8 @@ string ContactList::toJson() const {
 		ss << p.toJson();
 	}
 
+	ss << "]}";
+
 	return ss.str();
 }
 
