@@ -216,7 +216,7 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 		dbh.open();
 		UserEntity fetchUser = dbh.fetchUser(ueAux.getUsername());
 		if (fetchUser == null){
-			UserEntity ue = dbh.createUser(0, ueAux.getUsername(), ueAux.getNickname(), ueAux.getStatus(),ueAux.getAvatar(), ueAux.getCheckin());
+			UserEntity ue = dbh.createUser(0, ueAux.getUsername(), ueAux.getNickname(), ueAux.getStatus(),ueAux.getAvatar(), ueAux.getCheckin(), ueAux.getStatusMessage());
 			users.add(ue);
 		}
 	}

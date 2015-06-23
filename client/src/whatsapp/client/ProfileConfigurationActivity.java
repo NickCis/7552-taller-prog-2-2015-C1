@@ -43,9 +43,9 @@ public class ProfileConfigurationActivity extends Activity
             imageView.setImageBitmap(dbH.getUserMe().getAvatar());
         }
         String[] items = new String[DatabaseHelper.STATUS_COUNT];
-        items[DatabaseHelper.STATUS_ONLINE] = "Online";
-        items[DatabaseHelper.STATUS_OFFLINE] = "Offline";
-        items[DatabaseHelper.STATUS_DO_NOT_DISTURB] = "Do not disturb";
+        items[DatabaseHelper.STATUS_ONLINE] = DatabaseHelper.STATUS_TEXT_ONLINE;
+        items[DatabaseHelper.STATUS_OFFLINE] = DatabaseHelper.STATUS_TEXT_OFFLINE;
+        items[DatabaseHelper.STATUS_DO_NOT_DISTURB] = DatabaseHelper.STATUS_TEXT_DO_NOT_DISTURB;
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, items);
         Spinner spinner = (Spinner) findViewById(R.id.statusSelection);
         spinner.setAdapter(adapter);
