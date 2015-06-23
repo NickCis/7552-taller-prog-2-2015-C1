@@ -65,10 +65,8 @@ else()
 endif()
 
 if(CHECK_COVERAGE)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
-	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ggdb")
-	set_target_properties(server PROPERTIES COMPILE_FLAGS "-fprofile-arcs -ftest-coverage -g -O0")
-	target_link_libraries(server -fprofile-arcs)
+	set_target_properties(server PROPERTIES COMPILE_FLAGS "-fprofile-arcs -ftest-coverage -g -ggdb -O0")
+	target_link_libraries(server "-fprofile-arcs -ftest-coverage")
 endif()
 
 
