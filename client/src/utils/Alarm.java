@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.DELETEService;
 import model.GETService;
+import model.POSTService;
 import model.ServerResultReceiver;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -101,6 +102,18 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 			Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		processNotifications(data);
+	}
+
+	private Bundle createBundle(String endpoint, HashMap params){
+		Bundle bundle = new Bundle();
+		String access_token = ConfigurationManager.getInstance().getString(this.context, ConfigurationManager.ACCESS_TOKEN);
+		params.put("access_token", access_token);
+		String ip = ConfigurationManager.getInstance().getString(this.context, ConfigurationManager.SAVED_IP);
+		String port = ConfigurationManager.getInstance().getString(this.context, ConfigurationManager.SAVED_PORT);
+		final String URI = ip + ":" + port + "/" + endpoint;
+		bundle.putString("URI", URI);
+		bundle.putSerializable("params", params);
+		return bundle;
 	}
 
 	private Bundle createBundle(Context context) {
@@ -234,6 +247,7 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 	private void processMessage(JSONObject data) {
 		try {
 			write(data.getJSONObject("data"));
+			markArrived(data.getJSONObject("data"));
 			if (ConversationActivity.isShowing()) {
 				//ConversationActivity.getInstance().addMsgs(ce);
 				String txt = data.getJSONObject("data").getString("message");
@@ -250,6 +264,35 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 		} catch (JSONException ex) {
 			Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
 		}
+	}
+
+	private void markArrived(JSONObject data){
+		try{
+		HashMap<String,String> params = new HashMap<String,String>();
+		String id = data.getString("id");
+		params.put("id[]",id);
+		String from = data.getString("from");
+		String endpoint = "user/" + from + "/messages/arrived";
+		startService(endpoint,params,new ArrivedMessageReceiver(), POSTService.class);
+		}catch(JSONException ex){}
+
+	}
+	
+	private void startService(String endpoint, HashMap params, ServerResultReceiver.Listener listener, Class<?> cls) {
+		Intent intent = new Intent(context, cls);
+		ServerResultReceiver receiver = new ServerResultReceiver(new Handler());
+		if (listener == null)
+			receiver.setListener(this);
+		else
+			receiver.setListener(listener);
+		Bundle bundle = createBundle(endpoint,params);
+		intent.putExtra("rec", receiver);
+		intent.putExtra("info", bundle);
+		context.startService(intent);
+	}
+
+	private void startService(String endpoint, HashMap params , Class<?> cls) {
+		startService(endpoint,params,this,cls);
 	}
 
 	private void sendNotification(JSONObject data) {
@@ -280,29 +323,9 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 
 		notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 		notificationManager.notify(1, n);
-		//Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_SHORT).show(); // For example
-
 	}
 
-	//private void write(JSONObject data) {
-	//	try {
-	//		SharedPreferences store = context.getSharedPreferences("pepe", 0);
-	//		SharedPreferences.Editor editor = store.edit();
-
-	//		Set<String> set = store.getStringSet("messages", new LinkedHashSet<String>());
-	//		set.add(data.getString("message"));
-	//		/*editor.putString("from", data.getString("from"));
-	//		 editor.putString("id", data.getString("id"));
-	//		 editor.putString("time",data.getString("time"));
-	//		 */
-	//		editor.putStringSet("messages", set);
-	//		editor.apply();
-	//	} catch (JSONException ex) {
-	//		Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
-	//	}
-	//}
-
-	private void startServiceDelete(Context context) {
+		private void startServiceDelete(Context context) {
 		Intent intent = new Intent(context, DELETEService.class);
 		ServerResultReceiver receiver = new ServerResultReceiver(new Handler());
 		receiver.setListener(this);
@@ -327,21 +350,6 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 	private ConversationEntity write(JSONObject data) {
 		dbh = new DatabaseHelper(context);
 		dbh.open();
-		/*
-		para hacer un fetch de la conversacion necesito el usuario. 
-		si me llega un id de usuario tendria que crear el usuario en la bas de datos y ahi con eso lo q estaria haciedno es agregarlo a la lista de usuarios
-
-
-		
-		creo entity de usuario  con el username
-		creo una conversation entity y le agrego la entity usuario
-		capazq tmb tenga q agregar el userMe  
-		y dsp hago un fetch
-
-		puedo hacer un fetch conversacion del user
-
-		
-		*/
 		try {
 			ConversationEntity ce = dbh.fetchConversation(data.getString("from"));
 			UserEntity ue = dbh.fetchUser(data.getString("from"));
@@ -354,6 +362,25 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 			Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return null;
+	}
+
+	private class ArrivedMessageReceiver implements ServerResultReceiver.Listener{
+		public void onReceiveResult(int resultCode, Bundle resultData) {
+			JSONObject data = null;
+			try {
+				data = new JSONObject(resultData.getString("data"));
+				processArrived(data);
+			} catch (JSONException ex) {
+				Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		}
+
+		public void processArrived(JSONObject data) throws JSONException{
+			data.getJSONArray("messages");
+			//Parsear el tiempo, si esta leido, decirle a la vista q ponga doble tick
+			//Si no tiene q poner 1 solo
+		}
+	
 	}
 
 }

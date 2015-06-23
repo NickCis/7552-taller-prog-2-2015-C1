@@ -82,8 +82,6 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 
 	private void addActionListeners() {
 		viewUsuarios.setOnItemClickListener(new ClickListener(this));
-		//TODO: Integrar con lo de mati
-		//viewUsuarios.setOnItemLongClickListener(new OptionListener());
 		bindDialog();
 	}
 
@@ -312,7 +310,6 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 			//el primer usuario es Me
 			users.add(list.get(position+1));
 			users.add(dbH.fetchUser(dbH.USERID_ME));
-			//TODO : ESTO ANDA BIEN ? 
 			ConversationEntity cE = dbH.fetchConversation(new ConversationEntity(users));
 			if (cE == null) {
 				cE = dbH.createConversation(users, Calendar.getInstance());
