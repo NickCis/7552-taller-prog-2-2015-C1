@@ -3,7 +3,9 @@ package whatsapp.client;
 import model.ServerResultReceiver;
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
+import java.text.SimpleDateFormat;
 import utils.DatabaseHelper;
 import utils.UserEntity;
 
@@ -19,8 +21,17 @@ public class ProfileActivity extends Activity implements ServerResultReceiver.Li
             dbH.close();
             TextView nickName = (TextView) findViewById(R.id.userProfileInformation_NickName);
             nickName.setText(uE.getNickname());
-            TextView lastconn = (TextView) findViewById(R.id.userProfileInformation_LastConnection);
-            lastconn.setText("24/05/2015");
+            if (uE.getCheckin() != null)
+            {
+                TextView lastconn = (TextView) findViewById(R.id.userProfileInformation_LastConnection);
+                lastconn.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").format(uE.getCheckin().getTime()));
+            }
+            
+            if (uE.getAvatar() != null)
+            {
+                ImageView imageView = (ImageView) findViewById(R.id.userProfileAvatar);
+                imageView.setImageBitmap(uE.getAvatar());
+            }
             this.setTitle(uE.getNickname());
 	}
 
