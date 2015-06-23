@@ -1,4 +1,4 @@
-#! /usr/bin/bash
+#!/bin/bash
 
 echo "Running server"
 ../build/server -l server.log &
