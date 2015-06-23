@@ -16,28 +16,29 @@ public class UserEntity {
     private String username;
     private String nickname;
     private Short status;
-	private Bitmap avatar;
+    private Bitmap avatar;
 
-    public UserEntity(Integer userId, String username, String nickname, Integer phone, Short status)
+    public UserEntity(Integer userId, String username, String nickname, Integer phone, Short status, Bitmap avatar)
     {
         this.userId = userId;
         this.username = username;
         this.nickname = nickname;
         this.phone = phone;
         this.status = status;
+        this.avatar = avatar;
     }
 
     public UserEntity(String username){
     	this.username = username;
     }
     
-	public void setAvatar(Bitmap img){
-		this.avatar = img;
-	}
+    public void setAvatar(Bitmap img){
+            this.avatar = img;
+    }
 
-	public Bitmap getAvatar() {
-		return avatar;
-	}
+    public Bitmap getAvatar() {
+            return avatar;
+    }
 		
     /**
      * @return the userId
@@ -123,6 +124,7 @@ public class UserEntity {
         if(!this.nickname.equals(other.nickname)) return false;
         if(!this.phone.equals(other.phone)) return false;
         if(!this.status.equals(other.status)) return false;
+        if(!this.avatar.equals(other.avatar)) return false;
         
         return true;
     }

@@ -48,7 +48,7 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 		INSTANCE = this;
 		showing = true;
 		setContentView(R.layout.activity_discuss);
-		this.dbH = new DatabaseHelper(this);
+		this.dbH = DatabaseHelper.getInstance(this);
 		//TODO: esto tendria que venir del server o de almacenamiento interno ni bien entro
 		lv = (ListView) findViewById(R.id.listView1);
 		adapter = new DiscussArrayAdapter(getApplicationContext(), R.layout.listitem_discuss);
@@ -79,7 +79,6 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 			}
 		});
 
-		DatabaseHelper dbH = new DatabaseHelper(this);
 		dbH.open();
 		String from = (String) getIntent().getExtras().get("id");
 		if (from == null) {
@@ -93,27 +92,26 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 	}
 
 	private void addAllItems(List<MessageEntity> listaMensajes) {
-		DatabaseHelper dbH = new DatabaseHelper(this);
 		dbH.open();
-		UserEntity uEMe = dbH.fetchUser(DatabaseHelper.USERID_ME);
 
 		for (MessageEntity mE : listaMensajes) {
-			adapter.add(new OneComment(mE.getUser().equals(uEMe), mE.getContent()));
+			adapter.add(new OneComment(mE.getUser().equals(dbH.getUserMe()), mE.getContent()));
 			mE.setStatus(DatabaseHelper.SEEN);
 		}
+                dbH.close();
 	}
 
 	private void addItems(List<MessageEntity> listaMensajes) {
-		DatabaseHelper dbH = new DatabaseHelper(this);
+                dbH = DatabaseHelper.getInstance(this);
 		dbH.open();
-		UserEntity uEMe = dbH.fetchUser(DatabaseHelper.USERID_ME);
 
 		for (MessageEntity mE : listaMensajes) {
 			if (mE.getStatus() == DatabaseHelper.NOT_SEEN) {
-				adapter.add(new OneComment(mE.getUser().equals(uEMe), mE.getContent()));
+				adapter.add(new OneComment(mE.getUser().equals(dbH.getUserMe()), mE.getContent()));
 				mE.setStatus(DatabaseHelper.SEEN);
 			}
 		}
+                dbH.close();
 	}
 
 	void send(String msg) {
@@ -153,7 +151,7 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 				adapter.notifyDataSetChanged();
 			}
 			dbH.open();
-			dbH.createMessage(cE, dbH.fetchUser(DatabaseHelper.USERID_ME), null, null, message, DatabaseHelper.SEEN);
+			dbH.createMessage(cE, dbH.getUserMe(), null, null, message, DatabaseHelper.SEEN);
 			dbH.close();
 		}else if (resultCode == 1){
 			HashMap h = (HashMap) resultData.getSerializable("params");
@@ -197,12 +195,12 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 
 	public void addMsgs(ConversationEntity conversation) {
 		this.cE = conversation;
-		dbH = new DatabaseHelper(this);
+		dbH = DatabaseHelper.getInstance(this);
 		dbH.open();
 	    //dbH.fetchConversation(cE)
 		//this.cE = dbH.fetchConversation(new ConversationEntity(getIntent().getExtras().getBundle("whatsapp.client.ConversationActivity.data").getInt("conversationId")));
 		addItems(dbH.fetchMessages(this.cE));
-
+                dbH.close();
             //SharedPreferences data = getSharedPreferences("pepe", 0);
 		//Set<String> set = data.getStringSet("messages", new LinkedHashSet<String>());
 		//if (set.size() != 0) {

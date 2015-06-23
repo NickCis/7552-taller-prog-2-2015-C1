@@ -19,6 +19,7 @@ import model.POSTService;
 import model.ServerResultReceiver;
 import org.json.JSONException;
 import org.json.JSONObject;
+import utils.DatabaseHelper;
 
 /**
  *
@@ -108,8 +109,11 @@ public class RegisterActivity extends Activity implements ServerResultReceiver.L
 					DialogFactory.createProgressDialog(this, "Registrando... por favor espere");
 					startService(createCallingIntent(bundle));
 				} else {
-
 					String dataString = data.getString("access_token");
+                                        DatabaseHelper dbH = DatabaseHelper.getInstance(this);
+                                        dbH.open();
+                                        dbH.login(dataString);
+                                        dbH.close();
 					LoginActivity.storeAccessToken(this, dataString);
 					startActivity(new Intent(this, MainActivity.class));
 

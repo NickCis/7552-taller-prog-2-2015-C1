@@ -13,7 +13,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import static android.content.Context.NOTIFICATION_SERVICE;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -22,9 +21,6 @@ import android.os.PowerManager;
 import com.android.volley.Response;
 import com.android.volley.toolbox.ImageRequest;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.DELETEService;
@@ -47,7 +43,7 @@ import whatsapp.client.UsersActivity;
 public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Listener {
 
 	NotificationManager notificationManager;
-	DatabaseHelper dbh ;
+	DatabaseHelper dbH ;
 	private Context context;
 
 	String idDelUltimo;
@@ -68,7 +64,7 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 	public void setAlarm(Context context) {
 		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		Intent i = new Intent(context, Alarm.class);
-		dbh = new DatabaseHelper(context);
+		dbH = DatabaseHelper.getInstance(context);
 		PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
 		am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000 * 5, pi); // Millisec * Second * Minute
 	}
@@ -205,27 +201,27 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 			if (UsersActivity.getInstance()!= null)
 				if (UsersActivity.getInstance().isShowing())
 					UsersActivity.getInstance().updateView(username);
-			dbh.close();
+			dbH.close();
 		}catch(JSONException ex){}
 	}
 
 	private void updateAvatar(String username,Bitmap b){
 		
-		dbh = new DatabaseHelper(context);
-		dbh.open();
-		UserEntity fetchUser = dbh.fetchUser(username);
+		dbH = DatabaseHelper.getInstance(context);
+		dbH.open();
+		UserEntity fetchUser = dbH.fetchUser(username);
 		fetchUser.setAvatar(b);
-		dbh.updateUser(fetchUser);
-		dbh.close();
+		dbH.updateUser(fetchUser);
+		dbH.close();
 	}
 
 
 	private void updateProfile(JSONObject data){
 		try{
-			dbh = new DatabaseHelper(context);
-			dbh.open();
+			dbH = DatabaseHelper.getInstance(context);
+			dbH.open();
 			String username = data.getString("username");
-			UserEntity user = dbh.fetchUser(username);
+			UserEntity user = dbH.fetchUser(username);
 			String nickname = data.getString("nickname");
 			boolean connected = data.getBoolean("online");
 			long lastActivity = data.getLong("last_activity");
@@ -234,8 +230,8 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 			String statusText = status.getString("text");
 			user.setNickname(nickname);
 			user.setStatus(connected ? DatabaseHelper.CONNECTED : DatabaseHelper.DISCONNECTED);
-			dbh.updateUser(user);
-			dbh.close();
+			dbH.updateUser(user);
+			dbH.close();
 		}catch(JSONException ex){}
 	}
 
@@ -348,13 +344,28 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 	}
 
 	private ConversationEntity write(JSONObject data) {
-		dbh = new DatabaseHelper(context);
-		dbh.open();
+		dbH = DatabaseHelper.getInstance(context);
+		dbH.open();
+		/*
+		para hacer un fetch de la conversacion necesito el usuario. 
+		si me llega un id de usuario tendria que crear el usuario en la bas de datos y ahi con eso lo q estaria haciedno es agregarlo a la lista de usuarios
+
+
+		
+		creo entity de usuario  con el username
+		creo una conversation entity y le agrego la entity usuario
+		capazq tmb tenga q agregar el userMe  
+		y dsp hago un fetch
+
+		puedo hacer un fetch conversacion del user
+
+		
+		*/
 		try {
-			ConversationEntity ce = dbh.fetchConversation(data.getString("from"));
-			UserEntity ue = dbh.fetchUser(data.getString("from"));
+			ConversationEntity ce = dbH.fetchConversation(data.getString("from"));
+			UserEntity ue = dbH.fetchUser(data.getString("from"));
 			//UserEntity ue = dbh.createUser(0, data.getString("from"), "nick", DatabaseHelper.NORMAL);
-			dbh.createMessage(ce, ue, null, null,data.getString("message") , DatabaseHelper.NOT_SEEN);
+			dbH.createMessage(ce, ue, null, null,data.getString("message") , DatabaseHelper.NOT_SEEN);
 			//Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, "ASDASD");
 			return ce;
 
