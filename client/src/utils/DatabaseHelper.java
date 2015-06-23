@@ -50,6 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public static final String KEY_AVATAR = "avatar";
     
     public static final short NOT_SENT = 0;
+    public static final short SENT = NOT_SENT + 1;
     public static final short NOT_RECIEVED = NOT_SENT + 1;
     public static final short NOT_SEEN = NOT_RECIEVED + 1;
     public static final short SEEN = NOT_SEEN + 1;

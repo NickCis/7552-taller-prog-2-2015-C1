@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
+import utils.ConfigurationManager;
 import utils.DatabaseHelper;
 
 public class LoginActivity extends Activity implements ServerResultReceiver.Listener {
@@ -126,6 +127,7 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 			} catch (JSONException ex) {
 				Logger.getLogger(LoginActivity.class.getName()).log(Level.SEVERE, null, ex);
 			}
+			saveUser();
 			startActivity(new Intent(this, MainActivity.class));
 		} else {
 			DialogFactory.createAlertDialog(this, "Problema ingresando",
@@ -180,6 +182,19 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 			return newPort;
 		}
 		return port;
+	}
+
+
+	private void saveUser(){
+		EditText userNameField = (EditText) findViewById(R.id.username);
+		storeUserName(this, userNameField.getText().toString());
+	}
+
+	static void storeUserName(Context ctx, String data) {
+		SharedPreferences store = ctx.getSharedPreferences(LoginActivity.USER_CFG, 0);
+		SharedPreferences.Editor editor = store.edit();
+		editor.putString(ConfigurationManager.USERNAME, data);
+		editor.apply();
 	}
 
 }

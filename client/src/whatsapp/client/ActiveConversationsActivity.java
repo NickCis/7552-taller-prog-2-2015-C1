@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -65,6 +66,8 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 				UserEntity aux = c.getUser(0);
 
 				RowItem item = new RowItem(aux.getNickname(), img, aux.getUsername(), "ultima conexion", aux.getUserId());
+				Drawable d = new BitmapDrawable(getResources(), aux.getAvatar());
+				item.setAvatar(d);
 				rowItems.add(item);
 			}
 			adapter = new UserAdapter(this, rowItems);

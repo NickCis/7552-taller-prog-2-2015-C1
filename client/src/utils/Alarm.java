@@ -20,7 +20,9 @@ import android.os.Handler;
 import android.os.PowerManager;
 import com.android.volley.Response;
 import com.android.volley.toolbox.ImageRequest;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.DELETEService;
@@ -235,26 +237,65 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 		}catch(JSONException ex){}
 	}
 
+	/**
+	 * Si me llega un ack con que leyo un mensaje, entonces marco todos como leidos
+	 */
 	private void processAck(JSONObject data) {
-		//TODO: Hacer esto ! 
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		try{
+			data.getJSONObject("data");
+			long arrivedTime = data.getLong("arrived");
+			if (arrivedTime!=0)
+				markAllArrived(data);
+			long readTime = data.getLong("read");
+			if (readTime!=0){
+				if (ConversationActivity.isShowing())
+					ConversationActivity.getInstance().refresh();
+				markAllRead(data);
+			}
+		}catch(JSONException ex){}
+	}
+
+	private void markAllArrived(JSONObject data) throws JSONException{
+		String from = data.getString("from");
+		DatabaseHelper dbh =  DatabaseHelper.getInstance(context);
+		ConversationEntity ce = dbh.fetchConversation(from);
+		UserEntity ue = ce.getUser(1);
+		List<MessageEntity> fetchMessages = dbh.fetchMessages(ce);
+		for (MessageEntity msg : fetchMessages){
+			if (msg.getStatus() == DatabaseHelper.NOT_SENT)
+				dbh.updateMessage(ce, ue, null, Calendar.getInstance(), msg.getContent(), DatabaseHelper.SENT);
+		}
+	}
+
+	private void markAllRead(JSONObject data) throws JSONException{
+		String from = data.getString("from");
+		DatabaseHelper dbh =  DatabaseHelper.getInstance(context);
+		ConversationEntity ce = dbh.fetchConversation(from);
+		UserEntity ue = ce.getUser(1);
+		List<MessageEntity> fetchMessages = dbh.fetchMessages(ce);
+		for (MessageEntity msg : fetchMessages){
+			if (msg.getStatus() == DatabaseHelper.NOT_SEEN)
+				dbh.updateMessage(ce, ue, null, Calendar.getInstance(), msg.getContent(), DatabaseHelper.SEEN);
+		}
 	}
 
 	private void processMessage(JSONObject data) {
 		try {
 			write(data.getJSONObject("data"));
-			markArrived(data.getJSONObject("data"));
 			if (ConversationActivity.isShowing()) {
 				//ConversationActivity.getInstance().addMsgs(ce);
 				String txt = data.getJSONObject("data").getString("message");
 				ConversationActivity.getInstance().addMsgs(txt);
+				mark(data,true);
 				
 			}
 			else if (ActiveConversationsActivity.isShowing()){
 				ActiveConversationsActivity.getInstance().informNuevo(data.getJSONObject("data").getString("from"));
+				mark(data,false);
 			}
 			else {
 				sendNotification(data);
+				mark(data,false);
 			}
 			
 		} catch (JSONException ex) {
@@ -262,16 +303,25 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 		}
 	}
 
-	private void markArrived(JSONObject data){
+	/**
+	 * 
+	 * @param data mensaje llegado del servidor
+	 * @param arrived true si fue leido
+	 */
+	private void mark(JSONObject data,boolean arrived){
 		try{
 		HashMap<String,String> params = new HashMap<String,String>();
+		data = data.getJSONObject("data");
+		String endpoint;
 		String id = data.getString("id");
 		params.put("id[]",id);
 		String from = data.getString("from");
-		String endpoint = "user/" + from + "/messages/arrived";
+		if (!arrived)
+			endpoint = "user/" + from + "/messages/arrived";
+		else 
+			endpoint = "user/" + from + "/messages/read";
 		startService(endpoint,params,new ArrivedMessageReceiver(), POSTService.class);
 		}catch(JSONException ex){}
-
 	}
 	
 	private void startService(String endpoint, HashMap params, ServerResultReceiver.Listener listener, Class<?> cls) {

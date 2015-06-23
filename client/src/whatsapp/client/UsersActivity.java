@@ -190,8 +190,15 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
             DatabaseHelper dbH = DatabaseHelper.getInstance(this);
             dbH.open();
             users = dbH.fetchAllUsers();
-	    if (users !=null)
-		    users.remove(dbH.getUserMe());
+	    if (users !=null){
+		    for (int i = 0 ; i<users.size() ; i++){
+			    if (users.get(i).getUsername().equals(dbH.getUserMe().getUsername())){
+				    users.remove(i);
+				    break;
+			    }
+		    }
+
+	    }
             dbH.close();
 
 	}
@@ -369,6 +376,14 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 		ImageRequest imreq = new ImageRequest(URI, new Response.Listener<Bitmap>() {
 			public void onResponse(Bitmap t) {
 				ueAux.setAvatar(t);
+				DatabaseHelper dbh = DatabaseHelper.getInstance(UsersActivity.this);
+				dbh.open();
+				UserEntity userToUpdate = dbh.fetchUser(ueAux.getUsername());
+				if (userToUpdate!=null){
+					userToUpdate.setAvatar(t);
+					dbh.updateUser(userToUpdate);
+				}
+				dbh.close();
 				Drawable d = new BitmapDrawable(getResources(), ueAux.getAvatar());
 				rowItemAux.setAvatar(d);
 				adapter.notifyDataSetChanged();

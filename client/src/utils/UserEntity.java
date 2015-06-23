@@ -124,8 +124,8 @@ public class UserEntity {
         if(!this.nickname.equals(other.nickname)) return false;
         if(!this.phone.equals(other.phone)) return false;
         if(!this.status.equals(other.status)) return false;
-        if(!this.avatar.equals(other.avatar)) return false;
-        
+	if (this.avatar != null && other.avatar != null)
+		if(!this.avatar.equals(other.avatar)) return false;
         return true;
     }
 

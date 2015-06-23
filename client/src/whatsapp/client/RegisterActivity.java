@@ -115,6 +115,7 @@ public class RegisterActivity extends Activity implements ServerResultReceiver.L
                                         dbH.login(dataString);
                                         dbH.close();
 					LoginActivity.storeAccessToken(this, dataString);
+					LoginActivity.storeUserName(this, user);
 					startActivity(new Intent(this, MainActivity.class));
 
 				}
