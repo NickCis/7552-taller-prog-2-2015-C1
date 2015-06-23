@@ -87,7 +87,8 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:background="#FF2FC9EC"/>
+            android:background="#FF2FC9EC"
+            android:text="No Data"/>
                 
     </LinearLayout>
     <ImageView

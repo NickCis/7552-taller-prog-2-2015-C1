@@ -5,6 +5,7 @@
 package utils;
 
 import android.graphics.Bitmap;
+import java.util.Calendar;
 
 /**
  *
@@ -17,8 +18,9 @@ public class UserEntity {
     private String nickname;
     private Short status;
     private Bitmap avatar;
+    private Calendar checkin;
 
-    public UserEntity(Integer userId, String username, String nickname, Integer phone, Short status, Bitmap avatar)
+    public UserEntity(Integer userId, String username, String nickname, Integer phone, Short status, Bitmap avatar, Calendar checkin)
     {
         this.userId = userId;
         this.username = username;
@@ -26,6 +28,7 @@ public class UserEntity {
         this.phone = phone;
         this.status = status;
         this.avatar = avatar;
+        this.checkin = checkin;
     }
 
     public UserEntity(String username){
@@ -110,6 +113,20 @@ public class UserEntity {
         this.status = status;
     }
     
+    /**
+     * @return the checkin
+     */
+    public Calendar getCheckin() {
+        return checkin;
+    }
+
+    /**
+     * @param checkin the checkin to set
+     */
+    public void setCheckin(Calendar checkin) {
+        this.checkin = checkin;
+    }
+    
     @Override
     public boolean equals(Object obj)
     {
@@ -124,8 +141,8 @@ public class UserEntity {
         if(!this.nickname.equals(other.nickname)) return false;
         if(!this.phone.equals(other.phone)) return false;
         if(!this.status.equals(other.status)) return false;
-	if (this.avatar != null && other.avatar != null)
-		if(!this.avatar.equals(other.avatar)) return false;
+	if(this.avatar != null && other.avatar != null)
+            if(!this.avatar.equals(other.avatar)) return false;
         return true;
     }
 
