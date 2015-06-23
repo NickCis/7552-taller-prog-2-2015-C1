@@ -73,6 +73,8 @@ public class ProfileConfigurationActivity extends Activity
         
         EditText nickname = (EditText) findViewById(R.id.nicknameConfiguration);
         nickname.setText(dbH.getUserMe().getNickname());
+        EditText statusMessage = (EditText) findViewById(R.id.statusMessageConfiguration);
+        statusMessage.setText(dbH.getUserMe().getStatusMessage());
         dbH.close();
     }
     
@@ -137,7 +139,9 @@ public class ProfileConfigurationActivity extends Activity
         dbH.open();
         EditText nickname = (EditText) findViewById(R.id.nicknameConfiguration);
         dbH.getUserMe().setNickname(nickname.getText().toString());
-        dbH.updateUser(dbH.getUserMe()); // Actualiza foto, estado y nickname
+        EditText statusMessage = (EditText) findViewById(R.id.statusMessageConfiguration);
+        dbH.getUserMe().setStatusMessage(statusMessage.getText().toString());
+        dbH.updateUser(dbH.getUserMe()); // Actualiza foto, estado, mensaje de estado y nickname
         dbH.close();
         this.finish();
     }

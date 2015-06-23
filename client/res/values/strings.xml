@@ -15,6 +15,7 @@
     <string name="action_checkin">Checkin</string>
     <string name="profile_configuration_status">Status</string>
     <string name="profile_configuration_nickname">Nickname</string>
+    <string name="profile_configuration_status_message">Message</string>
     <string name="profile_about">About</string>
     <string name="profile_nickname">Nickname</string>
     <string name="profile_last_connection">Last Connection</string>
