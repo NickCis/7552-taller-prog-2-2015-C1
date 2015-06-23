@@ -22,7 +22,7 @@ before_install:
     - sudo dpkg -i rocksdb_3.10-0.deb
     #- wget "https://github.com/facebook/rocksdb/archive/rocksdb-3.9.1.zip" && unzip rocksdb-3.9.1
     - sudo pip install cpp-coveralls
-    - sudo npm install -g mocha chakram
+    - "sudo $(which npm) install -g mocha chakram"
 
 #install:
 #    - cd rocksdb-rocksdb-3.9.1
