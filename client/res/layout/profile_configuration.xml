@@ -8,7 +8,7 @@
     <LinearLayout
         android:id="@+id/userProfileConfigurationAvatarBackground"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="200dp"
         android:orientation="vertical"
         android:gravity="center"
         android:background="#FF000000">
@@ -37,15 +37,34 @@
             android:layout_height="1dp"
             android:background="#FF2FC9EC"/>
         
+        <Spinner
+            android:id="@+id/statusSelection"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/blue_button"
+            android:spinnerMode="dropdown" />
+        
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#FF2FC9EC"/>
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FF000000"
+            android:text="@string/profile_configuration_nickname"
+            android:textStyle="bold"
+            android:textSize="17dp" />
+        
         <EditText
-            android:id="@+id/statusConfiguration"
+            android:id="@+id/nicknameConfiguration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
             android:layout_alignParentLeft="true"
             android:layout_gravity="center"
-            android:textColor="#FF000000"
-        />      
+            android:textColor="#FF000000"/>
     </LinearLayout>
     <ImageView
         android:id="@+id/userProfileAvatar"
@@ -53,7 +72,7 @@
         android:layout_height="200dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="0dp"
         android:layout_above="@+id/userProfileConfigurationInformation"
         android:src="#FFC3C3C3"/>
     
@@ -67,4 +86,16 @@
         android:background="@drawable/choose_image_gray"
         android:onClick="addImage"
     />
+    
+    <Button
+        android:id="@+id/buttonSave"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nicknameConfiguration"
+        android:background="@drawable/blue_button"
+        style="@style/button_text" 
+        android:text="Guardar"
+        android:onClick="save"/>
 </RelativeLayout>

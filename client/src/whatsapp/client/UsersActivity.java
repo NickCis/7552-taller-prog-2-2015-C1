@@ -104,7 +104,7 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 		for (int i = 0; i < users.size(); i++) {
 			UserEntity aux = users.get(i);
 			Drawable img = new BitmapDrawable(getResources(), aux.getAvatar());
-			String status = aux.getStatus() == DatabaseHelper.CONNECTED  ? "online" : "offline";
+			String status = aux.getStatus() == DatabaseHelper.STATUS_ONLINE  ? "online" : "offline";
 			RowItem item = new RowItem(aux.getNickname(), img, aux.getUsername(), status, aux.getUserId());
 			rowItems.add(item);
 		}
@@ -264,7 +264,7 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 	public void updateRow(RowItem row, UserEntity ue){
 		if (ue == null)
 			ue = ueAux;
-		String statusShow = ue.getStatus() == DatabaseHelper.CONNECTED  ? "online" : "offline";
+		String statusShow = ue.getStatus() == DatabaseHelper.STATUS_ONLINE  ? "online" : "offline";
 		row.setNickName(ue.getNickname());
 		row.setStatus(statusShow);
 		if (ue.getAvatar()!=null){
@@ -285,7 +285,7 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 			long lastStatus = status.getLong("time");
 			String statusText = status.getString("text");
 			ueAux.setNickname(nickname);
-			ueAux.setStatus(connected ? DatabaseHelper.CONNECTED : DatabaseHelper.DISCONNECTED);
+			ueAux.setStatus(connected ? DatabaseHelper.STATUS_ONLINE : DatabaseHelper.STATUS_OFFLINE);
 		}catch(JSONException ex){}
 	}
 

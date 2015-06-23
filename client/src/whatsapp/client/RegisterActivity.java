@@ -112,7 +112,7 @@ public class RegisterActivity extends Activity implements ServerResultReceiver.L
 					String dataString = data.getString("access_token");
                                         DatabaseHelper dbH = DatabaseHelper.getInstance(this);
                                         dbH.open();
-                                        dbH.login(dataString);
+                                        dbH.login(user);
                                         dbH.close();
 					LoginActivity.storeAccessToken(this, dataString);
 					LoginActivity.storeUserName(this, user);

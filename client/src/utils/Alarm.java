@@ -231,7 +231,7 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 			long lastStatus = status.getLong("time");
 			String statusText = status.getString("text");
 			user.setNickname(nickname);
-			user.setStatus(connected ? DatabaseHelper.CONNECTED : DatabaseHelper.DISCONNECTED);
+			user.setStatus(connected ? DatabaseHelper.STATUS_ONLINE : DatabaseHelper.STATUS_OFFLINE);
 			dbH.updateUser(user);
 			dbH.close();
 		}catch(JSONException ex){}
