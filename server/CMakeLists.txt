@@ -65,14 +65,8 @@ else()
 endif()
 
 if(CHECK_COVERAGE)
-	add_executable(coverage src/coverage.cpp ${SRC_FILES})
-	set_target_properties(coverage PROPERTIES COMPILE_FLAGS "-fprofile-arcs -ftest-coverage -g -O0")
-	target_link_libraries(coverage ${ROCKSDB_LIBRARIES} -fprofile-arcs)
-	if(OPENSSL_FOUND)
-		target_link_libraries(coverage ${OPENSSL_LIBRARIES})
-	endif()
-
-	add_custom_command(TARGET coverage POST_BUILD COMMAND ./coverage)
+	set_target_properties(server PROPERTIES COMPILE_FLAGS "-fprofile-arcs -ftest-coverage -g -ggdb -O0")
+	target_link_libraries(server "-fprofile-arcs -ftest-coverage")
 endif()
 
 

@@ -124,6 +124,7 @@ int main(int argc, char* argv[]){
 	// Registro se~nales para cerrar de manera linda
 	signal(SIGHUP, sig_handler);
 	signal(SIGQUIT, sig_handler);
+	signal(SIGTERM, sig_handler);
 	signal(SIGKILL, sig_handler);
 	signal(SIGINT, sig_handler);
 

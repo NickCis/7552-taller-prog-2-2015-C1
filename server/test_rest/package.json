@@ -1,0 +1,12 @@
+{
+  "name": "test_rest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "auth.js",
+  "scripts": {
+    "test": "mocha ./*js"
+  },
+  "dependencies": {
+     "chakram": "1.0.1"
+  }
+}
