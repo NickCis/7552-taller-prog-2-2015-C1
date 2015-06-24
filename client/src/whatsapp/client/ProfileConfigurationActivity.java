@@ -240,7 +240,6 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 	public void save(View v)
 	{
 		send();
-		this.finish();
 	}
 	
 	/**
@@ -289,6 +288,7 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 	public void onReceiveResult(int resultCode, Bundle resultData) {
 		if (resultCode==0){
 			save();
+			this.finish();
 		}else if (resultCode==1){
 			DialogFactory.createAlertDialog(context, "Error cambiando perfil", "No se pudo enviar la informacion al servidor, pruebe nuevamente mas tarde", MainActivity.class);
 			Log.e("Profile", "Error actualizando perfil");
