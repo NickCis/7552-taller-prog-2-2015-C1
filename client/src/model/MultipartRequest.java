@@ -12,6 +12,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import android.graphics.Bitmap;
 
+/**
+ * Encargada de hacer requests multipart para archivos
+ * @author rburdet ncisco;
+ */
 public class MultipartRequest extends Request<String> {
 
 	private final Response.Listener<String> mListener;

@@ -24,7 +24,7 @@
                 tools:context="com.survivingwithandroid.aidlservice.client.MainActivity">
 
     <TextView
-        android:text=" Bienvenidos a WAZAP "
+        android:text=" Bienvenidos a MensajerO "
         style="@style/textview_title" 
         android:id="@+id/title"/>
 
@@ -133,7 +133,7 @@
         android:background="@drawable/red_button"
         style="@style/button_text" 
         android:id="@+id/buttonRegister"
-        android:text="Presione aqui si no tiene una cuenta WAZAP"
+        android:text="Presione aqui si no tiene una cuenta MensajerO"
         android:onClick="register"
     />
     

@@ -31,6 +31,9 @@ public class ServerResultReceiver extends ResultReceiver{
 	}
 	
 	
+	/**
+	 * Interfaz que se debera implementar para recibir notificaciones de un servicio
+	 */
 	public static interface Listener {
 		void onReceiveResult(int resultCode, Bundle resultData);
 	}

@@ -24,7 +24,7 @@ import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 import java.util.HashMap;
-import model.NotificationService;
+import model.NotificationServiceStarter;
 import model.POSTService;
 import model.ServerResultReceiver;
 import utils.ConfigurationManager;
@@ -42,7 +42,7 @@ public class MainActivity extends TabActivity implements ServerResultReceiver.Li
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		startService(new Intent(this,NotificationService.class));
+		startService(new Intent(this,NotificationServiceStarter.class));
 		
 		TabHost tabHost = getTabHost();
 		TabSpec activeConversationSpec = tabHost.newTabSpec("ActiveConversations");

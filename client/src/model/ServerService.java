@@ -33,6 +33,10 @@ public abstract class ServerService extends IntentService {
 
 	}
 
+	/**
+	 * Crea un action listener de success
+	 * @return un listener de JSONObject con la informacion del servidor correcta
+	 */
 	protected Response.Listener<JSONObject> createSuccessListener() {
 		return new Response.Listener<JSONObject>() {
 			public void onResponse(JSONObject t) {
@@ -44,6 +48,10 @@ public abstract class ServerService extends IntentService {
 		};
 	}
 
+	/**
+	 * Crea un action listener de success
+	 * @return un listener con la informacion de error de conexion con el servidor
+	 */
 	protected Response.ErrorListener createErrorListener() {
 		return new Response.ErrorListener() {
 			public void onErrorResponse(VolleyError ve) {

@@ -13,7 +13,7 @@ import static model.ServerService.URI;
 import services.AppController;
 
 /**
- *
+ * Encargada de requests DELETE de http
  * @author rburdet
  */
 public class DELETEService extends ServerService{

@@ -57,7 +57,7 @@
         <service android:name="model.GETService" />
         <service android:name="model.DELETEService" />
         <service android:name="model.NotificationService" />
-        <receiver android:name="utils.Alarm"/>
+        <receiver android:name="services.NotificationService"/>
 
          
     </application>
