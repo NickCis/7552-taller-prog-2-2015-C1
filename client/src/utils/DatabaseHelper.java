@@ -174,7 +174,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             values.put(KEY_USERNAME, username);
             long loginId = mDb.insert(DATABASE_LOGIN_TABLE, null, values);
             this.login = fetchLogin((int)loginId);
-            this.setUserMe(createUser(11111, username, username, this.STATUS_ONLINE, null, null, "Hola! Estoy en Whatsapp!", null));
+            this.setUserMe(createUser(11111, username, username + " Nick", this.STATUS_ONLINE, null, null, "Hola! Estoy en MensajerO!", null));
         }
         else
         {

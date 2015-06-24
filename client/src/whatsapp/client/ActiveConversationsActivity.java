@@ -64,8 +64,9 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 		for (int i = 0; i < conversations.size(); i++) {
 			ConversationEntity c = conversations.get(i);
 			UserEntity aux = c.getUser(0);
+			String connectionStatus = aux.getStatus()==DatabaseHelper.STATUS_ONLINE ? "online " : "offline";
 			
-			RowItem item = new RowItem(aux.getNickname(), img, aux.getUsername(), "ultima conexion", aux.getUserId());
+			RowItem item = new RowItem(aux.getNickname(), img, aux.getUsername(), connectionStatus, aux.getUserId());
 			Drawable d = new BitmapDrawable(getResources(), aux.getAvatar());
 			item.setAvatar(d);
 			rowItems.add(item);
@@ -130,7 +131,7 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 		public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
 			//StableArrayAdapter sAA = (StableArrayAdapter) parent.getAdapter();
 			RowItem item = adapter.getItem(position);
-			final String conversationOf = item.getUserName();
+			final String conversationOf = item.getAbajo();
 			view.animate().setDuration(500).alpha(0).withEndAction(new Runnable() {
 				@Override
 				public void run() {
@@ -158,7 +159,7 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 						//adapterView.get
 						//UserEntity ue = (UserEntity) adapter.getItem(idx);
 						RowItem item = adapter.getItem(idx);
-						String itemSelected = item.getUserName();
+						String itemSelected = item.getAbajo();
 						DatabaseHelper dbH = DatabaseHelper.getInstance(ActiveConversationsActivity.this);
 						dbH.open();
 						dbH.deleteConversation(dbH.fetchConversation(itemSelected));
