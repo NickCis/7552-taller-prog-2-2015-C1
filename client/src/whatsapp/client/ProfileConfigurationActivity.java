@@ -160,7 +160,7 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 		String URI = ip + ":" + port + "/user/" + username +"/avatar?access_token="+access_token;
 
 		dbh.close();
-		MultipartRequest req = new MultipartRequest(URI, new Response.ErrorListener() {
+		/*MultipartRequest req = new MultipartRequest(URI, new Response.ErrorListener() {
 
 			public void onErrorResponse(VolleyError ve) {
 				Log.d("fallo", "fallo al subir imagen");
@@ -169,7 +169,21 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 			public void onResponse(String t) {
 				Log.d("aca esta bien", "no fallo");
 			}
-		}, new File(filepath), "avatar");
+		}, new File(filepath), "avatar");*/
+		HashMap<String, Bitmap> params = new HashMap<String, Bitmap>();
+		params.put("avatar", dbh.getUserMe().getAvatar());
+		MultipartRequest req = new MultipartRequest(URI, params,
+			new Response.Listener<String>() {
+				@Override
+				public void onResponse(String response) {
+				}
+			},
+			new Response.ErrorListener(){
+				public void onErrorResponse(VolleyError error){
+				}
+			}
+		);
+
 		AppController.getInstance().addToRequestQueue(req);
 		
 		//String URI = ip + ":" + port + "/user/" + username +"/avatar?access_token="+access_token;

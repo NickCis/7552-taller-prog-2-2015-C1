@@ -1,95 +1,70 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package model;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.HttpHeaderParser;
+
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.ContentBody;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.util.CharsetUtils;
-
+import java.util.Map;
+import android.graphics.Bitmap;
 
 public class MultipartRequest extends Request<String> {
 
-    private MultipartEntity entity = new MultipartEntity();
+	private final Response.Listener<String> mListener;
+	private final Map<String, Bitmap> mKeyValue;
 
-    private static final String FILE_PART_NAME = "file";
-    private static final String STRING_PART_NAME = "text";
+	private final static String BOUNDARY = "------------------------7d1f9a2c454ea51e";
 
-    private final Response.Listener<String> mListener;
-    private final File mFilePart;
-    private final String mStringPart;
+	public MultipartRequest(String url, Map<String, Bitmap> params, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+		super(Method.POST, url, errorListener);
 
-    public MultipartRequest(String url, Response.ErrorListener errorListener, Response.Listener<String> listener, File file, String stringPart){
-        super(Method.POST, url, errorListener);
+		mListener = listener;
+		mKeyValue = params;
+	}
 
-        mListener = listener;
-        mFilePart = file;
-        mStringPart = stringPart;
-        buildMultipartEntity();
-    }
+	@Override
+	public String getBodyContentType() {
+		return "multipart/form-data; boundary="+BOUNDARY;
+	}
 
-    private void buildMultipartEntity()
-    {
-        entity.addPart(FILE_PART_NAME, new FileBody(mFilePart));
-        try
-        {
-            entity.addPart(STRING_PART_NAME, new StringBody(mStringPart));
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            VolleyLog.e("UnsupportedEncodingException");
-        }
-    }
+	byte[] concatenateByteArrays(byte[] a, byte[] b){
+		byte[] result = new byte[a.length + b.length];
+		System.arraycopy(a, 0, result, 0, a.length);
+		System.arraycopy(b, 0, result, a.length, b.length);
+		return result;
+	}
 
-    @Override
-    public String getBodyContentType()
-    {
-        return entity.getContentType().getValue();
-    }
+	@Override
+	public byte[] getBody() throws AuthFailureError {
+		byte[] out = ("").getBytes();
+		for (Map.Entry<String, Bitmap> entry : mKeyValue.entrySet()) {
+			Bitmap bitmap = entry.getValue();
+			out = concatenateByteArrays(out, (BOUNDARY+"\ncontent-disposition: form-data; name=\""+entry.getKey()+"\"; filename=\"avatar.png\"\nContent-Type: image/png\nContent-Transfer-Encoding: binary\n\n").getBytes());
+			ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+			out = concatenateByteArrays(out, stream.toByteArray());
+			out = concatenateByteArrays(out, ("\n"+BOUNDARY).getBytes());
+		}
+		return out;
+	}
 
-    @Override
-    public byte[] getBody() throws AuthFailureError
-    {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        try
-        {
-            entity.writeTo(bos);
-        }
-        catch (IOException e)
-        {
-            VolleyLog.e("IOException writing to ByteArrayOutputStream");
-        }
-        return bos.toByteArray();
-    }
+	@Override
+	protected Response<String> parseNetworkResponse(NetworkResponse response) {
+		String jsonString = "";
+		try {
+			jsonString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return Response.success(jsonString, getCacheEntry());
+	}
 
-    @Override
-    protected Response<String> parseNetworkResponse(NetworkResponse response)
-    {
-        return Response.success("Uploaded", getCacheEntry());
-    }
-
-    @Override
-    protected void deliverResponse(String response)
-    {
-        mListener.onResponse(response);
-    }
-
-}
+	@Override
+	protected void deliverResponse(String response) {
+		mListener.onResponse(response);
+	}
+} 
