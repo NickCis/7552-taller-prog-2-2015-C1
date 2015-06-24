@@ -26,6 +26,8 @@ void CheckinNode::executeGet(MgConnection& conn, const char*){
 		return;
 	}
 
+	conn.sendStatus(MgConnection::STATUS_CODE_OK);
+	conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
 	conn.printfData("%s", checkin.toJson().c_str());
 }
 
