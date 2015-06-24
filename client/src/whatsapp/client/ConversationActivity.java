@@ -109,6 +109,9 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
                 dbH.close();
 	}
 
+	/**
+	 * Para actualizar cuando hubo un visto
+	 */
 	private void refreshItems(){
 		dbH.open();
 		String from = (String) getIntent().getExtras().get("id");
@@ -121,10 +124,10 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 		List<MessageEntity> listaMensajes=dbH.fetchMessages(this.cE);
 		for (MessageEntity mE : listaMensajes) {
 			OneComment c = adapter.getItem(mE.getContent());
-			if (mE.getStatus() == DatabaseHelper.SEEN)
-				adapter.setSeen(c);
-			if (mE.getStatus() == DatabaseHelper.SENT)
-				adapter.setSent(c);
+			//if (mE.getStatus() == DatabaseHelper.SEEN)
+			//	adapter.setSeen(c);
+			//if (mE.getStatus() == DatabaseHelper.SENT)
+			//	adapter.setSent(c);
 			
 		}
 	}
@@ -172,12 +175,12 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 			if (resultCode == 0){
 				HashMap h = (HashMap) resultData.getSerializable("params");
 				String message = (String) h.get("message");
-				OneComment comment = adapter.getItem(message);
-				if (!comment.sent){
-					comment.setSentStatus(true);
-					adapter.setSent(comment);
-					adapter.notifyDataSetChanged();
-				}
+				//OneComment comment = adapter.getItem(message);
+				//if (!comment.sent){
+				//	comment.setSentStatus(true);
+				//	adapter.setSent(comment);
+				//	adapter.notifyDataSetChanged();
+				//}
 				dbH.open();
 				dbH.createMessage(cE, dbH.getUserMe(), null, null, message, DatabaseHelper.SEEN);
 				dbH.close();
@@ -244,6 +247,6 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 		public void refresh(){
 			loadMessages();
 			populateView();
-			refreshItems();
+			//refreshItems();
 		}
 }

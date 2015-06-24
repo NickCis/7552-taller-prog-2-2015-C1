@@ -12,6 +12,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
@@ -26,6 +27,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -387,8 +389,14 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 				Drawable d = new BitmapDrawable(getResources(), ueAux.getAvatar());
 				rowItemAux.setAvatar(d);
 				adapter.notifyDataSetChanged();
+				Log.i("avatar", "Exito buscando avatar");
 			}
-		}, 0,0, null, null);
+		}, 0,0, null, new Response.ErrorListener() {
+
+			public void onErrorResponse(VolleyError ve) {
+				Log.e("avatar", "Error buscando avatar");
+			}
+		});
 		AppController.getInstance().addToRequestQueue(imreq);
 	}
 
