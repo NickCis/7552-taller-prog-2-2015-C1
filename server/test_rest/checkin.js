@@ -83,7 +83,8 @@ describe("Testing checkin", function(){
 			expect(response).to.comprise.of.json({
 				latitude: latitude,
 				longitude: longitude,
-				name: name
+				name: name,
+				username: userData.user
 			});
 		});
 	});

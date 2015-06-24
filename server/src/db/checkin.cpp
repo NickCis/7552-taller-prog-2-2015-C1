@@ -64,7 +64,7 @@ Status Checkin::put(){
 
 string Checkin::toJson() const{
 	stringstream ss;
-	ss << "{\"time\":" << this->timestamp << ",\"latitude\":" << this->latitude << ",\"longitude\":" << this->longitude << ",\"name\":\"" << this->name << "\"}";
+	ss << "{\"time\":" << this->timestamp << ",\"latitude\":" << this->latitude << ",\"longitude\":" << this->longitude << ",\"name\":\"" << this->name << "\",\"username\":\"" << this->owner << "\"}";
 	return ss.str();
 }
 
