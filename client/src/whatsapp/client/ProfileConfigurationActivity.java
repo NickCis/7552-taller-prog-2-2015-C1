@@ -42,7 +42,7 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 {
 	
 	private Context context;
-
+	
 	private static final int SELECT_PICTURE = 2;
 	
 	@Override
@@ -123,21 +123,21 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 				}
 				break;
 			}
-
+			
 			case (SELECT_PICTURE):
 			{
 				if(resultCode == RESULT_OK){
 					Uri selectedImage = data.getData();
 					String[] filePathColumn = {MediaStore.Images.Media.DATA};
-
+					
 					Cursor cursor = getContentResolver().query(
-							selectedImage, filePathColumn, null, null, null);
+						selectedImage, filePathColumn, null, null, null);
 					cursor.moveToFirst();
-
+					
 					int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 					String filePath = cursor.getString(columnIndex);
 					cursor.close();
-
+					
 					ImageView imageView = (ImageView) findViewById(R.id.userProfileAvatar);
 					DatabaseHelper dbH = DatabaseHelper.getInstance(this);
 					dbH.open();
@@ -149,7 +149,7 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 			}
 		}
 	}
-
+	
 	private void sendAvatarServer(final String filepath){
 		DatabaseHelper dbh = DatabaseHelper.getInstance(this);
 		dbh.open();
@@ -158,18 +158,8 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 		String port = ConfigurationManager.getInstance().getString(this, ConfigurationManager.SAVED_PORT);
 		String access_token = ConfigurationManager.getInstance().getString(this, ConfigurationManager.ACCESS_TOKEN);
 		String URI = ip + ":" + port + "/user/" + username +"/avatar?access_token="+access_token;
-
+		
 		dbh.close();
-		/*MultipartRequest req = new MultipartRequest(URI, new Response.ErrorListener() {
-
-			public void onErrorResponse(VolleyError ve) {
-				Log.d("fallo", "fallo al subir imagen");
-			}
-		}, new Response.Listener<String>() {
-			public void onResponse(String t) {
-				Log.d("aca esta bien", "no fallo");
-			}
-		}, new File(filepath), "avatar");*/
 		HashMap<String, Bitmap> params = new HashMap<String, Bitmap>();
 		params.put("avatar", dbh.getUserMe().getAvatar());
 		MultipartRequest req = new MultipartRequest(URI, params,
@@ -183,27 +173,27 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 				}
 			}
 		);
-
+		
 		AppController.getInstance().addToRequestQueue(req);
 		
 		//String URI = ip + ":" + port + "/user/" + username +"/avatar?access_token="+access_token;
 		//send("user/"+username+"/avatar",null,2,1);
 		/*
 		ImageRequest imreq = new ImageRequest(URI, new Response.Listener<Bitmap>() {
-			public void onResponse(Bitmap t) {
-				ueAux.setAvatar(t);
-				DatabaseHelper dbh = DatabaseHelper.getInstance(UsersActivity.this);
-				dbh.open();
-				UserEntity userToUpdate = dbh.fetchUser(ueAux.getUsername());
-				if (userToUpdate!=null){
-					userToUpdate.setAvatar(t);
-					dbh.updateUser(userToUpdate);
-				}
-				dbh.close();
-				Drawable d = new BitmapDrawable(getResources(), ueAux.getAvatar());
-				rowItemAux.setAvatar(d);
-				adapter.notifyDataSetChanged();
-			}
+		public void onResponse(Bitmap t) {
+		ueAux.setAvatar(t);
+		DatabaseHelper dbh = DatabaseHelper.getInstance(UsersActivity.this);
+		dbh.open();
+		UserEntity userToUpdate = dbh.fetchUser(ueAux.getUsername());
+		if (userToUpdate!=null){
+		userToUpdate.setAvatar(t);
+		dbh.updateUser(userToUpdate);
+		}
+		dbh.close();
+		Drawable d = new BitmapDrawable(getResources(), ueAux.getAvatar());
+		rowItemAux.setAvatar(d);
+		adapter.notifyDataSetChanged();
+		}
 		}, 0,0, null, null);
 		AppController.getInstance().addToRequestQueue(imreq);
 		*/
@@ -274,13 +264,16 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 		//TODO: Se le tiene q asociar un listener para q vuelva ?
 		intent.putExtra("info", bundle);
 		intent.putExtra("rec", receiver);
+		Log.i("Profile", "Actualizando perfil");
 		startService(intent);
 	}
 	
 	
 	public void onReceiveResult(int resultCode, Bundle resultData) {
-		if (resultCode==1)
+		if (resultCode==1){
 			DialogFactory.createAlertDialog(context, "Error cambiando perfil", "No se pudo enviar la informacion al servidor, pruebe nuevamente mas tarde", MainActivity.class);
+			Log.e("Profile", "Error actualizando perfil");
+		}
 	}
 }
 

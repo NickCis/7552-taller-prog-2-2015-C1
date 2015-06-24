@@ -26,7 +26,7 @@ import utils.UserAdapter;
 import utils.UserEntity;
 
 public class ActiveConversationsActivity extends Activity implements ServerResultReceiver.Listener {
-
+	
 	//private StableArrayAdapter adapter;
 	private UserAdapter adapter;
 	private ListView listview;
@@ -35,7 +35,7 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 	private ArrayList<RowItem> rowItems;
 	private List<ConversationEntity> conversations;
 	private HashMap<String, Integer> map;
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -46,7 +46,7 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 		populateView();
 		bindListeners();
 	}
-
+	
 	private void bindListeners(){
 		listview.setOnItemLongClickListener(new OptionListener());
 		listview.setOnItemClickListener(new ClickListener(this));
@@ -57,76 +57,76 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 		listview = (ListView) findViewById(R.id.activeConversationsListview);
 		//adapter = new StableArrayAdapter(this, android.R.layout.simple_list_item_1, map);
 		//listview.setAdapter(adapter);
-			Drawable img = getResources().getDrawable(R.drawable.img1);
-			rowItems = new ArrayList<RowItem>();
-			if (conversations == null)
-				return;
-			for (int i = 0; i < conversations.size(); i++) {
-				ConversationEntity c = conversations.get(i);
-				UserEntity aux = c.getUser(0);
-
-				RowItem item = new RowItem(aux.getNickname(), img, aux.getUsername(), "ultima conexion", aux.getUserId());
-				Drawable d = new BitmapDrawable(getResources(), aux.getAvatar());
-				item.setAvatar(d);
-				rowItems.add(item);
-			}
-			adapter = new UserAdapter(this, rowItems);
-			listview.setAdapter(adapter);
-			registerForContextMenu(this.listview);
-
+		Drawable img = getResources().getDrawable(R.drawable.img1);
+		rowItems = new ArrayList<RowItem>();
+		if (conversations == null)
+			return;
+		for (int i = 0; i < conversations.size(); i++) {
+			ConversationEntity c = conversations.get(i);
+			UserEntity aux = c.getUser(0);
+			
+			RowItem item = new RowItem(aux.getNickname(), img, aux.getUsername(), "ultima conexion", aux.getUserId());
+			Drawable d = new BitmapDrawable(getResources(), aux.getAvatar());
+			item.setAvatar(d);
+			rowItems.add(item);
 		}
-
+		adapter = new UserAdapter(this, rowItems);
+		listview.setAdapter(adapter);
+		registerForContextMenu(this.listview);
+		
+	}
+	
 	private void loadConversations(){
+		DatabaseHelper dbH = DatabaseHelper.getInstance(this);
+		dbH.open();
+		map = new HashMap<String, Integer>();
+		List<ConversationEntity> conversationsAux = dbH.fetchAllConversations();
+		if (conversationsAux!= null){
+			for (ConversationEntity cE : conversationsAux) {
+				map.put(cE.getUser(1).getNickname(), cE.getConversationId());
+			}
+			
+			conversations = (conversationsAux);
+		}
+		dbH.close();
+		
+	}
+	
+	public void onReceiveResult(int resultCode, Bundle resultData) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+	
+	public void informNuevo(String nuevo) {
+		if (adapter.contains(nuevo)){
+			int idx = adapter.getPosition(nuevo);
+			//TODO:
+			// CUANDO DEVUELVE ALGO DEVUELVE UN RELATIVE LAYOUT, VER COMO CAMBIAR ESO CUANDO ME LLEGUE UNA NOTIFIACION
+			//TextView v = (TextView)listview.getChildAt(idx);
+			//v.setTextAppearance(this, R.style.textview_notificated);
+			
+			
+		}else{
 			DatabaseHelper dbH = DatabaseHelper.getInstance(this);
 			dbH.open();
-			map = new HashMap<String, Integer>();
-			List<ConversationEntity> conversationsAux = dbH.fetchAllConversations();
-			if (conversationsAux!= null){
-				for (ConversationEntity cE : conversationsAux) {
-					map.put(cE.getUser(1).getNickname(), cE.getConversationId());
-				}
-				
-				conversations = (conversationsAux);
-			}
-			dbH.close();
-			
+			ConversationEntity ce = dbH.fetchConversation(nuevo);
+			UserEntity aux = ce.getUser(1);
+			//TODO: sacar
+			Drawable img = getResources().getDrawable(R.drawable.img1);
+			RowItem item = new RowItem(aux.getNickname(), img, aux.getUsername(), "ultima conexion", aux.getUserId());
+			rowItems.add(item);
+			adapter.notifyDataSetChanged();
+			//adapter.addToMap(ce.getUser(1).getNickname(), ce.getUser(1).getUserId());
 		}
-
-		public void onReceiveResult(int resultCode, Bundle resultData) {
-			throw new UnsupportedOperationException("Not supported yet.");
-		}
-
-		public void informNuevo(String nuevo) {
-			if (adapter.contains(nuevo)){
-				int idx = adapter.getPosition(nuevo);
-				//TODO:
-				// CUANDO DEVUELVE ALGO DEVUELVE UN RELATIVE LAYOUT, VER COMO CAMBIAR ESO CUANDO ME LLEGUE UNA NOTIFIACION
-				//TextView v = (TextView)listview.getChildAt(idx);
-				//v.setTextAppearance(this, R.style.textview_notificated);
-
-				
-			}else{
-				DatabaseHelper dbH = DatabaseHelper.getInstance(this);
-				dbH.open();
-				ConversationEntity ce = dbH.fetchConversation(nuevo);
-				UserEntity aux = ce.getUser(1);
-				//TODO: sacar
-				Drawable img = getResources().getDrawable(R.drawable.img1);
-				RowItem item = new RowItem(aux.getNickname(), img, aux.getUsername(), "ultima conexion", aux.getUserId());
-				rowItems.add(item);
-				adapter.notifyDataSetChanged();
-				//adapter.addToMap(ce.getUser(1).getNickname(), ce.getUser(1).getUserId());
-			}
-		}
-
-		private class ClickListener implements AdapterView.OnItemClickListener {
-
-			private Context context;
-
+	}
+	
+	private class ClickListener implements AdapterView.OnItemClickListener {
+		
+		private Context context;
+		
 		public ClickListener(Context context) {
 			this.context = context;
 		}
-
+		
 		public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
 			//StableArrayAdapter sAA = (StableArrayAdapter) parent.getAdapter();
 			RowItem item = adapter.getItem(position);
@@ -146,14 +146,14 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 			});
 		}
 	}
-
+	
 	private class OptionListener implements AdapterView.OnItemLongClickListener {
-
+		
 		public boolean onItemLongClick(final AdapterView<?> adapterView, final View arg1, final int idx, long arg3) {
 			DialogFactory.createOkCancelDialog(ActiveConversationsActivity.this,
 				"Eliminar conversación", "¿Está seguro que desea eliminar la conversación?",
 				new DialogInterface.OnClickListener() {
-
+					
 					public void onClick(DialogInterface arg0, int id) {
 						//adapterView.get
 						//UserEntity ue = (UserEntity) adapter.getItem(idx);
@@ -170,9 +170,9 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 				});
 			return true;
 		}
-
+		
 	}
-
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -180,69 +180,24 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 		loadConversations();
 		populateView();
 	}
-
+	
 	@Override
 	protected void onDestroy() {
 		showing = false;
 		super.onDestroy();
 	}
-
+	
 	@Override
 	protected void onPause() {
 		super.onPause(); //To change body of generated methods, choose Tools | Templates.
 		showing = false;
 	}
-
+	
 	public static boolean isShowing() {
 		return showing;
 	}
-
+	
 	public static ActiveConversationsActivity getInstance() {
 		return INSTANCE;
 	}
-
-/*
-	private class StableArrayAdapter extends ArrayAdapter<String> {
-
-		HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
-
-		public StableArrayAdapter(Context context, int textViewResourceId, HashMap<String, Integer> objects) {
-			super(context, textViewResourceId, new ArrayList<String>(objects.keySet()));
-			this.mIdMap = objects;
-		}
-
-		@Override
-		public long getItemId(int position) {
-			String item = getItem(position);
-			return mIdMap.get(item);
-		}
-
-		public void addToMap(String key, Integer value){
-			this.mIdMap.put(key, value);
-		}
-
-		@Override
-		public void remove(String object) {
-
-			Integer conversationId = this.mIdMap.get(object);
-			if (conversationId != null) {
-				DatabaseHelper dbH = new DatabaseHelper(ActiveConversationsActivity.this);
-				dbH.open();
-				dbH.deleteConversation(dbH.fetchConversation(object));
-				dbH.close();
-				this.mIdMap.remove(object);
-				super.remove(object);
-			}
-		}
-
-		public boolean contains(String item){
-			return adapter.getPosition(item) != -1;
-		}
-
-		@Override
-		public boolean hasStableIds() {
-			return true;
-		}
-	}
-	*/
 }

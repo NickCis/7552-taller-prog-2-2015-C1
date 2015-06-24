@@ -33,7 +33,7 @@ import utils.UserEntity;
  * @author rburdet
  */
 public class ConversationActivity extends Activity implements ServerResultReceiver.Listener {
-
+	
 	private static ConversationActivity INSTANCE;
 	private DiscussArrayAdapter adapter;
 	private ListView lv;
@@ -41,7 +41,7 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 	private DatabaseHelper dbH;
 	private ConversationEntity cE;
 	private static boolean showing;
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -53,7 +53,7 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 		loadMessages();
 		populateView();
 	}
-
+	
 	private void populateView(){
 		editText1 = (EditText) findViewById(R.id.editText1);
 		editText1.setOnKeyListener(new View.OnKeyListener() {
@@ -80,9 +80,9 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 				return true;
 			}
 		});
-
+		
 	}
-
+	
 	private void loadMessages(){
 		lv.setAdapter(adapter);
 		this.dbH = DatabaseHelper.getInstance(this);
@@ -97,7 +97,7 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 		addAllItems(dbH.fetchMessages(this.cE));
 		dbH.close();
 	}
-
+	
 	private void addAllItems(List<MessageEntity> listaMensajes) {
 		dbH.open();
 		for (MessageEntity mE : listaMensajes) {
@@ -106,9 +106,9 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 			mE.setStatus(DatabaseHelper.SEEN);
 		}
 		adapter.notifyDataSetChanged();
-                dbH.close();
+		dbH.close();
 	}
-
+	
 	/**
 	 * Para actualizar cuando hubo un visto
 	 */
@@ -131,122 +131,124 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 			
 		}
 	}
+	
+	private void addItems(List<MessageEntity> listaMensajes) {
+		dbH = DatabaseHelper.getInstance(this);
+		dbH.open();
 		
-		private void addItems(List<MessageEntity> listaMensajes) {
-			dbH = DatabaseHelper.getInstance(this);
-			dbH.open();
-			
-			for (MessageEntity mE : listaMensajes) {
-				if (mE.getStatus() == DatabaseHelper.NOT_SEEN) {
-					adapter.add(new OneComment(mE.getUser().equals(dbH.getUserMe()), mE.getContent()));
-					mE.setStatus(DatabaseHelper.SEEN);
-				}
+		for (MessageEntity mE : listaMensajes) {
+			if (mE.getStatus() == DatabaseHelper.NOT_SEEN) {
+				adapter.add(new OneComment(mE.getUser().equals(dbH.getUserMe()), mE.getContent()));
+				mE.setStatus(DatabaseHelper.SEEN);
 			}
-			dbH.close();
 		}
+		dbH.close();
+	}
+	
+	void send(String msg) {
+		Bundle bundle = new Bundle();
+		HashMap<String, String> params = new HashMap<String, String>();
+		ServerResultReceiver receiver = new ServerResultReceiver(new Handler());
+		receiver.setListener(this);
+		String access_token = ConfigurationManager.getInstance().getString(this, ConfigurationManager.ACCESS_TOKEN);
+		params.put("access_token", access_token);
+		params.put("message", msg);
+		bundle.putSerializable("params", params);
+		String ip = ConfigurationManager.getInstance().getString(this, ConfigurationManager.SAVED_IP);
+		String port = ConfigurationManager.getInstance().getString(this, ConfigurationManager.SAVED_PORT);
+		//TODO: Manejar bien esto
+		String to = this.cE.getUser(1).getUsername();
+		String URI = ip + ":" + port + "/" + "user/" + to + "/messages";
+		bundle.putString("URI", URI);
+		bundle.putSerializable("params", params);
+		Intent intent = new Intent(this, POSTService.class);
+		//TODO: Se le tiene q asociar un listener para q vuelva ?
+		intent.putExtra("info", bundle);
+		intent.putExtra("rec", receiver);
+		Log.i("Message", "Mandando mensaje");
+		startService(intent);
+	}
+	
+	public void onReceiveResult(int resultCode, Bundle resultData) {
+		//TODO: La respuesta del servidor tiene que estar aca para que sea concordante con el resto
+		DialogFactory.disposeDialog();
 		
-		void send(String msg) {
-			Bundle bundle = new Bundle();
-			HashMap<String, String> params = new HashMap<String, String>();
-			ServerResultReceiver receiver = new ServerResultReceiver(new Handler());
-			receiver.setListener(this);
-			String access_token = ConfigurationManager.getInstance().getString(this, ConfigurationManager.ACCESS_TOKEN);
-			params.put("access_token", access_token);
-			params.put("message", msg);
-			bundle.putSerializable("params", params);
-			String ip = ConfigurationManager.getInstance().getString(this, ConfigurationManager.SAVED_IP);
-			String port = ConfigurationManager.getInstance().getString(this, ConfigurationManager.SAVED_PORT);
-			//TODO: Manejar bien esto
-			String to = this.cE.getUser(1).getUsername();
-			String URI = ip + ":" + port + "/" + "user/" + to + "/messages";
-			bundle.putString("URI", URI);
-			bundle.putSerializable("params", params);
-			Intent intent = new Intent(this, POSTService.class);
-			//TODO: Se le tiene q asociar un listener para q vuelva ?
-			intent.putExtra("info", bundle);
-			intent.putExtra("rec", receiver);
-			startService(intent);
-		}
-		
-		public void onReceiveResult(int resultCode, Bundle resultData) {
-			//TODO: La respuesta del servidor tiene que estar aca para que sea concordante con el resto
-			DialogFactory.disposeDialog();
-			
-			if (resultCode == 0){
-				HashMap h = (HashMap) resultData.getSerializable("params");
-				String message = (String) h.get("message");
-				//OneComment comment = adapter.getItem(message);
-				//if (!comment.sent){
-				//	comment.setSentStatus(true);
-				//	adapter.setSent(comment);
-				//	adapter.notifyDataSetChanged();
-				//}
-				dbH.open();
-				dbH.createMessage(cE, dbH.getUserMe(), null, null, message, DatabaseHelper.SEEN);
-				dbH.close();
-			}else if (resultCode == 1){
-				HashMap h = (HashMap) resultData.getSerializable("params");
-				String message = (String) h.get("message");
-				OneComment comment = adapter.getItem(message);
-				comment.setSentStatus(false);
-				adapter.setNotSent(comment);
-				adapter.notifyDataSetChanged();
-				
-			}
-			
-			
-		}
-		
-		@Override
-		protected void onResume() {
-			super.onResume();
-			showing = true;
-		}
-		
-		@Override
-		protected void onDestroy() {
-			showing = false;
-			Log.d("ConversationActivity", "DESTRUYENDO ACTIVITY****************************");
-			super.onDestroy();
-		}
-		
-		@Override
-		protected void onPause() {
-			super.onPause(); //To change body of generated methods, choose Tools | Templates.
-			showing = false;
-		}
-		
-		/**
-		 * Agrego mensajes a la vista de mensajes
-		 * @param conversation
-		 */
-		public void addMsgs(String msg){
-			adapter.add(new OneComment(false,msg ));
-		}
-		
-		/**
-		 * Agrega mensajes llegados del servidor
-		 * @param conversation , conversacion que estoy teniendo con ese usuario
-		 */
-		public void addMsgs(ConversationEntity conversation) {
-			this.cE = conversation;
-			dbH = DatabaseHelper.getInstance(this);
+		if (resultCode == 0){
+			HashMap h = (HashMap) resultData.getSerializable("params");
+			String message = (String) h.get("message");
+			//OneComment comment = adapter.getItem(message);
+			//if (!comment.sent){
+			//	comment.setSentStatus(true);
+			//	adapter.setSent(comment);
+			//	adapter.notifyDataSetChanged();
+			//}
 			dbH.open();
-			addItems(dbH.fetchMessages(this.cE));
+			dbH.createMessage(cE, dbH.getUserMe(), null, null, message, DatabaseHelper.SEEN);
 			dbH.close();
+			Log.i("Message","Exito mandando mensaje");
+		}else if (resultCode == 1){
+			HashMap h = (HashMap) resultData.getSerializable("params");
+			String message = (String) h.get("message");
+			OneComment comment = adapter.getItem(message);
+			comment.setSentStatus(false);
+			adapter.setNotSent(comment);
+			adapter.notifyDataSetChanged();
+			Log.e("Message","Error mandando mensaje");
 		}
 		
-		public static boolean isShowing() {
-			return showing;
-		}
 		
-		public static ConversationActivity getInstance() {
-			return INSTANCE;
-		}
-		
-		public void refresh(){
-			loadMessages();
-			populateView();
-			//refreshItems();
-		}
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		showing = true;
+	}
+	
+	@Override
+	protected void onDestroy() {
+		showing = false;
+		Log.d("ConversationActivity", "DESTRUYENDO ACTIVITY****************************");
+		super.onDestroy();
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause(); //To change body of generated methods, choose Tools | Templates.
+		showing = false;
+	}
+	
+	/**
+	 * Agrego mensajes a la vista de mensajes
+	 * @param conversation
+	 */
+	public void addMsgs(String msg){
+		adapter.add(new OneComment(false,msg ));
+	}
+	
+	/**
+	 * Agrega mensajes llegados del servidor
+	 * @param conversation , conversacion que estoy teniendo con ese usuario
+	 */
+	public void addMsgs(ConversationEntity conversation) {
+		this.cE = conversation;
+		dbH = DatabaseHelper.getInstance(this);
+		dbH.open();
+		addItems(dbH.fetchMessages(this.cE));
+		dbH.close();
+	}
+	
+	public static boolean isShowing() {
+		return showing;
+	}
+	
+	public static ConversationActivity getInstance() {
+		return INSTANCE;
+	}
+	
+	public void refresh(){
+		loadMessages();
+		populateView();
+		//refreshItems();
+	}
 }

@@ -124,6 +124,7 @@ public class MainActivity extends TabActivity implements ServerResultReceiver.Li
 		bundle.putSerializable("params", params);
 		final String URI = ip + ":" + port + "/broadcast";
 		bundle.putString("URI", URI);
+		Log.i("Broadcast", "Haciendo broadcast");
 		startService(createCallingIntent(bundle));
 
 	}
@@ -148,6 +149,7 @@ public class MainActivity extends TabActivity implements ServerResultReceiver.Li
 		bundle.putSerializable("params", params);
 		final String URI = ip + ":" + port + "/user/" + username + "/checkin";
 		bundle.putString("URI", URI);
+		Log.i("Checkin", "Haciendo checkin");
 		startService(createCallingIntent(bundle));
 
 	}
@@ -242,7 +244,9 @@ public class MainActivity extends TabActivity implements ServerResultReceiver.Li
 		DialogFactory.disposeDialog();
 		if (resultCode != 0){
 			DialogFactory.createAlertDialog(this, "No se pudo realizar", "Intente de nuevo mas tarde",MainActivity.class);
+			Log.e("Error", "Hubo un error en la conexion con el servidor");
+		}else if (resultCode == 0){
+			Log.i("Exito", "Se tuvo exito en la conexion con el servidor");
 		}
 	}
-	
 }
