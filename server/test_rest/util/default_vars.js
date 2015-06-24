@@ -51,7 +51,7 @@ module.exports = {
 		};
 	},
 	get randomUsername() {
-		return "username_" + parseInt(Math.random() * 10000);
+		return "username_" + parseInt(Math.random() * 10000000);
 	},
 	userCredentials: function(u, p){
 		var user = u || this.randomUsername,
