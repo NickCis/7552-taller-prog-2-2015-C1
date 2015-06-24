@@ -9,7 +9,11 @@ import java.text.SimpleDateFormat;
 import utils.DatabaseHelper;
 import utils.UserEntity;
 
-public class ProfileActivity extends Activity implements ServerResultReceiver.Listener {
+/**
+ * Perfil de usuario
+ * @author mmanzano
+ */
+public class ProfileActivity extends Activity{
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -55,9 +59,5 @@ public class ProfileActivity extends Activity implements ServerResultReceiver.Li
                     checkin.setText("Latitude: " + uE.getCheckin().getLatitude() + " Longitude: " + uE.getCheckin().getLongitude());
                 }
 		this.setTitle(uE.getNickname());
-	}
-	
-	public void onReceiveResult(int resultCode, Bundle resultData) {
-		//throw new UnsupportedOperationException("Not supported yet.");
 	}
 }
