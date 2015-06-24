@@ -102,7 +102,7 @@ const bool& Profile::getOnline() const{
 }
 
 bool Profile::getOnlineStatus() const{
-	return this->online && ( (time(NULL) - this->last_activity) > ONLINE_TIMEOUT);
+	return this->online && ( (time(NULL) - this->last_activity) < ONLINE_TIMEOUT);
 }
 
 const std::string& Profile::getStatus() const{
