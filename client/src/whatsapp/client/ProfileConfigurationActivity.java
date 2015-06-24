@@ -60,7 +60,6 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 		String[] items = new String[DatabaseHelper.STATUS_COUNT];
 		items[DatabaseHelper.STATUS_ONLINE] = "Online";
 		items[DatabaseHelper.STATUS_OFFLINE] = "Offline";
-		items[DatabaseHelper.STATUS_DO_NOT_DISTURB] = "Do not disturb";
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, items);
 		Spinner spinner = (Spinner) findViewById(R.id.statusSelection);
 		spinner.setAdapter(adapter);
