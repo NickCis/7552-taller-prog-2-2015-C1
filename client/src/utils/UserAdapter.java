@@ -76,8 +76,8 @@ public class UserAdapter extends ArrayAdapter {
 
 		ImageView profile_pic;
 		TextView member_name;
-		TextView status;
-		TextView contactType;
+		TextView derecha;
+		TextView abajo;
 	}
 
 	@Override
@@ -96,20 +96,20 @@ public class UserAdapter extends ArrayAdapter {
 					.findViewById(R.id.name);
 			holder.profile_pic = (ImageView) convertView
 					.findViewById(R.id.pic);
-			holder.status = (TextView) convertView.findViewById(R.id.sta);
-			holder.contactType = (TextView) convertView
-					.findViewById(R.id.contact);
+			holder.derecha = (TextView) convertView.findViewById(R.id.contact);
+			holder.abajo = (TextView) convertView
+					.findViewById(R.id.sta);
 
 			//UserEntity row_pos = usuarios.get(position);
 			RowItem row_pos = usuarios.get(position);
 
 			//holder.profile_pic.setImageBitmap(row_pos.getAvatar());
 			holder.profile_pic.setImageDrawable(row_pos.getAvatar());
-			holder.member_name.setText(row_pos.getNickName());
+			holder.member_name.setText(row_pos.getPrincipal());
 			
 			
-			holder.status.setText(row_pos.getUserName());
-			holder.contactType.setText(row_pos.getStatus());
+			holder.derecha.setText(row_pos.getDerecha());
+			holder.abajo.setText(row_pos.getAbajo());
 
 			convertView.setTag(holder);
 		//} else {

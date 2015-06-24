@@ -174,9 +174,9 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 						public void onClick(DialogInterface arg0, int id) {
 							//String itemSelected = ((RowItem) adapter.getItem(idx)).getUserName();
 							RowItem rowItem = (RowItem) adapter.getItem(info.position);
-							if (dbH.fetchConversation(rowItem.getUserName()) != null)
-								dbH.deleteConversation(dbH.fetchConversation(rowItem.getUserName()));
-							dbH.deleteUser(dbH.fetchUser(rowItem.getUserName()));
+							if (dbH.fetchConversation(rowItem.getAbajo()) != null)
+								dbH.deleteConversation(dbH.fetchConversation(rowItem.getAbajo()));
+							dbH.deleteUser(dbH.fetchUser(rowItem.getAbajo()));
 							dbH.close();
 							rowItems.remove(rowItem);
 							adapter.notifyDataSetChanged();
@@ -271,10 +271,10 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 		if (ue == null)
 			ue = ueAux;
 		String statusShow = ue.getStatus() == DatabaseHelper.STATUS_ONLINE  ? "online" : "offline";
-		row.setNickName(ue.getNickname());
-		row.setStatus(statusShow);
+		row.setPrincipal(ue.getNickname());
+		row.setDerecha(statusShow);
 		if (ue.getAvatar()!=null){
-			Drawable d = new BitmapDrawable(getResources(), ueAux.getAvatar());
+			Drawable d = new BitmapDrawable(getResources(), ue.getAvatar());
 			rowItemAux.setAvatar(d);
 		}
 		adapter.notifyDataSetChanged();
@@ -290,6 +290,8 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 			JSONObject status = data.getJSONObject("status");
 			long lastStatus = status.getLong("time");
 			String statusText = status.getString("text");
+
+			ueAux.setStatusMessage(statusText);
 			ueAux.setNickname(nickname);
 			ueAux.setStatus(connected ? DatabaseHelper.STATUS_ONLINE : DatabaseHelper.STATUS_OFFLINE);
 		}catch(JSONException ex){}
@@ -405,7 +407,7 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 	
 	public int getIdxUser(String username){
 		for (int i = 0 ; i < rowItems.size() ; i++){
-			if (rowItems.get(i).getUserName().equals(username))
+			if (rowItems.get(i).getAbajo().equals(username))
 				return i;
 		}
 		return -1;

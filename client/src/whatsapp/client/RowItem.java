@@ -7,49 +7,57 @@ public class RowItem {
 	private String nickName;
 	private int id;
 	private Drawable avatar;
-	private String userName;
-	private String contactType;
+	private String abajo;
+	private String derecha;
 
 	public RowItem(){
 	
 	}
 
 	public RowItem(String username){
-		this.userName = username;
+		this.abajo = username;
 	}
 	
 
-	public RowItem(String nickName, Drawable avatar, String userName,String contactType, int id) {
+	/** Crea una linea de un listview con toda la informacion necesaria
+	 * 
+	 * @param pricipal nick
+	 * @param avatar imagen
+	 * @param abajo nombre de usuario
+	 * @param derecha Nombre de usuario 
+	 * @param id identificador
+	 */
+	public RowItem(String pricipal, Drawable avatar, String abajo,String derecha, int id) {
 
-		this.nickName = nickName;
+		this.nickName = pricipal;
 		this.avatar = avatar;
-		this.userName = userName;
-		this.contactType = contactType;
+		this.abajo = abajo;
+		this.derecha = derecha;
 		this.id = id;
 	}
 
-	public String getNickName() {
+	public String getPrincipal() {
 		return nickName;
 	}
 
-	public void setNickName(String member_name) {
+	public void setPrincipal(String member_name) {
 		this.nickName = member_name;
 	}
 
-	public String getStatus() {
-		return userName;
+	public String getAbajo() {
+		return abajo;
 	}
 
-	public void setStatus(String status) {
-		this.contactType = status;;
+	public void setDerecha(String status) {
+		this.derecha = status;;
 	}
 
-	public String getContactType() {
-		return contactType;
+	public String getDerecha() {
+		return derecha;
 	}
 
-	public void setContactType(String contactType) {
-		this.contactType = contactType;
+	public void setAbajo(String contactType) {
+		this.abajo = contactType;
 	}
 
 	public Drawable getAvatar() {
@@ -60,11 +68,7 @@ public class RowItem {
 		avatar=d;
 	}
 
-	public String getUserName(){
-		return this.userName;
-	}
-
 	public boolean contains(String item){
-		return item.equals(userName);
+		return item.equals(abajo);
 	}
 }
