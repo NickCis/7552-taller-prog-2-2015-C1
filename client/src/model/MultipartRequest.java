@@ -5,8 +5,6 @@
  */
 package model;
 
-import ch.boye.httpclientandroidlib.entity.mime.content.FileBody;
-import ch.boye.httpclientandroidlib.entity.mime.content.StringBody;
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -23,6 +21,8 @@ import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.util.CharsetUtils;
 
 
@@ -48,10 +48,10 @@ public class MultipartRequest extends Request<String> {
 
     private void buildMultipartEntity()
     {
-        entity.addPart(FILE_PART_NAME, (ContentBody) new FileBody(mFilePart));
+        entity.addPart(FILE_PART_NAME, new FileBody(mFilePart));
         try
         {
-            entity.addPart(STRING_PART_NAME, (ContentBody) new StringBody(mStringPart));
+            entity.addPart(STRING_PART_NAME, new StringBody(mStringPart));
         }
         catch (UnsupportedEncodingException e)
         {
