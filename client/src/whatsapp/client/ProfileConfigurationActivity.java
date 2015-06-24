@@ -35,7 +35,7 @@ import android.database.Cursor;
 import android.provider.MediaStore;
 
 /**
- *
+ * Configuracion de perfil
  * @author umm194
  */
 public class ProfileConfigurationActivity extends Activity implements ServerResultReceiver.Listener
@@ -92,6 +92,10 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 		dbH.close();
 	}
 	
+	/**
+	 * Lanza un intent para buscar la imagen
+	 * @param v component que activo el evento
+	 */
 	public void addImage(View v)
 	{
 		//startActivityForResult(new Intent(this, GalleryActivity.class), 1);
@@ -103,6 +107,9 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 	}
 	
 	@Override
+	/**
+	 * Para atrapar el intent de elegir imaagen
+	 */
 	public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		super.onActivityResult(requestCode, resultCode, data);
@@ -149,6 +156,10 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 		}
 	}
 	
+	/**
+	 * Manda avatar al servidor
+	 * @param filepath
+	 */
 	private void sendAvatarServer(final String filepath){
 		DatabaseHelper dbh = DatabaseHelper.getInstance(this);
 		dbh.open();
@@ -228,6 +239,14 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 	
 	public void save(View v)
 	{
+		send();
+		this.finish();
+	}
+	
+	/**
+	 * Guarda en la base de datos el cambio del profile, solo si se pudo enviar al servidor
+	 */
+	public void save(){
 		DatabaseHelper dbH = DatabaseHelper.getInstance(context);
 		dbH.open();
 		EditText nickname = (EditText) findViewById(R.id.nicknameConfiguration);
@@ -236,19 +255,18 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 		dbH.getUserMe().setStatusMessage(statusMessage.getText().toString());
 		dbH.updateUser(dbH.getUserMe()); // Actualiza foto, estado y nickname
 		dbH.close();
-		send(dbH.getUserMe().getUsername());
-		this.finish();
 	}
 	
-	private void send(String username){
+	private void send(){
+		DatabaseHelper dbh = DatabaseHelper.getInstance(context);
+		dbh.open();
+		String username = dbh.getUserMe().getUsername();
 		Bundle bundle = new Bundle();
 		HashMap<String, String> params = new HashMap<String, String>();
 		ServerResultReceiver receiver = new ServerResultReceiver(new Handler());
 		receiver.setListener(this);
 		String access_token = ConfigurationManager.getInstance().getString(this, ConfigurationManager.ACCESS_TOKEN);
 		params.put("access_token", access_token);
-		DatabaseHelper dbh = DatabaseHelper.getInstance(context);
-		dbh.open();
 		params.put("nickname", dbh.getUserMe().getNickname());
 		//TODO: tiene q estar en el servidor
 		params.put("status", dbh.getUserMe().getStatusMessage());
@@ -269,7 +287,9 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 	
 	
 	public void onReceiveResult(int resultCode, Bundle resultData) {
-		if (resultCode==1){
+		if (resultCode==0){
+			save();
+		}else if (resultCode==1){
 			DialogFactory.createAlertDialog(context, "Error cambiando perfil", "No se pudo enviar la informacion al servidor, pruebe nuevamente mas tarde", MainActivity.class);
 			Log.e("Profile", "Error actualizando perfil");
 		}
