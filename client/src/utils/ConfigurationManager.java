@@ -19,6 +19,7 @@ public class ConfigurationManager {
 	public static final String SAVED_IP = "IP";
 	public static final String ACCESS_TOKEN = "access_token";
 	public static final String SAVED_PORT = "PORT";
+	public static final String USERNAME = "username";
 	
 	
 	public static ConfigurationManager getInstance(){

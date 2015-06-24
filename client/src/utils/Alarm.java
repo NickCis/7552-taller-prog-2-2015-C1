@@ -20,11 +20,14 @@ import android.os.Handler;
 import android.os.PowerManager;
 import com.android.volley.Response;
 import com.android.volley.toolbox.ImageRequest;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.DELETEService;
 import model.GETService;
+import model.POSTService;
 import model.ServerResultReceiver;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -97,6 +100,18 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 			Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		processNotifications(data);
+	}
+
+	private Bundle createBundle(String endpoint, HashMap params){
+		Bundle bundle = new Bundle();
+		String access_token = ConfigurationManager.getInstance().getString(this.context, ConfigurationManager.ACCESS_TOKEN);
+		params.put("access_token", access_token);
+		String ip = ConfigurationManager.getInstance().getString(this.context, ConfigurationManager.SAVED_IP);
+		String port = ConfigurationManager.getInstance().getString(this.context, ConfigurationManager.SAVED_PORT);
+		final String URI = ip + ":" + port + "/" + endpoint;
+		bundle.putString("URI", URI);
+		bundle.putSerializable("params", params);
+		return bundle;
 	}
 
 	private Bundle createBundle(Context context) {
@@ -216,15 +231,52 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 			long lastStatus = status.getLong("time");
 			String statusText = status.getString("text");
 			user.setNickname(nickname);
-			user.setStatus(connected ? DatabaseHelper.CONNECTED : DatabaseHelper.DISCONNECTED);
+			user.setStatus(connected ? DatabaseHelper.STATUS_ONLINE : DatabaseHelper.STATUS_OFFLINE);
 			dbH.updateUser(user);
 			dbH.close();
 		}catch(JSONException ex){}
 	}
 
+	/**
+	 * Si me llega un ack con que leyo un mensaje, entonces marco todos como leidos
+	 */
 	private void processAck(JSONObject data) {
-		//TODO: Hacer esto ! 
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		try{
+			data.getJSONObject("data");
+			long arrivedTime = data.getLong("arrived");
+			if (arrivedTime!=0)
+				markAllArrived(data);
+			long readTime = data.getLong("read");
+			if (readTime!=0){
+				if (ConversationActivity.isShowing())
+					ConversationActivity.getInstance().refresh();
+				markAllRead(data);
+			}
+		}catch(JSONException ex){}
+	}
+
+	private void markAllArrived(JSONObject data) throws JSONException{
+		String from = data.getString("from");
+		DatabaseHelper dbh =  DatabaseHelper.getInstance(context);
+		ConversationEntity ce = dbh.fetchConversation(from);
+		UserEntity ue = ce.getUser(1);
+		List<MessageEntity> fetchMessages = dbh.fetchMessages(ce);
+		for (MessageEntity msg : fetchMessages){
+			if (msg.getStatus() == DatabaseHelper.NOT_SENT)
+				dbh.updateMessage(ce, ue, null, Calendar.getInstance(), msg.getContent(), DatabaseHelper.SENT);
+		}
+	}
+
+	private void markAllRead(JSONObject data) throws JSONException{
+		String from = data.getString("from");
+		DatabaseHelper dbh =  DatabaseHelper.getInstance(context);
+		ConversationEntity ce = dbh.fetchConversation(from);
+		UserEntity ue = ce.getUser(1);
+		List<MessageEntity> fetchMessages = dbh.fetchMessages(ce);
+		for (MessageEntity msg : fetchMessages){
+			if (msg.getStatus() == DatabaseHelper.NOT_SEEN)
+				dbh.updateMessage(ce, ue, null, Calendar.getInstance(), msg.getContent(), DatabaseHelper.SEEN);
+		}
 	}
 
 	private void processMessage(JSONObject data) {
@@ -234,18 +286,59 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 				//ConversationActivity.getInstance().addMsgs(ce);
 				String txt = data.getJSONObject("data").getString("message");
 				ConversationActivity.getInstance().addMsgs(txt);
+				mark(data,true);
 				
 			}
 			else if (ActiveConversationsActivity.isShowing()){
 				ActiveConversationsActivity.getInstance().informNuevo(data.getJSONObject("data").getString("from"));
+				mark(data,false);
 			}
 			else {
 				sendNotification(data);
+				mark(data,false);
 			}
 			
 		} catch (JSONException ex) {
 			Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
 		}
+	}
+
+	/**
+	 * 
+	 * @param data mensaje llegado del servidor
+	 * @param arrived true si fue leido
+	 */
+	private void mark(JSONObject data,boolean arrived){
+		try{
+		HashMap<String,String> params = new HashMap<String,String>();
+		data = data.getJSONObject("data");
+		String endpoint;
+		String id = data.getString("id");
+		params.put("id[]",id);
+		String from = data.getString("from");
+		if (!arrived)
+			endpoint = "user/" + from + "/messages/arrived";
+		else 
+			endpoint = "user/" + from + "/messages/read";
+		startService(endpoint,params,new ArrivedMessageReceiver(), POSTService.class);
+		}catch(JSONException ex){}
+	}
+	
+	private void startService(String endpoint, HashMap params, ServerResultReceiver.Listener listener, Class<?> cls) {
+		Intent intent = new Intent(context, cls);
+		ServerResultReceiver receiver = new ServerResultReceiver(new Handler());
+		if (listener == null)
+			receiver.setListener(this);
+		else
+			receiver.setListener(listener);
+		Bundle bundle = createBundle(endpoint,params);
+		intent.putExtra("rec", receiver);
+		intent.putExtra("info", bundle);
+		context.startService(intent);
+	}
+
+	private void startService(String endpoint, HashMap params , Class<?> cls) {
+		startService(endpoint,params,this,cls);
 	}
 
 	private void sendNotification(JSONObject data) {
@@ -276,29 +369,9 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 
 		notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 		notificationManager.notify(1, n);
-		//Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_SHORT).show(); // For example
-
 	}
 
-	//private void write(JSONObject data) {
-	//	try {
-	//		SharedPreferences store = context.getSharedPreferences("pepe", 0);
-	//		SharedPreferences.Editor editor = store.edit();
-
-	//		Set<String> set = store.getStringSet("messages", new LinkedHashSet<String>());
-	//		set.add(data.getString("message"));
-	//		/*editor.putString("from", data.getString("from"));
-	//		 editor.putString("id", data.getString("id"));
-	//		 editor.putString("time",data.getString("time"));
-	//		 */
-	//		editor.putStringSet("messages", set);
-	//		editor.apply();
-	//	} catch (JSONException ex) {
-	//		Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
-	//	}
-	//}
-
-	private void startServiceDelete(Context context) {
+		private void startServiceDelete(Context context) {
 		Intent intent = new Intent(context, DELETEService.class);
 		ServerResultReceiver receiver = new ServerResultReceiver(new Handler());
 		receiver.setListener(this);
@@ -350,6 +423,25 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 			Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return null;
+	}
+
+	private class ArrivedMessageReceiver implements ServerResultReceiver.Listener{
+		public void onReceiveResult(int resultCode, Bundle resultData) {
+			JSONObject data = null;
+			try {
+				data = new JSONObject(resultData.getString("data"));
+				processArrived(data);
+			} catch (JSONException ex) {
+				Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		}
+
+		public void processArrived(JSONObject data) throws JSONException{
+			data.getJSONArray("messages");
+			//Parsear el tiempo, si esta leido, decirle a la vista q ponga doble tick
+			//Si no tiene q poner 1 solo
+		}
+	
 	}
 
 }

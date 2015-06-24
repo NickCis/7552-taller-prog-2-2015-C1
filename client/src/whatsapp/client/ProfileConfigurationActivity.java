@@ -5,12 +5,17 @@
 package whatsapp.client;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -23,10 +28,13 @@ import utils.DatabaseHelper;
 public class ProfileConfigurationActivity extends Activity
 {
 
+    private Context context;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_configuration);
+        this.context = this;
         ImageView imageView = (ImageView) findViewById(R.id.userProfileAvatar);
         DatabaseHelper dbH = DatabaseHelper.getInstance(this);
         dbH.open();
@@ -34,6 +42,39 @@ public class ProfileConfigurationActivity extends Activity
         {
             imageView.setImageBitmap(dbH.getUserMe().getAvatar());
         }
+        String[] items = new String[DatabaseHelper.STATUS_COUNT];
+        items[DatabaseHelper.STATUS_ONLINE] = DatabaseHelper.STATUS_TEXT_ONLINE;
+        items[DatabaseHelper.STATUS_OFFLINE] = DatabaseHelper.STATUS_TEXT_OFFLINE;
+        items[DatabaseHelper.STATUS_DO_NOT_DISTURB] = DatabaseHelper.STATUS_TEXT_DO_NOT_DISTURB;
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, items);
+        Spinner spinner = (Spinner) findViewById(R.id.statusSelection);
+        spinner.setAdapter(adapter);
+        if (dbH.getUserMe().getStatus() != null)
+        {
+            spinner.setSelection(dbH.getUserMe().getStatus());
+        }
+        
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) 
+            {
+                DatabaseHelper dbH = DatabaseHelper.getInstance(context);
+                dbH.open();
+                dbH.getUserMe().setStatus(Short.valueOf(Integer.toString(pos)));
+                dbH.close();
+            }
+
+           public void onNothingSelected(AdapterView<?> parent) 
+           {
+               
+           }
+
+        });
+        
+        EditText nickname = (EditText) findViewById(R.id.nicknameConfiguration);
+        nickname.setText(dbH.getUserMe().getNickname());
+        EditText statusMessage = (EditText) findViewById(R.id.statusMessageConfiguration);
+        statusMessage.setText(dbH.getUserMe().getStatusMessage());
         dbH.close();
     }
     
@@ -56,7 +97,6 @@ public class ProfileConfigurationActivity extends Activity
                     DatabaseHelper dbH = DatabaseHelper.getInstance(this);
                     dbH.open();
                     dbH.getUserMe().setAvatar(decodeFile(data.getStringExtra("filepath"), 200,200));
-                    dbH.updateUser(dbH.getUserMe());
                     imageView.setImageBitmap(dbH.getUserMe().getAvatar());
                     dbH.close();
                 }
@@ -91,5 +131,18 @@ public class ProfileConfigurationActivity extends Activity
             e.printStackTrace();
         }
         return null;
+    }
+    
+    public void save(View v)
+    {
+        DatabaseHelper dbH = DatabaseHelper.getInstance(context);
+        dbH.open();
+        EditText nickname = (EditText) findViewById(R.id.nicknameConfiguration);
+        dbH.getUserMe().setNickname(nickname.getText().toString());
+        EditText statusMessage = (EditText) findViewById(R.id.statusMessageConfiguration);
+        dbH.getUserMe().setStatusMessage(statusMessage.getText().toString());
+        dbH.updateUser(dbH.getUserMe()); // Actualiza foto, estado, mensaje de estado y nickname
+        dbH.close();
+        this.finish();
     }
 }

@@ -40,9 +40,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public static final String KEY_DATE = "last_message_time";
     public static final String KEY_PHONE = "phone";
     public static final String KEY_USERNAME = "username";
-    public static final String KEY_ACCESS_TOKEN = "accesstoken";
     public static final String KEY_NICKNAME = "nickname";
     public static final String KEY_STATUS = "status";
+    public static final String KEY_CKECKIN = "checkin";
+    public static final String KEY_STATUS_MESSAGE = "status_message";
     public static final String KEY_LOCATION = "location";
     public static final String KEY_TYPE = "type";
     public static final String KEY_CONTENT = "content";
@@ -50,6 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public static final String KEY_AVATAR = "avatar";
     
     public static final short NOT_SENT = 0;
+    public static final short SENT = NOT_SENT + 1;
     public static final short NOT_RECIEVED = NOT_SENT + 1;
     public static final short NOT_SEEN = NOT_RECIEVED + 1;
     public static final short SEEN = NOT_SEEN + 1;
@@ -57,8 +59,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public static final short NORMAL = 0;
     public static final short BLOKED = NORMAL + 1;
 
-    public static final short CONNECTED = 0 ;
-    public static final short DISCONNECTED = CONNECTED + 1 ;
+    public static final short STATUS_ONLINE = 0 ;
+    public static final short STATUS_OFFLINE = STATUS_ONLINE + 1 ;
+    public static final short STATUS_DO_NOT_DISTURB = STATUS_OFFLINE + 1 ;
+    public static final short STATUS_COUNT = STATUS_DO_NOT_DISTURB + 1;
+    
+    public static final String STATUS_TEXT_ONLINE = "Online";
+    public static final String STATUS_TEXT_OFFLINE = "Offline";
+    public static final String STATUS_TEXT_DO_NOT_DISTURB = "Do not disturb";
     
     private UserEntity userMe;
     private LoginEntity login;
@@ -67,7 +75,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     
     private static final String DATABASE_LOGIN_CREATE = "CREATE TABLE " + DATABASE_LOGIN_TABLE + " ("
             + KEY_LOGINID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + KEY_ACCESS_TOKEN + " TEXT NOT NULL);";
+            + KEY_USERNAME + " TEXT NOT NULL);";
     
     private static final String DATABASE_USER_CREATE = "CREATE TABLE " + DATABASE_USER_TABLE + " ("
             + KEY_USERID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -76,6 +84,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
             + KEY_NICKNAME + " TEXT NOT NULL, "
             + KEY_STATUS + " SHORT INTEGER NOT NULL, "
             + KEY_AVATAR + " BLOB, "
+            + KEY_CKECKIN + " DATETIME DEFAULT CURRENT_TIMESTAMP, "
+            + KEY_STATUS_MESSAGE + " TEXT, "
             + KEY_LOGINID + " INTEGER NOT NULL CONSTRAINT fk_user_idlogin REFERENCES " + DATABASE_LOGIN_TABLE + "(" + KEY_LOGINID + "));";
     
     private static final String DATABASE_CONVERSATION_CREATE = "CREATE TABLE " + DATABASE_CONVERSATION_TABLE + " ("
@@ -151,32 +161,32 @@ public class DatabaseHelper extends SQLiteOpenHelper
         onCreate(db);
     }
     
-    public UserEntity login(String accessToken)
+    public UserEntity login(String username)
     {
-        this.login = fetchLogin(accessToken);
+        this.login = fetchLogin(username);
         if (this.login == null)
         {
             ContentValues values = new ContentValues();
-            values.put(KEY_ACCESS_TOKEN, accessToken);
+            values.put(KEY_USERNAME, username);
             long loginId = mDb.insert(DATABASE_LOGIN_TABLE, null, values);
             this.login = fetchLogin((int)loginId);
-            this.setUserMe(createUser(11111, accessToken, "Me", this.NORMAL, null));
+            this.setUserMe(createUser(11111, username, "Me", this.STATUS_ONLINE, null, null, "Hola! Estoy en Whatsapp!"));
         }
         else
         {
-            this.setUserMe(fetchUser(accessToken));
+            this.setUserMe(fetchUser(username));
         }
         return this.getUserMe();
     }
 
-    public LoginEntity fetchLogin(String accessToken)
+    public LoginEntity fetchLogin(String username)
     {
         LoginEntity lE = null;
-        Cursor cursor = mDb.query(DATABASE_LOGIN_TABLE, new String[]{KEY_LOGINID, KEY_ACCESS_TOKEN}, KEY_ACCESS_TOKEN + "=?", new String[]{"" + accessToken}, null, null, null);
+        Cursor cursor = mDb.query(DATABASE_LOGIN_TABLE, new String[]{KEY_LOGINID, KEY_USERNAME}, KEY_USERNAME + "=?", new String[]{"" + username}, null, null, null);
         if (cursor != null && cursor.getCount() > 0)
         {
             cursor.moveToFirst();
-            lE = new LoginEntity(cursor.getInt(cursor.getColumnIndex(KEY_LOGINID)), cursor.getString(cursor.getColumnIndex(KEY_ACCESS_TOKEN)));
+            lE = new LoginEntity(cursor.getInt(cursor.getColumnIndex(KEY_LOGINID)), cursor.getString(cursor.getColumnIndex(KEY_USERNAME)));
         }
         return lE;
     }
@@ -184,11 +194,11 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public LoginEntity fetchLogin(Integer loginId)
     {
         LoginEntity lE = null;
-        Cursor cursor = mDb.query(DATABASE_LOGIN_TABLE, new String[]{KEY_LOGINID, KEY_ACCESS_TOKEN}, KEY_LOGINID + "=?", new String[]{"" + loginId}, null, null, null);
+        Cursor cursor = mDb.query(DATABASE_LOGIN_TABLE, new String[]{KEY_LOGINID, KEY_USERNAME}, KEY_LOGINID + "=?", new String[]{"" + loginId}, null, null, null);
         if (cursor != null && cursor.getCount() > 0)
         {
             cursor.moveToFirst();
-            lE = new LoginEntity(cursor.getInt(cursor.getColumnIndex(KEY_LOGINID)), cursor.getString(cursor.getColumnIndex(KEY_ACCESS_TOKEN)));
+            lE = new LoginEntity(cursor.getInt(cursor.getColumnIndex(KEY_LOGINID)), cursor.getString(cursor.getColumnIndex(KEY_USERNAME)));
         }
         return lE;
     }
@@ -202,9 +212,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
             {
                 lE = fetchLogin(login.getLoginId());
             }
-            else if (login.getAccessToken() != null)
+            else if (login.getUsername() != null)
             {
-                lE = fetchLogin(login.getAccessToken());
+                lE = fetchLogin(login.getUsername());
             }
         }
         return lE;
@@ -215,9 +225,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return mDb.delete(DATABASE_LOGIN_TABLE, KEY_LOGINID + "=?", new String[]{"" + loginId}) > 0;
     }
     
-    public boolean deleteLogin(String accessToken)
+    public boolean deleteLogin(String username)
     {
-        return mDb.delete(DATABASE_LOGIN_TABLE, KEY_ACCESS_TOKEN + "=?", new String[]{"" + accessToken}) > 0;
+        return mDb.delete(DATABASE_LOGIN_TABLE, KEY_USERNAME + "=?", new String[]{"" + username}) > 0;
     }
     
     public boolean deleteLogin(LoginEntity login) 
@@ -225,7 +235,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return mDb.delete(DATABASE_LOGIN_TABLE, KEY_LOGINID + "=?", new String[]{"" + login.getLoginId()}) > 0;
     }
     
-    public UserEntity createUser(Integer phone, String username, String nickname, Short status, Bitmap avatar) 
+    public UserEntity createUser(Integer phone, String username, String nickname, Short status, Bitmap avatar, Calendar checkin, String statusMessage) 
     {
         UserEntity uE = null;
         if (this.login != null)
@@ -242,8 +252,13 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 avatar.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 values.put(KEY_AVATAR, stream.toByteArray());
             }
+            if (checkin != null)
+            {
+                values.put(KEY_CKECKIN, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").format(checkin.getTime()));
+            }
+            values.put(KEY_STATUS_MESSAGE, statusMessage);
             long userId = mDb.insert(DATABASE_USER_TABLE, null, values); 
-            uE = new UserEntity((int)userId, username, nickname, phone, status, avatar);
+            uE = new UserEntity((int)userId, username, nickname, phone, status, avatar, checkin, statusMessage);
         }
         return uE;
     }
@@ -263,7 +278,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         List<UserEntity> list = null;
         if (this.login != null)
         {
-            Cursor cursor = mDb.query(DATABASE_USER_TABLE, new String[]{KEY_USERID, KEY_USERNAME, KEY_NICKNAME, KEY_PHONE, KEY_STATUS, KEY_AVATAR}, KEY_LOGINID + "=?", new String[]{"" + this.login.getLoginId()}, null, null, KEY_USERID + " ASC");
+            Cursor cursor = mDb.query(DATABASE_USER_TABLE, new String[]{KEY_USERID, KEY_USERNAME, KEY_NICKNAME, KEY_PHONE, KEY_STATUS, KEY_AVATAR, KEY_CKECKIN, KEY_STATUS_MESSAGE}, KEY_LOGINID + "=?", new String[]{"" + this.login.getLoginId()}, null, null, KEY_USERID + " ASC");
             if (cursor != null && cursor.getCount() > 0)
             {
                 list = new ArrayList<UserEntity>();
@@ -276,7 +291,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
                             cursor.getString(cursor.getColumnIndex(this.KEY_NICKNAME)),
                             cursor.getInt(cursor.getColumnIndex(this.KEY_PHONE)),
                             cursor.getShort(cursor.getColumnIndex(this.KEY_STATUS)),
-                            (img == null) ? null : BitmapFactory.decodeByteArray(img , 0, img.length));
+                            (img == null) ? null : BitmapFactory.decodeByteArray(img , 0, img.length),
+                            parseDate(cursor.getString(cursor.getColumnIndex(this.KEY_CKECKIN))),
+                            cursor.getString(cursor.getColumnIndex(this.KEY_STATUS_MESSAGE)));
                     list.add(uE);
                 } while (cursor.moveToNext());
             }
@@ -288,7 +305,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     {
         UserEntity uE = null;
         Cursor cursor = mDb.query(true, DATABASE_USER_TABLE, new String [] 
-             {KEY_USERID, KEY_USERNAME, KEY_NICKNAME, KEY_PHONE, KEY_STATUS, KEY_LOGINID, KEY_AVATAR}, KEY_USERID + 
+             {KEY_USERID, KEY_USERNAME, KEY_NICKNAME, KEY_PHONE, KEY_STATUS, KEY_LOGINID, KEY_AVATAR, KEY_CKECKIN, KEY_STATUS_MESSAGE}, KEY_USERID + 
              "=?", new String[]{"" + userId}, null, null, null, null); 
         if (cursor != null && cursor.getCount() > 0) 
         {
@@ -299,7 +316,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     cursor.getString(cursor.getColumnIndex(KEY_NICKNAME)),
                     cursor.getInt(cursor.getColumnIndex(KEY_PHONE)),
                     cursor.getShort(cursor.getColumnIndex(KEY_STATUS)),
-                    (img == null) ? null : BitmapFactory.decodeByteArray(img , 0, img.length));
+                    (img == null) ? null : BitmapFactory.decodeByteArray(img , 0, img.length),
+                    parseDate(cursor.getString(cursor.getColumnIndex(this.KEY_CKECKIN))),
+                    cursor.getString(cursor.getColumnIndex(this.KEY_STATUS_MESSAGE)));
         }
         return uE;
     }
@@ -310,7 +329,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         if (this.login != null)
         {
             Cursor cursor = mDb.query(true, DATABASE_USER_TABLE, new String [] 
-                 {KEY_USERID, KEY_USERNAME, KEY_NICKNAME, KEY_PHONE, KEY_STATUS, KEY_AVATAR}, KEY_USERNAME + 
+                 {KEY_USERID, KEY_USERNAME, KEY_NICKNAME, KEY_PHONE, KEY_STATUS, KEY_AVATAR, KEY_CKECKIN, KEY_STATUS_MESSAGE}, KEY_USERNAME + 
                  "=? AND " + KEY_LOGINID + "=?", new String[]{"" + userName, "" + this.login.getLoginId()}, null, null, null, null);
             if (cursor != null && cursor.getCount() > 0) 
             { 
@@ -321,7 +340,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
                         cursor.getString(cursor.getColumnIndex(this.KEY_NICKNAME)),
                         cursor.getInt(cursor.getColumnIndex(this.KEY_PHONE)),
                         cursor.getShort(cursor.getColumnIndex(this.KEY_STATUS)),
-                        (img == null) ? null : BitmapFactory.decodeByteArray(img , 0, img.length));
+                        (img == null) ? null : BitmapFactory.decodeByteArray(img , 0, img.length),
+                        parseDate(cursor.getString(cursor.getColumnIndex(this.KEY_CKECKIN))),
+                        cursor.getString(cursor.getColumnIndex(this.KEY_STATUS_MESSAGE)));
 
             }
         }
@@ -343,6 +364,11 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 user.getAvatar().compress(Bitmap.CompressFormat.PNG, 100, stream);
                 values.put(KEY_AVATAR, stream.toByteArray());
             }
+            if (user.getCheckin() != null)
+            {
+                values.put(KEY_CKECKIN, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").format(user.getCheckin().getTime()));
+            }
+            values.put(KEY_STATUS_MESSAGE, user.getStatusMessage());
             return mDb.update(DATABASE_USER_TABLE, values, KEY_USERID + "=? AND " + KEY_LOGINID + "=?", new String[]{"" + user.getUserId(), "" + this.login.getLoginId()}) > 0; 
         }            
         return false;
@@ -699,7 +725,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 	    UserEntity ue = fetchUser(userName);
 	    if (ue == null){
 		    //TODO: cambiar esto, el nickname tiene q ser posta
-		    ue = createUser(0, userName, userName, DatabaseHelper.NORMAL, null);
+		    ue = createUser(0, userName, userName, DatabaseHelper.NORMAL, null, null, "Hola! Estoy en Whatsapp!");
 	    }
 	    ArrayList<UserEntity> list = new ArrayList<UserEntity>();
 	    list.add(ue);
@@ -722,5 +748,20 @@ public class DatabaseHelper extends SQLiteOpenHelper
      */
     public void setUserMe(UserEntity userMe) {
         this.userMe = userMe;
+    }
+    
+    private Calendar parseDate(String date)
+    {
+        Calendar cal = Calendar.getInstance();
+        try {
+            if (date != null)
+            {
+                cal.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date));
+            }
+        } catch (ParseException pE) 
+        {
+                System.out.println(pE.getCause().getMessage());
+        }
+        return cal;
     }
 }

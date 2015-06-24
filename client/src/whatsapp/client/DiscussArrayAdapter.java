@@ -48,8 +48,12 @@ public class DiscussArrayAdapter extends ArrayAdapter<OneComment> {
 		campoEscritura.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.red_exclamation_icon, 0, 0, 0);
 	}
 
+	public void setSeen(OneComment comment){
+		campoEscritura.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.settings_gray, 0, 0, 0);
+	}
+
 	public void setSent(OneComment comment){
-		campoEscritura.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
+		campoEscritura.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.simpletick, 0, 0, 0);
 	}
 
 	public View getView(int position, View convertView, ViewGroup parent) {

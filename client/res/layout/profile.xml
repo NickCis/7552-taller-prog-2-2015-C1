@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#FF000000"
-            android:text="About"
+            android:text="@string/profile_about"
             android:textStyle="bold"
             android:textSize="17dp" />
         
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#FF2FC9EC"
-            android:text="NickName"
+            android:text="@string/profile_nickname"
             android:textStyle="bold"
             android:textSize="17dp" />
         
@@ -67,7 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#FF2FC9EC"
-            android:text="Ultima conexion"
+            android:text="@string/profile_last_connection"
             android:textStyle="bold"
             android:textSize="17dp" />
 
@@ -78,6 +78,59 @@
         
         <TextView
             android:id="@+id/userProfileInformation_LastConnection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:textColor="#FF434343"
+            android:text="No Data"/>
+        
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#FF2FC9EC"/>
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FF2FC9EC"
+            android:text="@string/profile_status_message"
+            android:textStyle="bold"
+            android:textSize="17dp" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#FF2FC9EC"/>
+        
+        <TextView
+            android:id="@+id/userProfileInformation_StatusMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:textColor="#FF434343"/>
+        
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#FF2FC9EC"/>
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FF2FC9EC"
+            android:text="@string/profile_status"
+            android:textStyle="bold"
+            android:textSize="17dp" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#FF2FC9EC"/>
+        
+        <TextView
+            android:id="@+id/userProfileInformation_Status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
