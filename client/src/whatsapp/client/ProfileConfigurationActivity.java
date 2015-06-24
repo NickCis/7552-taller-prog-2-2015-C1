@@ -27,6 +27,7 @@ import java.util.HashMap;
 import model.MultipartRequest;
 import model.POSTService;
 import model.ServerResultReceiver;
+import services.AppController;
 import utils.ConfigurationManager;
 import utils.DatabaseHelper;
 
@@ -135,6 +136,8 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 				Log.d("aca esta bien", "no fallo");
 			}
 		}, new File(filepath), "avatar");
+		AppController.getInstance().addToRequestQueue(req);
+		
 		//String URI = ip + ":" + port + "/user/" + username +"/avatar?access_token="+access_token;
 		//send("user/"+username+"/avatar",null,2,1);
 		/*
