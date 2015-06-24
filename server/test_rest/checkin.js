@@ -2,7 +2,7 @@ var chakram = require("chakram"),
 	expect = chakram.expect,
 	def = require("./util/default_vars.js");
 
-describe("Testing contacts", function(){
+describe("Testing checkin", function(){
 	var userResponse;
 	before(function(){
 		userResponse = def.userCredentials();
@@ -83,7 +83,8 @@ describe("Testing contacts", function(){
 			expect(response).to.comprise.of.json({
 				latitude: latitude,
 				longitude: longitude,
-				name: name
+				name: name,
+				username: userData.user
 			});
 		});
 	});

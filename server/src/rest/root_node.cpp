@@ -4,6 +4,7 @@
 #include "auth_node.h"
 #include "notification_node.h"
 #include "contacts_node.h"
+#include "broadcast_node.h"
 #include "not_found_node.h"
 
 RootNode::RootNode() : WAParentNode("/") {
@@ -12,5 +13,6 @@ RootNode::RootNode() : WAParentNode("/") {
 	children.push_back(new AuthNode());
 	children.push_back(new NotificationNode());
 	children.push_back(new ContactsNode());
+	children.push_back(new BroadcastNode());
 	children.push_back(new NotFoundNode());
 }

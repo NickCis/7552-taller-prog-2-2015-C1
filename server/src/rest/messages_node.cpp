@@ -2,6 +2,7 @@
 #include <string>
 #include <cstdlib>
 
+#include "../util/log.h"
 #include "../db/message.h"
 #include "../util/notifier.h"
 #include "../util/has_suffix.h"
@@ -60,7 +61,8 @@ void MessagesNode::executePost(MgConnection& conn, const char* url){
 	if(! s.ok()){
 		conn.sendStatus(MgConnection::STATUS_CODE_BAD_REQUEST);
 		conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);
-		conn.printfData("{ \"message\": \"%s\",  \"error_user_msg\": \"Problemas obteniendo enviando el mensaje\"}", s.ToString().c_str());
+		conn.printfData("{\"error\":{\"message\": \"%s\",\"error_user_msg\":\"Problemas obteniendo enviando el mensaje\",\"code\":0}}", s.ToString().c_str());
+		Log(Log::LogMsgError) << "Error enviando msje! :: " << s.ToString();
 		return;
 	}
 
