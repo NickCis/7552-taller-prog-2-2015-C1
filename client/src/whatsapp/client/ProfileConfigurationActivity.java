@@ -78,6 +78,8 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 		
 		EditText nickname = (EditText) findViewById(R.id.nicknameConfiguration);
 		nickname.setText(dbH.getUserMe().getNickname());
+        EditText statusMessage = (EditText) findViewById(R.id.statusMessageConfiguration);
+        statusMessage.setText(dbH.getUserMe().getStatusMessage());
 		dbH.close();
 	}
 	
@@ -143,6 +145,8 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 		dbH.open();
 		EditText nickname = (EditText) findViewById(R.id.nicknameConfiguration);
 		dbH.getUserMe().setNickname(nickname.getText().toString());
+        EditText statusMessage = (EditText) findViewById(R.id.statusMessageConfiguration);
+        dbH.getUserMe().setStatusMessage(statusMessage.getText().toString());
 		dbH.updateUser(dbH.getUserMe()); // Actualiza foto, estado y nickname
 		dbH.close();
 		send(dbH.getUserMe().getUsername());
@@ -181,3 +185,4 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 }
+

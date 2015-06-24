@@ -19,8 +19,9 @@ public class UserEntity {
     private Short status;
     private Bitmap avatar;
     private Calendar checkin;
+    private String statusMessage;
 
-    public UserEntity(Integer userId, String username, String nickname, Integer phone, Short status, Bitmap avatar, Calendar checkin)
+    public UserEntity(Integer userId, String username, String nickname, Integer phone, Short status, Bitmap avatar, Calendar checkin, String statusMessage)
     {
         this.userId = userId;
         this.username = username;
@@ -29,6 +30,7 @@ public class UserEntity {
         this.status = status;
         this.avatar = avatar;
         this.checkin = checkin;
+        this.statusMessage = statusMessage;
     }
 
     public UserEntity(String username){
@@ -125,6 +127,20 @@ public class UserEntity {
      */
     public void setCheckin(Calendar checkin) {
         this.checkin = checkin;
+    }
+    
+    /**
+     * @return the statusMessage
+     */
+    public String getStatusMessage() {
+        return statusMessage;
+    }
+
+    /**
+     * @param statusMessage the statusMessage to set
+     */
+    public void setStatusMessage(String statusMessage) {
+        this.statusMessage = statusMessage;
     }
     
     @Override

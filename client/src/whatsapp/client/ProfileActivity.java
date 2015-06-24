@@ -32,6 +32,22 @@ public class ProfileActivity extends Activity implements ServerResultReceiver.Li
                 ImageView imageView = (ImageView) findViewById(R.id.userProfileAvatar);
                 imageView.setImageBitmap(uE.getAvatar());
             }
+            TextView statusMessage = (TextView) findViewById(R.id.userProfileInformation_StatusMessage);
+            statusMessage.setText(uE.getStatusMessage());
+            TextView status = (TextView) findViewById(R.id.userProfileInformation_Status);
+            String estado = "";
+            if (uE.getStatus() == DatabaseHelper.STATUS_ONLINE)
+            {
+                status.setText(DatabaseHelper.STATUS_TEXT_ONLINE);
+            }
+            else if (uE.getStatus() == DatabaseHelper.STATUS_OFFLINE)
+            {
+                status.setText(DatabaseHelper.STATUS_TEXT_OFFLINE);
+            }
+            else
+            {
+                status.setText(DatabaseHelper.STATUS_TEXT_DO_NOT_DISTURB);
+            }
             this.setTitle(uE.getNickname());
 	}
 

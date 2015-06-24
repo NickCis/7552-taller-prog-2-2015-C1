@@ -21,7 +21,7 @@
         android:orientation="vertical"
         android:layout_below="@+id/userProfileConfigurationAvatarBackground"
         android:gravity="left"
-        android:paddingTop="32dp"
+        android:paddingTop="0dp"
         android:paddingBottom="32dp">
         
         <TextView
@@ -42,12 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@drawable/blue_button"
-            android:spinnerMode="dropdown" />
-        
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="#FF2FC9EC"/>
+            android:spinnerMode="dropdown"/>
         
         <TextView
             android:layout_width="wrap_content"
@@ -57,8 +52,35 @@
             android:textStyle="bold"
             android:textSize="17dp" />
         
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#FF2FC9EC"/>
+        
         <EditText
             android:id="@+id/nicknameConfiguration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:layout_alignParentLeft="true"
+            android:layout_gravity="center"
+            android:textColor="#FF000000"/>
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FF000000"
+            android:text="@string/profile_configuration_status_message"
+            android:textStyle="bold"
+            android:textSize="17dp" />
+        
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#FF2FC9EC"/>
+        
+        <EditText
+            android:id="@+id/statusMessageConfiguration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
