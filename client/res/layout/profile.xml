@@ -141,6 +141,32 @@
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:background="#FF2FC9EC"/>
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FF2FC9EC"
+            android:text="@string/profile_checkin"
+            android:textStyle="bold"
+            android:textSize="17dp" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#FF2FC9EC"/>
+        
+        <TextView
+            android:id="@+id/userProfileInformation_Checkin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:textColor="#FF434343"/>
+        
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#FF2FC9EC"/>
                 
     </LinearLayout>
     <ImageView

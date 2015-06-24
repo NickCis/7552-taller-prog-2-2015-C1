@@ -18,10 +18,11 @@ public class UserEntity {
     private String nickname;
     private Short status;
     private Bitmap avatar;
-    private Calendar checkin;
+    private Calendar lastTime;
     private String statusMessage;
+    private Checkin checkin;
 
-    public UserEntity(Integer userId, String username, String nickname, Integer phone, Short status, Bitmap avatar, Calendar checkin, String statusMessage)
+    public UserEntity(Integer userId, String username, String nickname, Integer phone, Short status, Bitmap avatar, Calendar lastTime, String statusMessage, Checkin checkin)
     {
         this.userId = userId;
         this.username = username;
@@ -29,8 +30,9 @@ public class UserEntity {
         this.phone = phone;
         this.status = status;
         this.avatar = avatar;
-        this.checkin = checkin;
+        this.lastTime = lastTime;
         this.statusMessage = statusMessage;
+        this.checkin = checkin;
     }
 
     public UserEntity(String username){
@@ -118,15 +120,15 @@ public class UserEntity {
     /**
      * @return the checkin
      */
-    public Calendar getCheckin() {
-        return checkin;
+    public Calendar getLastTime() {
+        return lastTime;
     }
 
     /**
-     * @param checkin the checkin to set
+     * @param lastTime the checkin to set
      */
-    public void setCheckin(Calendar checkin) {
-        this.checkin = checkin;
+    public void setLastTime(Calendar lastTime) {
+        this.lastTime = lastTime;
     }
     
     /**
@@ -141,6 +143,20 @@ public class UserEntity {
      */
     public void setStatusMessage(String statusMessage) {
         this.statusMessage = statusMessage;
+    }
+    
+    /**
+     * @return the checkin
+     */
+    public Checkin getCheckin() {
+        return checkin;
+    }
+
+    /**
+     * @param checkin the checkin to set
+     */
+    public void setCheckin(Checkin checkin) {
+        this.checkin = checkin;
     }
     
     @Override
@@ -159,6 +175,8 @@ public class UserEntity {
         if(!this.status.equals(other.status)) return false;
 	if(this.avatar != null && other.avatar != null)
             if(!this.avatar.equals(other.avatar)) return false;
+        if(this.checkin != null && other.checkin != null)
+            if(!this.checkin.equals(other.checkin)) return false;
         return true;
     }
 

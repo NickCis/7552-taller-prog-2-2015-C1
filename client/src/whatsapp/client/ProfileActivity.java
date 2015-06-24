@@ -21,10 +21,10 @@ public class ProfileActivity extends Activity implements ServerResultReceiver.Li
 		dbH.close();
 		TextView nickName = (TextView) findViewById(R.id.userProfileInformation_NickName);
 		nickName.setText(uE.getNickname());
-		if (uE.getCheckin() != null)
+		if (uE.getLastTime() != null)
 		{
 			TextView lastconn = (TextView) findViewById(R.id.userProfileInformation_LastConnection);
-			lastconn.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").format(uE.getCheckin().getTime()));
+			lastconn.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").format(uE.getLastTime().getTime()));
 		}
 		
 		if (uE.getAvatar() != null)
@@ -48,6 +48,12 @@ public class ProfileActivity extends Activity implements ServerResultReceiver.Li
 		{
 			status.setText(DatabaseHelper.STATUS_TEXT_DO_NOT_DISTURB);
 		}
+                
+                if (uE.getCheckin() != null)
+                {
+                    TextView checkin = (TextView) findViewById(R.id.userProfileInformation_Checkin);
+                    checkin.setText("Latitude: " + uE.getCheckin().getLatitude() + " Longitude: " + uE.getCheckin().getLongitude());
+                }
 		this.setTitle(uE.getNickname());
 	}
 	
