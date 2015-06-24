@@ -31,7 +31,7 @@ import utils.ConfigurationManager;
 import utils.DatabaseHelper;
 
 /**
- *
+ * Tabs y menu
  * @author umm194
  */
 public class MainActivity extends TabActivity implements ServerResultReceiver.Listener{
@@ -70,6 +70,9 @@ public class MainActivity extends TabActivity implements ServerResultReceiver.Li
 	}
 	
 	@Override
+	/**
+	 * ActionListener de cualquiera de los botones del menu
+	 */
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle presses on the action bar items
 		switch (item.getItemId()) {
@@ -101,12 +104,18 @@ public class MainActivity extends TabActivity implements ServerResultReceiver.Li
 		startActivity(new Intent(this, ProfileConfigurationActivity.class));
 	}
 
+	/**
+	 * Broadcast de un mensaje al servidor
+	 */
 	private void doBroadCast(){
 		final ListenerAction listenerOK = new ListenerAction(1);
 		AlertDialog dialog = DialogFactory.createInputDialog(this, "Mensaje de difusion:",listenerOK,listenerOK.getEdit());
 		listenerOK.setDialog(dialog);
 	}
 	
+	/**
+	 * Checkin al servidor
+	 */
 	public void checkin(){
 		final ListenerAction listenerOK = new ListenerAction(0);
 		AlertDialog dialog = DialogFactory.createInputDialog(this, "CheckIn en:",listenerOK,listenerOK.getEdit());

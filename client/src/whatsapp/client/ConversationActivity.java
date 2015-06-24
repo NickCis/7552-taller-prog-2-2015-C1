@@ -1,7 +1,7 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+* To change this template, choose Tools | Templates
+* and open the template in the editor.
+*/
 package whatsapp.client;
 
 import android.app.Activity;
@@ -54,6 +54,9 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 		populateView();
 	}
 	
+	/**
+	 * Completa la vista
+	 */
 	private void populateView(){
 		editText1 = (EditText) findViewById(R.id.editText1);
 		editText1.setOnKeyListener(new View.OnKeyListener() {
@@ -83,6 +86,9 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 		
 	}
 	
+	/**
+	 * Carga mensajes de la base de datos al cliente
+	 */
 	private void loadMessages(){
 		lv.setAdapter(adapter);
 		this.dbH = DatabaseHelper.getInstance(this);
@@ -98,6 +104,10 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 		dbH.close();
 	}
 	
+	/**
+	 * Agrega todos los mensajes de una conversacion
+	 * @param listaMensajes mensajes a agregar
+	 */
 	private void addAllItems(List<MessageEntity> listaMensajes) {
 		dbH.open();
 		for (MessageEntity mE : listaMensajes) {
@@ -145,6 +155,10 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 		dbH.close();
 	}
 	
+	/**
+	 * Envia el mensaje al servidor
+	 * @param msg mensaje enviado
+	 */
 	void send(String msg) {
 		Bundle bundle = new Bundle();
 		HashMap<String, String> params = new HashMap<String, String>();

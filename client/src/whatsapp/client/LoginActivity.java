@@ -19,6 +19,10 @@ import org.json.JSONObject;
 import utils.ConfigurationManager;
 import utils.DatabaseHelper;
 
+/**
+ * Activity inicial, permite el logeo y cambio de IP PORT
+ * @author rburdet
+ */
 public class LoginActivity extends Activity implements ServerResultReceiver.Listener {
 	
 	private static final String REGISTERED = "registered";
@@ -109,12 +113,6 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 	}
 	
 	public void onReceiveResult(int resultCode, Bundle resultData) {
-		//Si fue correcto:
-//		if (resultCode == 0) {
-//			registerUser();
-//		}
-//		registerUser();
-		
 		DialogFactory.disposeDialog();
 		if (resultCode == 0) {
 			Log.i("Auth", "Exito haciendo login");

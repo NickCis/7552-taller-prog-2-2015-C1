@@ -25,6 +25,10 @@ import utils.DatabaseHelper;
 import utils.UserAdapter;
 import utils.UserEntity;
 
+/**
+ * Conversaciones activas
+ * @author rburdet
+ */
 public class ActiveConversationsActivity extends Activity implements ServerResultReceiver.Listener {
 	
 	//private StableArrayAdapter adapter;
@@ -47,11 +51,17 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 		bindListeners();
 	}
 	
+	/**
+	 * Agrega action listeners
+	 */
 	private void bindListeners(){
 		listview.setOnItemLongClickListener(new OptionListener());
 		listview.setOnItemClickListener(new ClickListener(this));
 	}
 	
+	/**
+	 * Completa la vista
+	 */
 	private void populateView() {
 		
 		listview = (ListView) findViewById(R.id.activeConversationsListview);
@@ -77,6 +87,9 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 		
 	}
 	
+	/**
+	 * Carga conversaciones
+	 */
 	private void loadConversations(){
 		DatabaseHelper dbH = DatabaseHelper.getInstance(this);
 		dbH.open();
@@ -94,9 +107,13 @@ public class ActiveConversationsActivity extends Activity implements ServerResul
 	}
 	
 	public void onReceiveResult(int resultCode, Bundle resultData) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		//throw new UnsupportedOperationException("Not supported yet.");
 	}
 	
+	/**
+	 * Actualiza las conversaciones activas
+	 * @param nuevo nuevo mensaje
+	 */
 	public void informNuevo(String nuevo) {
 		if (adapter.contains(nuevo)){
 			int idx = adapter.getPosition(nuevo);
