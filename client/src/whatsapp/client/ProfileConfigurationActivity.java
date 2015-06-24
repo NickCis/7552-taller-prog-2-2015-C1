@@ -30,6 +30,9 @@ import model.ServerResultReceiver;
 import services.AppController;
 import utils.ConfigurationManager;
 import utils.DatabaseHelper;
+import android.net.Uri;
+import android.database.Cursor;
+import android.provider.MediaStore;
 
 /**
  *
@@ -39,6 +42,8 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 {
 	
 	private Context context;
+
+	private static final int SELECT_PICTURE = 2;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +95,12 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 	
 	public void addImage(View v)
 	{
-		startActivityForResult(new Intent(this, GalleryActivity.class), 1);
+		//startActivityForResult(new Intent(this, GalleryActivity.class), 1);
+		Intent intent = new Intent(Intent.ACTION_PICK);
+		intent.setType("image/*");
+		//intent.setAction(Intent.ACTION_GET_CONTENT);
+		//startActivityForResult(Intent.createChooser(intent, "Elegir Imagen", SELECT_PICTURE));
+		startActivityForResult(intent, SELECT_PICTURE);
 	}
 	
 	@Override
@@ -112,6 +122,30 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 					dbH.close();
 				}
 				break;
+			}
+
+			case (SELECT_PICTURE):
+			{
+				if(resultCode == RESULT_OK){
+					Uri selectedImage = data.getData();
+					String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+					Cursor cursor = getContentResolver().query(
+							selectedImage, filePathColumn, null, null, null);
+					cursor.moveToFirst();
+
+					int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+					String filePath = cursor.getString(columnIndex);
+					cursor.close();
+
+					ImageView imageView = (ImageView) findViewById(R.id.userProfileAvatar);
+					DatabaseHelper dbH = DatabaseHelper.getInstance(this);
+					dbH.open();
+					dbH.getUserMe().setAvatar(decodeFile(filePath, 200,200));
+					imageView.setImageBitmap(dbH.getUserMe().getAvatar());
+					sendAvatarServer(filePath);
+					dbH.close();
+				}
 			}
 		}
 	}
