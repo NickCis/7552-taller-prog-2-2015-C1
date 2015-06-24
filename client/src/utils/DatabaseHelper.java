@@ -452,7 +452,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
     
     public boolean deleteConversation(ConversationEntity conversation) 
-    { 
+    {
+        this.deleteMessages(conversation);
         return mDb.delete(DATABASE_CONVERSATION_TABLE, KEY_CONVERSATIONID + "=? AND " + KEY_LOGINID + "=?", new String[]{"" + conversation.getConversationId(), "" + this.login.getLoginId()}) > 0;
     }
     
