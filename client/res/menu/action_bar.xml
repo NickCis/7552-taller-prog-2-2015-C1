@@ -11,6 +11,9 @@
     <item android:id="@+id/action_profile"
           android:title="@string/action_profile"
           android:showAsAction="never" />
+    <item android:id="@+id/action_broadcast"
+    	  android:title="@string/action_broadcast"
+    	  android:showAsAction="never" />
     <item android:id="@+id/action_checkin"
           android:title="@string/action_checkin"
           android:showAsAction="never" />

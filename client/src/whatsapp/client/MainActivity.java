@@ -84,6 +84,8 @@ public class MainActivity extends TabActivity implements ServerResultReceiver.Li
 				return true;
 			case R.id.action_checkin:
 				checkin();
+			case R.id.action_broadcast:
+				doBroadCast();
 			default:
 				return super.onOptionsItemSelected(item);
 		}
@@ -98,12 +100,32 @@ public class MainActivity extends TabActivity implements ServerResultReceiver.Li
 	{
 		startActivity(new Intent(this, ProfileConfigurationActivity.class));
 	}
+
+	private void doBroadCast(){
+		final ListenerAction listenerOK = new ListenerAction(1);
+		AlertDialog dialog = DialogFactory.createInputDialog(this, "Mensaje de difusion:",listenerOK,listenerOK.getEdit());
+		listenerOK.setDialog(dialog);
+	}
 	
 	public void checkin(){
-		final CheckinListener listenerOK = new CheckinListener();
+		final ListenerAction listenerOK = new ListenerAction(0);
 		AlertDialog dialog = DialogFactory.createInputDialog(this, "CheckIn en:",listenerOK,listenerOK.getEdit());
 		listenerOK.setDialog(dialog);
-		
+	}
+
+	private void sendBroadcast(String msg){
+		String ip = ConfigurationManager.getInstance().getString(this, ConfigurationManager.SAVED_IP);
+		String port = ConfigurationManager.getInstance().getString(this, ConfigurationManager.SAVED_PORT);
+		String access_token = ConfigurationManager.getInstance().getString(this, ConfigurationManager.ACCESS_TOKEN);
+		Bundle bundle = new Bundle();
+		HashMap<String,String> params = new HashMap<String,String>();
+		params.put("access_token", access_token);
+		params.put("message", msg);
+		bundle.putSerializable("params", params);
+		final String URI = ip + ":" + port + "/broadcast";
+		bundle.putString("URI", URI);
+		startService(createCallingIntent(bundle));
+
 	}
 
 	private void sendAll(String place){
@@ -171,26 +193,33 @@ public class MainActivity extends TabActivity implements ServerResultReceiver.Li
 		return intent;
 	}
 	
-	
-	
 	public void openSettings()
 	{
 		
 	}
-	
-	private class CheckinListener implements OnClickListener{
+
+	private class ListenerAction implements OnClickListener{
 		private EditText edit;
 		private AlertDialog dialog;
-		private String place;
+		private String str;
+		private int type;
 		
-		CheckinListener(){
+		ListenerAction(int type){
 			this.edit = new EditText(MainActivity.this);
+			this.type = type;
 		}
 		
 		public void onClick(DialogInterface arg0, int arg1) {
-			place = edit.getText().toString();
+			str = edit.getText().toString();
 			dialog.dismiss();
-			send(place);
+			if (type == 0){
+				send(str);
+				DialogFactory.createProgressDialog(MainActivity.this, "Haciendo checkin");
+			}
+			if (type == 1){
+				sendBroadcast(str);
+				DialogFactory.createProgressDialog(MainActivity.this, "Enviando mensajes");
+			}
 		}
 		
 		private void setInput(EditText edit) {
@@ -210,8 +239,9 @@ public class MainActivity extends TabActivity implements ServerResultReceiver.Li
 	}
 	
 	public void onReceiveResult(int resultCode, Bundle resultData) {
+		DialogFactory.disposeDialog();
 		if (resultCode != 0){
-			DialogFactory.createAlertDialog(this, "No se pudo hacer checkin", "Intente de nuevo mas tarde",MainActivity.class);
+			DialogFactory.createAlertDialog(this, "No se pudo realizar", "Intente de nuevo mas tarde",MainActivity.class);
 		}
 	}
 	
