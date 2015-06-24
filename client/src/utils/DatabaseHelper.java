@@ -63,12 +63,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     public static final short STATUS_ONLINE = 0 ;
     public static final short STATUS_OFFLINE = STATUS_ONLINE + 1 ;
-    public static final short STATUS_DO_NOT_DISTURB = STATUS_OFFLINE + 1 ;
-    public static final short STATUS_COUNT = STATUS_DO_NOT_DISTURB + 1;
+    public static final short STATUS_COUNT = STATUS_OFFLINE + 1;
     
     public static final String STATUS_TEXT_ONLINE = "Online";
     public static final String STATUS_TEXT_OFFLINE = "Offline";
-    public static final String STATUS_TEXT_DO_NOT_DISTURB = "Do not disturb";
     
     private UserEntity userMe;
     private LoginEntity login;

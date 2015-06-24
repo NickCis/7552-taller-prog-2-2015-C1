@@ -40,13 +40,9 @@ public class ProfileActivity extends Activity implements ServerResultReceiver.Li
 		{
 			status.setText(DatabaseHelper.STATUS_TEXT_ONLINE);
 		}
-		else if (uE.getStatus() == DatabaseHelper.STATUS_OFFLINE)
-		{
-			status.setText(DatabaseHelper.STATUS_TEXT_OFFLINE);
-		}
 		else
 		{
-			status.setText(DatabaseHelper.STATUS_TEXT_DO_NOT_DISTURB);
+			status.setText(DatabaseHelper.STATUS_TEXT_OFFLINE);
 		}
                 
                 if (uE.getCheckin() != null)
