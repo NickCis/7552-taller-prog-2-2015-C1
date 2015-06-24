@@ -137,7 +137,10 @@ public class RegisterActivity extends Activity implements ServerResultReceiver.L
 			} catch (JSONException ex) {
 				Logger.getLogger(RegisterActivity.class.getName()).log(Level.SEVERE, null, ex);
 			}
+		}else{
+			DialogFactory.createAlertDialog(this, "No se pudo registrar", "Por favor intentelo nuevamente");
 		}
+		
 
 	}
 }
