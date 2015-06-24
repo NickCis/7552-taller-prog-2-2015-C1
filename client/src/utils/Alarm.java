@@ -164,7 +164,22 @@ public class Alarm extends BroadcastReceiver implements ServerResultReceiver.Lis
 			processProfileChanged(data);
 		} else if (type.equals("avatar")){
 			processAvatarChanged(data);
+		} else if (type.equals("checkin")){
+			processCheckin(data);
 		}
+	}
+
+	private void processCheckin(JSONObject data){
+		try{
+			data = data.getJSONObject("data");
+			data.getString("name");
+			data.getDouble("latitude");
+			data.getDouble("longitude");
+			data.getLong("time");
+			//TODO: storearlo en la base de datos
+			//dsp vendra alguien y lo mostrara
+
+		}catch(JSONException ex){}
 	}
 
 	private void processAvatarChanged(JSONObject data){

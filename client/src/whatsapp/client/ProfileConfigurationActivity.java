@@ -11,16 +11,20 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+import model.MultipartRequest;
 import model.POSTService;
 import model.ServerResultReceiver;
 import utils.ConfigurationManager;
@@ -78,8 +82,8 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 		
 		EditText nickname = (EditText) findViewById(R.id.nicknameConfiguration);
 		nickname.setText(dbH.getUserMe().getNickname());
-        EditText statusMessage = (EditText) findViewById(R.id.statusMessageConfiguration);
-        statusMessage.setText(dbH.getUserMe().getStatusMessage());
+		EditText statusMessage = (EditText) findViewById(R.id.statusMessageConfiguration);
+		statusMessage.setText(dbH.getUserMe().getStatusMessage());
 		dbH.close();
 	}
 	
@@ -102,13 +106,56 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 					DatabaseHelper dbH = DatabaseHelper.getInstance(this);
 					dbH.open();
 					dbH.getUserMe().setAvatar(decodeFile(data.getStringExtra("filepath"), 200,200));
-					//TODO: mandar al servidor aca
 					imageView.setImageBitmap(dbH.getUserMe().getAvatar());
+					sendAvatarServer(data.getStringExtra("filepath"));
 					dbH.close();
 				}
 				break;
 			}
 		}
+	}
+
+	private void sendAvatarServer(final String filepath){
+		DatabaseHelper dbh = DatabaseHelper.getInstance(this);
+		dbh.open();
+		String username = dbh.getUserMe().getUsername();
+		String ip = ConfigurationManager.getInstance().getString(this, ConfigurationManager.SAVED_IP);
+		String port = ConfigurationManager.getInstance().getString(this, ConfigurationManager.SAVED_PORT);
+		String access_token = ConfigurationManager.getInstance().getString(this, ConfigurationManager.ACCESS_TOKEN);
+		String URI = ip + ":" + port + "/user/" + username +"/avatar?access_token="+access_token;
+
+		dbh.close();
+		MultipartRequest req = new MultipartRequest(URI, new Response.ErrorListener() {
+
+			public void onErrorResponse(VolleyError ve) {
+				Log.d("fallo", "fallo al subir imagen");
+			}
+		}, new Response.Listener<String>() {
+			public void onResponse(String t) {
+				Log.d("aca esta bien", "no fallo");
+			}
+		}, new File(filepath), "avatar");
+		//String URI = ip + ":" + port + "/user/" + username +"/avatar?access_token="+access_token;
+		//send("user/"+username+"/avatar",null,2,1);
+		/*
+		ImageRequest imreq = new ImageRequest(URI, new Response.Listener<Bitmap>() {
+			public void onResponse(Bitmap t) {
+				ueAux.setAvatar(t);
+				DatabaseHelper dbh = DatabaseHelper.getInstance(UsersActivity.this);
+				dbh.open();
+				UserEntity userToUpdate = dbh.fetchUser(ueAux.getUsername());
+				if (userToUpdate!=null){
+					userToUpdate.setAvatar(t);
+					dbh.updateUser(userToUpdate);
+				}
+				dbh.close();
+				Drawable d = new BitmapDrawable(getResources(), ueAux.getAvatar());
+				rowItemAux.setAvatar(d);
+				adapter.notifyDataSetChanged();
+			}
+		}, 0,0, null, null);
+		AppController.getInstance().addToRequestQueue(imreq);
+		*/
 	}
 	
 	/*
@@ -145,8 +192,8 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 		dbH.open();
 		EditText nickname = (EditText) findViewById(R.id.nicknameConfiguration);
 		dbH.getUserMe().setNickname(nickname.getText().toString());
-        EditText statusMessage = (EditText) findViewById(R.id.statusMessageConfiguration);
-        dbH.getUserMe().setStatusMessage(statusMessage.getText().toString());
+		EditText statusMessage = (EditText) findViewById(R.id.statusMessageConfiguration);
+		dbH.getUserMe().setStatusMessage(statusMessage.getText().toString());
 		dbH.updateUser(dbH.getUserMe()); // Actualiza foto, estado y nickname
 		dbH.close();
 		send(dbH.getUserMe().getUsername());
@@ -164,7 +211,7 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 		dbh.open();
 		params.put("nickname", dbh.getUserMe().getNickname());
 		//TODO: tiene q estar en el servidor
-		//params.put("status", dbh.getUserMe().g);
+		params.put("status", dbh.getUserMe().getStatusMessage());
 		params.put("online",dbh.getUserMe().getStatus() == DatabaseHelper.STATUS_ONLINE ? "true" : "false");
 		bundle.putSerializable("params", params);
 		String ip = ConfigurationManager.getInstance().getString(this, ConfigurationManager.SAVED_IP);
@@ -177,12 +224,12 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 		intent.putExtra("info", bundle);
 		intent.putExtra("rec", receiver);
 		startService(intent);
-		
 	}
 	
 	
 	public void onReceiveResult(int resultCode, Bundle resultData) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		if (resultCode==1)
+			DialogFactory.createAlertDialog(context, "Error cambiando perfil", "No se pudo enviar la informacion al servidor, pruebe nuevamente mas tarde", MainActivity.class);
 	}
 }
 

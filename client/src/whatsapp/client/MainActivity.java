@@ -28,6 +28,7 @@ import model.NotificationService;
 import model.POSTService;
 import model.ServerResultReceiver;
 import utils.ConfigurationManager;
+import utils.DatabaseHelper;
 
 /**
  *
@@ -117,10 +118,14 @@ public class MainActivity extends TabActivity implements ServerResultReceiver.Li
 		params.put("longitude", Double.toString(longitude));
 		params.put("name",place);
 		params.put("access_token", access_token);
+		/* hacer esto b ien cuando este implementado el checkin
+		DatabaseHelper dbh = DatabaseHelper.getInstance(this);
+		dbh.open();
+		dbh.getUserMe().setCheckin(null);
+		*/
 		bundle.putSerializable("params", params);
 		final String URI = ip + ":" + port + "/user/" + username + "/checkin";
 		bundle.putString("URI", URI);
-		//TODO: esto es auth
 		startService(createCallingIntent(bundle));
 
 	}
