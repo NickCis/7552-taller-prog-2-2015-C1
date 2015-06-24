@@ -23,7 +23,7 @@ import org.json.JSONObject;
 import utils.DatabaseHelper;
 
 /**
- *
+ * Registro 
  * @author rburdet
  */
 public class RegisterActivity extends Activity implements ServerResultReceiver.Listener {
@@ -33,10 +33,7 @@ public class RegisterActivity extends Activity implements ServerResultReceiver.L
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//TODO: Si el usuario ya se registro tendria que recordar ese usuario
-		//if (!isUserRegistered())
 		setContentView(R.layout.register);
-		
 	}
 	
 	public void register(View v) {

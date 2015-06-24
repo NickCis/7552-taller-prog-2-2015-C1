@@ -56,7 +56,7 @@
         <service android:name="model.POSTService" />
         <service android:name="model.GETService" />
         <service android:name="model.DELETEService" />
-        <service android:name="model.NotificationService" />
+        <service android:name="model.NotificationServiceStarter" />
         <receiver android:name="services.NotificationService"/>
 
          

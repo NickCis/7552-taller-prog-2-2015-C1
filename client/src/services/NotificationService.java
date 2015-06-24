@@ -34,6 +34,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import services.AppController;
+import utils.Checkin;
 import utils.ConfigurationManager;
 import utils.ConversationEntity;
 import utils.DatabaseHelper;
@@ -66,9 +67,6 @@ public class NotificationService extends BroadcastReceiver implements ServerResu
 		PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 		PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "");
 		wl.acquire();
-		
-		// Put here YOUR code.
-		//TODO: sacarlo de aca
 		startService(this.context = context);
 		
 		wl.release();
@@ -214,13 +212,19 @@ public class NotificationService extends BroadcastReceiver implements ServerResu
 	private void processCheckin(JSONObject data){
 		try{
 			data = data.getJSONObject("data");
-			data.getString("name");
-			data.getDouble("latitude");
-			data.getDouble("longitude");
-			data.getLong("time");
-			//TODO: storearlo en la base de datos
-			//dsp vendra alguien y lo mostrara
-			
+			//TODO: Esperar a que mati le ponga el campo name a Checkin
+			String place = data.getString("name");
+			Double lat = data.getDouble("latitude");
+			Double longit = data.getDouble("longitude");
+			Long time = data.getLong("time");
+			String username = data.getString("username");
+			DatabaseHelper dbh = DatabaseHelper.getInstance(context);
+			dbh.open();
+			UserEntity fetchUser = dbh.fetchUser(username);
+			Checkin checkin = new Checkin(lat,longit );
+			fetchUser.setCheckin(checkin);
+			dbh.updateUser(fetchUser);
+			dbh.close();
 		}catch(JSONException ex){}
 	}
 	

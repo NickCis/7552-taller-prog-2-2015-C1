@@ -49,6 +49,10 @@ import utils.DatabaseHelper;
 import utils.UserAdapter;
 import utils.UserEntity;
 
+/**
+ * Actividad de usuarios donde se puede agregar nuevos y eliminar viejos
+ * @author rburdet
+ */
 public class UsersActivity extends Activity implements ServerResultReceiver.Listener {
 	
 	private UserAdapter adapter;
@@ -213,6 +217,9 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 		
 	}
 	
+	/**
+	 * Agrega un nuevo usuario
+	 */
 	private void agregar(){
 		DatabaseHelper dbh = DatabaseHelper.getInstance(this);
 		dbh.open();

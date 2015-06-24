@@ -87,8 +87,10 @@ public class MainActivity extends TabActivity implements ServerResultReceiver.Li
 				return true;
 			case R.id.action_checkin:
 				checkin();
+				return true;
 			case R.id.action_broadcast:
 				doBroadCast();
+				return true;
 			default:
 				return super.onOptionsItemSelected(item);
 		}
@@ -164,13 +166,15 @@ public class MainActivity extends TabActivity implements ServerResultReceiver.Li
 	}
 	
 	public void send(final String place) {
-		LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+		final LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 		
 		LocationListener locationListener = new LocationListener(){
 			public void onLocationChanged(Location location) {
 				longitude = location.getLongitude();
 				latitude = location.getLatitude();
 				sendAll(place);
+				lm.removeUpdates(this);
+
 			}
 			
 			public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
