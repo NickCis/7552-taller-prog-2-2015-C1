@@ -44,6 +44,7 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 {
 	
 	private Context context;
+	private String filePath;
 
 	protected short onlineStatusSelectedOption = DatabaseHelper.STATUS_ONLINE;
 	
@@ -54,6 +55,7 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.profile_configuration);
 		this.context = this;
+		filePath=null;
 		ImageView imageView = (ImageView) findViewById(R.id.userProfileAvatar);
 		DatabaseHelper dbH = DatabaseHelper.getInstance(this);
 		dbH.open();
@@ -119,9 +121,9 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 						selectedImage, filePathColumn, null, null, null);
 					cursor.moveToFirst();
 					int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-					String filePath = cursor.getString(columnIndex);
+					filePath = cursor.getString(columnIndex);
 					cursor.close();
-					sendAvatarServer(filePath);
+					showImage(filePath);
 				}
 			}
 		}
@@ -132,12 +134,16 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 	 * @param filepath
 	 */
 	private void dbUpdateAvatar(final String filepath){
-		ImageView imageView = (ImageView) findViewById(R.id.userProfileAvatar);
 		DatabaseHelper dbH = DatabaseHelper.getInstance(this);
 		dbH.open();
 		dbH.getUserMe().setAvatar(decodeFile(filepath, 200,200));
-		imageView.setImageBitmap(dbH.getUserMe().getAvatar());
 		dbH.close();
+	}
+
+	private void showImage(final String filepath){
+		ImageView imageView = (ImageView) findViewById(R.id.userProfileAvatar);
+		Bitmap img = decodeFile(filepath, 200,200);
+		imageView.setImageBitmap(img);
 	}
 
 	/**
@@ -145,7 +151,7 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 	 * @param filepath
 	 */
 	private void sendAvatarServer(final String filepath){
-		final ProgressDialog progressDialog = DialogFactory.createProgressDialog(this, "Cambiando avatar...");
+		final ProgressDialog progressDialog = DialogFactory.createProgressDialog(this, "Actualizando perfil...");
 		DatabaseHelper dbh = DatabaseHelper.getInstance(this);
 		dbh.open();
 		String username = dbh.getUserMe().getUsername();
@@ -236,6 +242,9 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 	
 	public void save(View v)
 	{
+		if (filePath!=null){
+			sendAvatarServer(filePath);
+		}
 		send();
 	}
 	
