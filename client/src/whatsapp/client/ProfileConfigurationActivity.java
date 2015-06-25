@@ -33,6 +33,8 @@ import utils.DatabaseHelper;
 import android.net.Uri;
 import android.database.Cursor;
 import android.provider.MediaStore;
+import android.app.ProgressDialog;
+import org.json.JSONObject;
 
 /**
  * Configuracion de perfil
@@ -115,52 +117,42 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 		super.onActivityResult(requestCode, resultCode, data);
 		switch(requestCode)
 		{
-			case (1) :
-			{
-				if (resultCode == Activity.RESULT_OK)
-				{
-					ImageView imageView = (ImageView) findViewById(R.id.userProfileAvatar);
-					DatabaseHelper dbH = DatabaseHelper.getInstance(this);
-					dbH.open();
-					dbH.getUserMe().setAvatar(decodeFile(data.getStringExtra("filepath"), 200,200));
-					imageView.setImageBitmap(dbH.getUserMe().getAvatar());
-					sendAvatarServer(data.getStringExtra("filepath"));
-					dbH.close();
-				}
-				break;
-			}
-			
 			case (SELECT_PICTURE):
 			{
 				if(resultCode == RESULT_OK){
 					Uri selectedImage = data.getData();
 					String[] filePathColumn = {MediaStore.Images.Media.DATA};
-					
 					Cursor cursor = getContentResolver().query(
 						selectedImage, filePathColumn, null, null, null);
 					cursor.moveToFirst();
-					
 					int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 					String filePath = cursor.getString(columnIndex);
 					cursor.close();
-					
-					ImageView imageView = (ImageView) findViewById(R.id.userProfileAvatar);
-					DatabaseHelper dbH = DatabaseHelper.getInstance(this);
-					dbH.open();
-					dbH.getUserMe().setAvatar(decodeFile(filePath, 200,200));
-					imageView.setImageBitmap(dbH.getUserMe().getAvatar());
 					sendAvatarServer(filePath);
-					dbH.close();
 				}
 			}
 		}
 	}
-	
+
+	/**
+	 * Actualiza avatar en la db
+	 * @param filepath
+	 */
+	private void dbUpdateAvatar(final String filepath){
+		ImageView imageView = (ImageView) findViewById(R.id.userProfileAvatar);
+		DatabaseHelper dbH = DatabaseHelper.getInstance(this);
+		dbH.open();
+		dbH.getUserMe().setAvatar(decodeFile(filepath, 200,200));
+		imageView.setImageBitmap(dbH.getUserMe().getAvatar());
+		dbH.close();
+	}
+
 	/**
 	 * Manda avatar al servidor
 	 * @param filepath
 	 */
 	private void sendAvatarServer(final String filepath){
+		final ProgressDialog progressDialog = DialogFactory.createProgressDialog(this, "Cambiando avatar...");
 		DatabaseHelper dbh = DatabaseHelper.getInstance(this);
 		dbh.open();
 		String username = dbh.getUserMe().getUsername();
@@ -171,15 +163,27 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 		
 		dbh.close();
 		HashMap<String, Bitmap> params = new HashMap<String, Bitmap>();
-		params.put("avatar", dbh.getUserMe().getAvatar());
+		params.put("avatar", decodeFile(filepath, 100, 100));
 		MultipartRequest req = new MultipartRequest(URI, params,
-			new Response.Listener<String>() {
+			new Response.Listener<JSONObject>() {
 				@Override
-				public void onResponse(String response) {
+				public void onResponse(JSONObject response) {
+					progressDialog.dismiss();
+					boolean success = false;
+					try {
+						success = response.getBoolean("success");
+					}catch(Exception e){}
+					if(success){
+						dbUpdateAvatar(filepath);
+					}else{
+						DialogFactory.createAlertDialog(context, "No se pudo cambiar el avatar", null);
+					}
 				}
 			},
 			new Response.ErrorListener(){
 				public void onErrorResponse(VolleyError error){
+					progressDialog.dismiss();
+					DialogFactory.createAlertDialog(context, "No se pudo cambiar el avatar", null);
 				}
 			}
 		);

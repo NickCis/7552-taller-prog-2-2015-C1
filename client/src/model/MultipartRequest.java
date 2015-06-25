@@ -1,6 +1,7 @@
 package model;
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyLog;
@@ -12,18 +13,21 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import android.graphics.Bitmap;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Encargada de hacer requests multipart para archivos
  * @author rburdet ncisco;
  */
-public class MultipartRequest extends Request<String> {
+public class MultipartRequest extends Request<JSONObject> {
 
-	private final Response.Listener<String> mListener;
+	private final Response.Listener<JSONObject> mListener;
 	private final Map<String, Bitmap> mKeyValue;
 
 	private final static String BOUNDARY = "------------------------7d1f9a2c454ea51e";
 
-	public MultipartRequest(String url, Map<String, Bitmap> params, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+	public MultipartRequest(String url, Map<String, Bitmap> params, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
 		super(Method.POST, url, errorListener);
 
 		mListener = listener;
@@ -57,18 +61,21 @@ public class MultipartRequest extends Request<String> {
 	}
 
 	@Override
-	protected Response<String> parseNetworkResponse(NetworkResponse response) {
-		String jsonString = "";
+	protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
 		try {
-			jsonString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+			String jsonString = new String(response.data,
+					HttpHeaderParser.parseCharset(response.headers));
+			return Response.success(new JSONObject(jsonString),
+					HttpHeaderParser.parseCacheHeaders(response));
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			return Response.error(new ParseError(e));
+		} catch (JSONException je) {
+			return Response.error(new ParseError(je));
 		}
-		return Response.success(jsonString, getCacheEntry());
 	}
 
 	@Override
-	protected void deliverResponse(String response) {
+	protected void deliverResponse(JSONObject response) {
 		mListener.onResponse(response);
 	}
 } 
