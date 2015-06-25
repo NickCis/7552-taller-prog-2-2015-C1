@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
+import utils.SyncProfile;
 
 /**
  * Registro 
@@ -136,7 +137,7 @@ public class RegisterActivity extends Activity implements ServerResultReceiver.L
 					LoginActivity.storeUserName(this, user);
 					Log.i("Auth", "Exito autenticando");
 					startActivity(new Intent(this, MainActivity.class));
-					
+					SyncProfile.syncOwnProfile(this);
 				}
 				
 				/*if (!data.contains("access_token")) {
