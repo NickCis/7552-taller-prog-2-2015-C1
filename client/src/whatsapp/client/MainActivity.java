@@ -76,15 +76,15 @@ public class MainActivity extends TabActivity implements ServerResultReceiver.Li
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle presses on the action bar items
 		switch (item.getItemId()) {
-			case R.id.action_search:
-				openSearch();
-				return true;
+			//case R.id.action_search:
+			//	openSearch();
+			//	return true;
 			case R.id.action_profile:
 				openProfile();
 				return true;
-			case R.id.action_settings:
-				openSettings();
-				return true;
+			//case R.id.action_settings:
+			//	openSettings();
+			//	return true;
 			case R.id.action_checkin:
 				checkin();
 				return true;
@@ -167,35 +167,41 @@ public class MainActivity extends TabActivity implements ServerResultReceiver.Li
 	
 	public void send(final String place) {
 		final LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-		
-		LocationListener locationListener = new LocationListener(){
-			public void onLocationChanged(Location location) {
-				longitude = location.getLongitude();
-				latitude = location.getLatitude();
-				sendAll(place);
-				lm.removeUpdates(this);
-
-			}
+		if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)){
 			
-			public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-				throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-			}
 			
-			public void onProviderEnabled(String arg0) {
-				throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-			}
-			
-			public void onProviderDisabled(String provider) {
-				if(provider.equals("gps")){
-					Toast.makeText(getApplicationContext(), "GPS is off", Toast.LENGTH_LONG).show();
-					startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+			LocationListener locationListener = new LocationListener(){
+				public void onLocationChanged(Location location) {
+					longitude = location.getLongitude();
+					latitude = location.getLatitude();
+					sendAll(place);
+					DialogFactory.createProgressDialog(MainActivity.this, "Haciendo checkin");
+					lm.removeUpdates(this);
 				}
-		            Log.i("lm_disabled",provider);
-			}
-		};
-
-		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0, locationListener);
-		lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0, locationListener);
+				
+				public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+					throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+				}
+				
+				public void onProviderEnabled(String arg0) {
+					throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+				}
+				
+				public void onProviderDisabled(String provider) {
+					if(provider.equals("gps")){
+						Toast.makeText(getApplicationContext(), "GPS is off", Toast.LENGTH_LONG).show();
+						startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+					}
+					Log.i("lm_disabled",provider);
+				}
+			};
+			
+			lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0, locationListener);
+			lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0, locationListener);
+		}
+		else{
+			Toast.makeText(getApplicationContext(), "Turn on gps", Toast.LENGTH_LONG).show();
+		}
 	}
 		
 	
@@ -229,7 +235,6 @@ public class MainActivity extends TabActivity implements ServerResultReceiver.Li
 			dialog.dismiss();
 			if (type == 0){
 				send(str);
-				DialogFactory.createProgressDialog(MainActivity.this, "Haciendo checkin");
 			}
 			if (type == 1){
 				sendBroadcast(str);
