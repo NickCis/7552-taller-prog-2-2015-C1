@@ -172,7 +172,7 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 				
 			case R.id.delete:
 				DialogFactory.createOkCancelDialog(UsersActivity.this,
-					"Eliminar conversación", "¿Está seguro que desea eliminar la conversación?",
+					"Eliminar usuario", "¿Está seguro que desea eliminar usuario?",
 					new DialogInterface.OnClickListener() {
 						
 						public void onClick(DialogInterface arg0, int id) {
