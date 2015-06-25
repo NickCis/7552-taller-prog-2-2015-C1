@@ -6,8 +6,8 @@ project (Server)
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake)
 
 # The version number.
-set (SERVER_VERSION_MAJOR 0)
-set (SERVER_VERSION_MINOR 1)
+set (SERVER_VERSION_MAJOR 1)
+set (SERVER_VERSION_MINOR 0)
 
 # options
 option(CHECK_COVERAGE "Activa flags para checkear test coverage" OFF)
@@ -78,3 +78,5 @@ configure_file (
 )
 
 include_directories("${PROJECT_BINARY_DIR}")
+
+install(TARGETS server DESTINATION bin)
