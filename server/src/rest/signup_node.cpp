@@ -1,13 +1,15 @@
 #include "signup_node.h"
 
-#include <iostream>
 #include <string>
+#include <iostream>
+#include <algorithm>
 
 #include "../db/user.h"
 
 using std::cout;
 using std::endl;
 using std::string;
+using std::transform;
 
 using rocksdb::Status;
 
@@ -16,7 +18,9 @@ SignupNode::SignupNode() : WAMethodNode("signup") {
 
 void SignupNode::executePost(MgConnection& conn, const char*){
 	User u;
-	u.setUsername(conn.getVarStr("user"));
+	string username = conn.getVarStr("user");
+	transform(username.begin(), username.end(), username.begin(), ::tolower);
+	u.setUsername(username);
 	u.setPassword(conn.getVarStr("pass"));
 	Status s = u.put();
 

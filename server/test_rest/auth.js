@@ -32,4 +32,18 @@ describe("Testing Auth", function(){
 			});
 		});
 	});
+
+	it("El username debe ser case insensitive", function(){
+		return userCreatorResponse.then(function(data){
+			return chakram.post(def.buildUrl("auth"), false, {form: {user: data.user.toUpperCase(), pass: "123456"}});
+		}).then(function(response){
+			expect(response).to.have.status(201);
+			expect(response).to.have.schema({
+				properties: {
+					access_token: "string"
+				},
+				required: ["access_token"]
+			});
+		});
+	});
 })

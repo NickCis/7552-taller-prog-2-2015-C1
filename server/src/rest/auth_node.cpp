@@ -1,11 +1,13 @@
 #include "auth_node.h"
 
 #include <string>
+#include <algorithm>
 
 #include "../db/user.h"
 #include "../db/access_token.h"
 
 using std::string;
+using std::transform;
 
 using rocksdb::Status;
 
@@ -14,6 +16,7 @@ AuthNode::AuthNode() : WAMethodNode("auth") {
 
 void AuthNode::executePost(MgConnection& conn, const char*){
 	string u = conn.getVarStr("user");
+	transform(u.begin(), u.end(), u.begin(), ::tolower);
 	string p = conn.getVarStr("pass");
 	User user;
 	Status s = user.get(u);
