@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.9.1"/>
+<title>MensajerO: Fichero Fuente src/db/user.h</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() { init_search(); });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">MensajerO
+   &#160;<span id="projectnumber">0.1</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generado por Doxygen 1.8.9.1 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li><a href="pages.html"><span>Páginas&#160;relacionadas</span></a></li>
+      <li><a href="annotated.html"><span>Clases</span></a></li>
+      <li class="current"><a href="files.html"><span>Archivos</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Lista&#160;de&#160;archivos</span></a></li>
+    </ul>
+  </div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_18fd539062cd3a2de3dfd78991cf728d.html">db</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">user.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef __USER_H__</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define __USER_H__</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;rocksdb/db.h&gt;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;rocksdb/status.h&gt;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;db_entity.h&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="classUser.html">   13</a></span>&#160;<span class="keyword">class </span><a class="code" href="classUser.html">User</a> : <span class="keyword">public</span> <a class="code" href="classDbEntity.html">DbEntity</a> {</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    DB_ENTITY_CLASS(<a class="code" href="classUser.html">User</a>)</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <a class="code" href="classUser.html#a4a0137053e591fbb79d9057dd7d2283d">User</a>();</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        rocksdb::Status put();</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classUser.html#acd89609ce77f53f873c982b59a28a453">setUsername</a>(<span class="keyword">const</span> std::string&amp;);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classUser.html#ac1198639c93c10c96b59fc0006366c2b">setPassword</a>(<span class="keyword">const</span> std::string&amp; p);  </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keyword">const</span> std::string&amp; <a class="code" href="classUser.html#a1c77f204a581824f2634cec6506625df">getUsername</a>() <span class="keyword">const</span>; </div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classUser.html#aafb54c48739c2e082a53a561c244a8c6">isPassword</a>(<span class="keyword">const</span> std::string&amp;) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classDbEntity.html#a717b824eeb538e8e69437be3e545a923">unPack</a>(<span class="keyword">const</span> std::string&amp; <a class="code" href="classDbEntity.html#a1899cea7753c397ab2216bd0814f3412">key</a>, <span class="keyword">const</span> std::string&amp; <a class="code" href="classDbEntity.html#a200948c26f60a628567adee6f7a47218">value</a>);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        std::string <a class="code" href="classUser.html#a2d37e323282f4a1818df5164c456f355">toJson</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classDbEntity.html#ad965d9a41378a56af2f1fff8b0f1826d">packKey</a>(std::string&amp; key);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classDbEntity.html#a95d121a5f129e2ec5f9e9674b6e57303">packValue</a>(std::string&amp; value);</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="classUser.html#aacbb807e514280f69e00bec7d71f3aee">   51</a></span>&#160;        std::string <a class="code" href="classUser.html#aacbb807e514280f69e00bec7d71f3aee">username</a>; </div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classUser.html#ac2f2e75b15e8eb6cbb030fc85a6cd59f">   52</a></span>&#160;        std::string <a class="code" href="classUser.html#ac2f2e75b15e8eb6cbb030fc85a6cd59f">password</a>; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code" href="classUser.html#ae607ccd916c80fb045fe0c9228666d51">IsUsernameValid</a>(<span class="keyword">const</span> std::string&amp; username); </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code" href="classUser.html#a2a98e468c07a6a4116509f8f9a439460">IsPasswordValid</a>(<span class="keyword">const</span> std::string&amp; password);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classUser.html#a7993276ec41411a6452dc095f669fc72">HashPassword</a>(std::string&amp; hashed, <span class="keyword">const</span> std::string&amp; password);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;};</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="classUser_html_ac2f2e75b15e8eb6cbb030fc85a6cd59f"><div class="ttname"><a href="classUser.html#ac2f2e75b15e8eb6cbb030fc85a6cd59f">User::password</a></div><div class="ttdeci">std::string password</div><div class="ttdoc">contrase~na </div><div class="ttdef"><b>Definition:</b> <a href="user_8h_source.html#l00052">user.h:52</a></div></div>
+<div class="ttc" id="classDbEntity_html_a1899cea7753c397ab2216bd0814f3412"><div class="ttname"><a href="classDbEntity.html#a1899cea7753c397ab2216bd0814f3412">DbEntity::key</a></div><div class="ttdeci">std::string key</div><div class="ttdoc">Buffer interno usado para guarda el key. </div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8h_source.html#l00075">db_entity.h:75</a></div></div>
+<div class="ttc" id="classUser_html_a2d37e323282f4a1818df5164c456f355"><div class="ttname"><a href="classUser.html#a2d37e323282f4a1818df5164c456f355">User::toJson</a></div><div class="ttdeci">std::string toJson() const </div><div class="ttdef"><b>Definition:</b> <a href="user_8cpp_source.html#l00074">user.cpp:74</a></div></div>
+<div class="ttc" id="classUser_html_a4a0137053e591fbb79d9057dd7d2283d"><div class="ttname"><a href="classUser.html#a4a0137053e591fbb79d9057dd7d2283d">User::User</a></div><div class="ttdeci">User()</div><div class="ttdef"><b>Definition:</b> <a href="user_8cpp_source.html#l00018">user.cpp:18</a></div></div>
+<div class="ttc" id="classUser_html_a2a98e468c07a6a4116509f8f9a439460"><div class="ttname"><a href="classUser.html#a2a98e468c07a6a4116509f8f9a439460">User::IsPasswordValid</a></div><div class="ttdeci">static bool IsPasswordValid(const std::string &amp;password)</div><div class="ttdef"><b>Definition:</b> <a href="user_8cpp_source.html#l00107">user.cpp:107</a></div></div>
+<div class="ttc" id="classUser_html"><div class="ttname"><a href="classUser.html">User</a></div><div class="ttdef"><b>Definition:</b> <a href="user_8h_source.html#l00013">user.h:13</a></div></div>
+<div class="ttc" id="classDbEntity_html_a200948c26f60a628567adee6f7a47218"><div class="ttname"><a href="classDbEntity.html#a200948c26f60a628567adee6f7a47218">DbEntity::value</a></div><div class="ttdeci">std::string value</div><div class="ttdoc">Buffer interno usado para guardar el value. </div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8h_source.html#l00076">db_entity.h:76</a></div></div>
+<div class="ttc" id="classUser_html_a7993276ec41411a6452dc095f669fc72"><div class="ttname"><a href="classUser.html#a7993276ec41411a6452dc095f669fc72">User::HashPassword</a></div><div class="ttdeci">static void HashPassword(std::string &amp;hashed, const std::string &amp;password)</div><div class="ttdef"><b>Definition:</b> <a href="user_8cpp_source.html#l00111">user.cpp:111</a></div></div>
+<div class="ttc" id="classDbEntity_html_ad965d9a41378a56af2f1fff8b0f1826d"><div class="ttname"><a href="classDbEntity.html#ad965d9a41378a56af2f1fff8b0f1826d">DbEntity::packKey</a></div><div class="ttdeci">void packKey()</div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8cpp_source.html#l00034">db_entity.cpp:34</a></div></div>
+<div class="ttc" id="classUser_html_a1c77f204a581824f2634cec6506625df"><div class="ttname"><a href="classUser.html#a1c77f204a581824f2634cec6506625df">User::getUsername</a></div><div class="ttdeci">const std::string &amp; getUsername() const </div><div class="ttdoc">Devuelve el nombre de usuario. </div><div class="ttdef"><b>Definition:</b> <a href="user_8cpp_source.html#l00023">user.cpp:23</a></div></div>
+<div class="ttc" id="classDbEntity_html"><div class="ttname"><a href="classDbEntity.html">DbEntity</a></div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8h_source.html#l00033">db_entity.h:33</a></div></div>
+<div class="ttc" id="classDbEntity_html_a95d121a5f129e2ec5f9e9674b6e57303"><div class="ttname"><a href="classDbEntity.html#a95d121a5f129e2ec5f9e9674b6e57303">DbEntity::packValue</a></div><div class="ttdeci">void packValue()</div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8cpp_source.html#l00038">db_entity.cpp:38</a></div></div>
+<div class="ttc" id="classUser_html_ac1198639c93c10c96b59fc0006366c2b"><div class="ttname"><a href="classUser.html#ac1198639c93c10c96b59fc0006366c2b">User::setPassword</a></div><div class="ttdeci">bool setPassword(const std::string &amp;p)</div><div class="ttdoc">Setea la contrase~na. </div><div class="ttdef"><b>Definition:</b> <a href="user_8cpp_source.html#l00043">user.cpp:43</a></div></div>
+<div class="ttc" id="classUser_html_aafb54c48739c2e082a53a561c244a8c6"><div class="ttname"><a href="classUser.html#aafb54c48739c2e082a53a561c244a8c6">User::isPassword</a></div><div class="ttdeci">bool isPassword(const std::string &amp;) const </div><div class="ttdef"><b>Definition:</b> <a href="user_8cpp_source.html#l00037">user.cpp:37</a></div></div>
+<div class="ttc" id="classUser_html_aacbb807e514280f69e00bec7d71f3aee"><div class="ttname"><a href="classUser.html#aacbb807e514280f69e00bec7d71f3aee">User::username</a></div><div class="ttdeci">std::string username</div><div class="ttdoc">usuario </div><div class="ttdef"><b>Definition:</b> <a href="user_8h_source.html#l00051">user.h:51</a></div></div>
+<div class="ttc" id="classDbEntity_html_a717b824eeb538e8e69437be3e545a923"><div class="ttname"><a href="classDbEntity.html#a717b824eeb538e8e69437be3e545a923">DbEntity::unPack</a></div><div class="ttdeci">bool unPack()</div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8cpp_source.html#l00042">db_entity.cpp:42</a></div></div>
+<div class="ttc" id="classUser_html_ae607ccd916c80fb045fe0c9228666d51"><div class="ttname"><a href="classUser.html#ae607ccd916c80fb045fe0c9228666d51">User::IsUsernameValid</a></div><div class="ttdeci">static bool IsUsernameValid(const std::string &amp;username)</div><div class="ttdef"><b>Definition:</b> <a href="user_8cpp_source.html#l00078">user.cpp:78</a></div></div>
+<div class="ttc" id="classUser_html_acd89609ce77f53f873c982b59a28a453"><div class="ttname"><a href="classUser.html#acd89609ce77f53f873c982b59a28a453">User::setUsername</a></div><div class="ttdeci">bool setUsername(const std::string &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="user_8cpp_source.html#l00051">user.cpp:51</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generado el Jueves, 25 de Junio de 2015 19:30:47 para MensajerO por &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
+</body>
+</html>

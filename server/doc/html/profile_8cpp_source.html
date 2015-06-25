@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.9.1"/>
+<title>MensajerO: Fichero Fuente src/db/profile.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() { init_search(); });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">MensajerO
+   &#160;<span id="projectnumber">0.1</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generado por Doxygen 1.8.9.1 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li><a href="pages.html"><span>Páginas&#160;relacionadas</span></a></li>
+      <li><a href="annotated.html"><span>Clases</span></a></li>
+      <li class="current"><a href="files.html"><span>Archivos</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Lista&#160;de&#160;archivos</span></a></li>
+    </ul>
+  </div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_18fd539062cd3a2de3dfd78991cf728d.html">db</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">profile.cpp</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &quot;profile.h&quot;</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &quot;../util/serializer.h&quot;</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;sstream&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;cstdlib&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;cstring&gt;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;algorithm&gt;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;../util/log.h&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">    #include &lt;sys/time.h&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;}</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#define ONLINE_TIMEOUT (300)</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">using</span> std::copy;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">using</span> std::memcmp;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">using</span> std::vector;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">using</span> std::string;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">using</span> std::to_string;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">using</span> std::shared_ptr;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">using</span> std::stringstream;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">using</span> rocksdb::DB;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">using</span> rocksdb::Slice;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">using</span> rocksdb::Status;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">using</span> rocksdb::Iterator;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">using</span> rocksdb::WriteBatch;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">using</span> rocksdb::ReadOptions;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">using</span> rocksdb::WriteOptions;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">using</span> rocksdb::ColumnFamilyHandle;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;DB_ENTITY_DEF(<a class="code" href="classProfile.html">Profile</a>)</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="classProfile.html#a4eea708cdbed0262d9e7ddbe3f1e3f89">   38</a></span>&#160;<a class="code" href="classProfile.html">Profile</a>::<a class="code" href="classProfile.html">Profile</a>() :</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    owner(&quot;&quot;),</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    nick(&quot;&quot;),</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    online(true),</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    status(&quot;&quot;),</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    status_time(0),</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    last_activity(0)</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;{}</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classProfile.html#a7043cee9565fcd1dc13a0228629cecd0">   47</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classDbEntity.html#ad965d9a41378a56af2f1fff8b0f1826d">Profile::packKey</a>(<span class="keywordtype">string</span>&amp; key){</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <a class="code" href="classOSerializer.html">OSerializer</a>(key) &lt;&lt; <a class="code" href="classNoPrefix.html">ConstStrNoPrefix</a>(this-&gt;<a class="code" href="classProfile.html#a4051ac94ba712eb01fddacc25aada809">owner</a>) &lt;&lt; <span class="charliteral">&#39;/&#39;</span> &lt;&lt; <a class="code" href="classNoPrefix.html">ConstStrNoPrefix</a>(<span class="keywordtype">string</span>(<span class="stringliteral">&quot;profile&quot;</span>));</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;}</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="classProfile.html#a3d01d69dbe3869d90cda2e482cc94a5e">   51</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classDbEntity.html#a95d121a5f129e2ec5f9e9674b6e57303">Profile::packValue</a>(<span class="keywordtype">string</span>&amp; value){</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <a class="code" href="classOSerializer.html">OSerializer</a>(value) &lt;&lt; this-&gt;<a class="code" href="classProfile.html#a4051ac94ba712eb01fddacc25aada809">owner</a> &lt;&lt; this-&gt;<a class="code" href="classProfile.html#ae1ec7099d0cecc30b21f6b0c3d7a886b">nick</a> &lt;&lt; this-&gt;<a class="code" href="classProfile.html#a5024dec233947b774c2208ff7fa4806b">online</a> &lt;&lt; this-&gt;<a class="code" href="classProfile.html#add73ad610575f01f567dc8db076321e0">status</a> &lt;&lt; this-&gt;<a class="code" href="classProfile.html#a0852b86872dad3bcfac4a5297d161b23">status_time</a> &lt;&lt; this-&gt;<a class="code" href="classProfile.html#afa9a07680a1c03c821a34f4631dbd1ef">last_activity</a>;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;}</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="classProfile.html#a7d073790d440668d462576b29a016783">   55</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classDbEntity.html#a717b824eeb538e8e69437be3e545a923">Profile::unPack</a>(<span class="keyword">const</span> <span class="keywordtype">string</span>&amp; key, <span class="keyword">const</span> <span class="keywordtype">string</span>&amp; value){</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <a class="code" href="classISerializer.html">ISerializer</a> keySerializer(key);</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <a class="code" href="classISerializer.html">ISerializer</a> valueSerializer(value);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    keySerializer &gt;&gt; <a class="code" href="classNoPrefix.html">StrNoPrefix</a>(this-&gt;<a class="code" href="classProfile.html#a4051ac94ba712eb01fddacc25aada809">owner</a>, key.size() - 8);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    valueSerializer &gt;&gt; this-&gt;<a class="code" href="classProfile.html#a4051ac94ba712eb01fddacc25aada809">owner</a> &gt;&gt; this-&gt;<a class="code" href="classProfile.html#ae1ec7099d0cecc30b21f6b0c3d7a886b">nick</a> &gt;&gt; this-&gt;<a class="code" href="classProfile.html#a5024dec233947b774c2208ff7fa4806b">online</a> &gt;&gt; this-&gt;<a class="code" href="classProfile.html#add73ad610575f01f567dc8db076321e0">status</a> &gt;&gt; this-&gt;<a class="code" href="classProfile.html#a0852b86872dad3bcfac4a5297d161b23">status_time</a> &gt;&gt; this-&gt;<a class="code" href="classProfile.html#afa9a07680a1c03c821a34f4631dbd1ef">last_activity</a>;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keywordflow">return</span> ! (keySerializer.<a class="code" href="classISerializer.html#ac9e8f262c7ae3ff0b6861e2e048ec363">error</a>() || valueSerializer.<a class="code" href="classISerializer.html#ac9e8f262c7ae3ff0b6861e2e048ec363">error</a>());</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;}</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;Status Profile::get(<span class="keyword">const</span> <span class="keywordtype">string</span>&amp; key){</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    this-&gt;<a class="code" href="classProfile.html#a4051ac94ba712eb01fddacc25aada809">owner</a> = <a class="code" href="classDbEntity.html#a1899cea7753c397ab2216bd0814f3412">key</a>;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classDbEntity.html#a811caa96b6e09f2fa016f69f9fe11cba">DbEntity::get</a>(key+<span class="stringliteral">&quot;/profile&quot;</span>);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;}</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="classProfile.html#a605eac56a80b41d90392c90adb0b6703">   68</a></span>&#160;<span class="keywordtype">string</span> <a class="code" href="classProfile.html#a605eac56a80b41d90392c90adb0b6703">Profile::toJson</a>()<span class="keyword"> const</span>{</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    stringstream ss;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    ss &lt;&lt; <span class="stringliteral">&quot;{\&quot;username\&quot;:\&quot;&quot;</span> &lt;&lt; this-&gt;<a class="code" href="classProfile.html#a4051ac94ba712eb01fddacc25aada809">owner</a> &lt;&lt; <span class="stringliteral">&quot;\&quot;,\&quot;nickname\&quot;:\&quot;&quot;</span> &lt;&lt; this-&gt;<a class="code" href="classProfile.html#ae1ec7099d0cecc30b21f6b0c3d7a886b">nick</a> &lt;&lt; <span class="stringliteral">&quot;\&quot;,\&quot;online\&quot;:&quot;</span> &lt;&lt; (this-&gt;<a class="code" href="classProfile.html#a405fc627faa24be44a12b3d1407ca506">getOnlineStatus</a>() ? <span class="stringliteral">&quot;true&quot;</span> : <span class="stringliteral">&quot;false&quot;</span>)</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        &lt;&lt; <span class="stringliteral">&quot;,\&quot;last_activity\&quot;:&quot;</span> &lt;&lt; this-&gt;<a class="code" href="classProfile.html#afa9a07680a1c03c821a34f4631dbd1ef">last_activity</a> &lt;&lt; <span class="stringliteral">&quot;,\&quot;status\&quot;:{\&quot;time\&quot;:&quot;</span> &lt;&lt; this-&gt;<a class="code" href="classProfile.html#a0852b86872dad3bcfac4a5297d161b23">status_time</a> &lt;&lt; <span class="stringliteral">&quot;,\&quot;text\&quot;:\&quot;&quot;</span> &lt;&lt; this-&gt;<a class="code" href="classProfile.html#add73ad610575f01f567dc8db076321e0">status</a> &lt;&lt; <span class="stringliteral">&quot;\&quot;}}&quot;</span>;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keywordflow">return</span> ss.str();</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;}</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="keywordtype">void</span> Profile::setOwner(<span class="keyword">const</span> std::string&amp; owner){</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    this-&gt;owner = <a class="code" href="classProfile.html#a4051ac94ba712eb01fddacc25aada809">owner</a>;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;}</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="keywordtype">void</span> Profile::setNick(<span class="keyword">const</span> std::string&amp; nick){</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    this-&gt;nick = <a class="code" href="classProfile.html#ae1ec7099d0cecc30b21f6b0c3d7a886b">nick</a>;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;}</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="keywordtype">void</span> Profile::setOnline(<span class="keyword">const</span> <span class="keywordtype">bool</span>&amp; online){</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    this-&gt;online = <a class="code" href="classProfile.html#a5024dec233947b774c2208ff7fa4806b">online</a>;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;}</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="keywordtype">void</span> Profile::setStatus(<span class="keyword">const</span> std::string&amp; status){</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    this-&gt;status = <a class="code" href="classProfile.html#add73ad610575f01f567dc8db076321e0">status</a>;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    this-&gt;<a class="code" href="classProfile.html#a0852b86872dad3bcfac4a5297d161b23">status_time</a> = time(NULL);</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;}</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="keyword">const</span> std::string&amp; Profile::getOwner()<span class="keyword"> const</span>{</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keywordflow">return</span> this-&gt;<a class="code" href="classProfile.html#a4051ac94ba712eb01fddacc25aada809">owner</a>;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;}</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="keyword">const</span> std::string&amp; Profile::getNick()<span class="keyword"> const</span>{</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keywordflow">return</span> this-&gt;<a class="code" href="classProfile.html#ae1ec7099d0cecc30b21f6b0c3d7a886b">nick</a>;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;}</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="keyword">const</span> <span class="keywordtype">bool</span>&amp; Profile::getOnline()<span class="keyword"> const</span>{</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keywordflow">return</span> this-&gt;<a class="code" href="classProfile.html#a5024dec233947b774c2208ff7fa4806b">online</a>;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;}</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;</div>
+<div class="line"><a name="l00104"></a><span class="lineno"><a class="line" href="classProfile.html#a405fc627faa24be44a12b3d1407ca506">  104</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classProfile.html#a405fc627faa24be44a12b3d1407ca506">Profile::getOnlineStatus</a>()<span class="keyword"> const</span>{</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordflow">return</span> this-&gt;<a class="code" href="classProfile.html#a5024dec233947b774c2208ff7fa4806b">online</a> &amp;&amp; ( (time(NULL) - this-&gt;<a class="code" href="classProfile.html#afa9a07680a1c03c821a34f4631dbd1ef">last_activity</a>) &lt; ONLINE_TIMEOUT);</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;}</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="keyword">const</span> std::string&amp; Profile::getStatus()<span class="keyword"> const</span>{</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keywordflow">return</span> this-&gt;<a class="code" href="classProfile.html#add73ad610575f01f567dc8db076321e0">status</a>;</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;}</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="keyword">const</span> time_t&amp; Profile::getStatusTime()<span class="keyword"> const</span>{</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keywordflow">return</span> this-&gt;<a class="code" href="classProfile.html#a0852b86872dad3bcfac4a5297d161b23">status_time</a>;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;}</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="keyword">const</span> time_t&amp; Profile::getLastActivity()<span class="keyword"> const</span>{</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keywordflow">return</span> this-&gt;<a class="code" href="classProfile.html#afa9a07680a1c03c821a34f4631dbd1ef">last_activity</a>;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;}</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;Status Profile::UpdateLastActivity(<span class="keyword">const</span> <span class="keywordtype">string</span>&amp; user){</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keywordtype">string</span> <a class="code" href="classDbEntity.html#a200948c26f60a628567adee6f7a47218">value</a>;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    <a class="code" href="classProfile.html">Profile</a> profile;</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    profile.setOwner(user);</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    profile.<a class="code" href="classProfile.html#a7043cee9565fcd1dc13a0228629cecd0">packKey</a>();</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <a class="code" href="classOSerializer.html">OSerializer</a>(value) &lt;&lt; time(NULL);</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="keywordflow">return</span> profile.<a class="code" href="classDbEntity.html#ae39d72bfbb529220f377ad9953a31c4c">merge</a>(value);</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;}</div>
+<div class="ttc" id="classOSerializer_html"><div class="ttname"><a href="classOSerializer.html">OSerializer</a></div><div class="ttdef"><b>Definition:</b> <a href="serializer_8h_source.html#l00079">serializer.h:79</a></div></div>
+<div class="ttc" id="classProfile_html_a4051ac94ba712eb01fddacc25aada809"><div class="ttname"><a href="classProfile.html#a4051ac94ba712eb01fddacc25aada809">Profile::owner</a></div><div class="ttdeci">std::string owner</div><div class="ttdoc">a quien le pertenece la notificacion </div><div class="ttdef"><b>Definition:</b> <a href="profile_8h_source.html#l00058">profile.h:58</a></div></div>
+<div class="ttc" id="classProfile_html_afa9a07680a1c03c821a34f4631dbd1ef"><div class="ttname"><a href="classProfile.html#afa9a07680a1c03c821a34f4631dbd1ef">Profile::last_activity</a></div><div class="ttdeci">time_t last_activity</div><div class="ttdoc">timestamp de la ultima modificacion </div><div class="ttdef"><b>Definition:</b> <a href="profile_8h_source.html#l00063">profile.h:63</a></div></div>
+<div class="ttc" id="classDbEntity_html_a1899cea7753c397ab2216bd0814f3412"><div class="ttname"><a href="classDbEntity.html#a1899cea7753c397ab2216bd0814f3412">DbEntity::key</a></div><div class="ttdeci">std::string key</div><div class="ttdoc">Buffer interno usado para guarda el key. </div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8h_source.html#l00075">db_entity.h:75</a></div></div>
+<div class="ttc" id="classISerializer_html"><div class="ttname"><a href="classISerializer.html">ISerializer</a></div><div class="ttdef"><b>Definition:</b> <a href="serializer_8h_source.html#l00124">serializer.h:124</a></div></div>
+<div class="ttc" id="classDbEntity_html_a811caa96b6e09f2fa016f69f9fe11cba"><div class="ttname"><a href="classDbEntity.html#a811caa96b6e09f2fa016f69f9fe11cba">DbEntity::get</a></div><div class="ttdeci">rocksdb::Status get(const std::string &amp;key)</div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8cpp_source.html#l00009">db_entity.cpp:9</a></div></div>
+<div class="ttc" id="classNoPrefix_html"><div class="ttname"><a href="classNoPrefix.html">NoPrefix</a></div><div class="ttdef"><b>Definition:</b> <a href="serializer_8h_source.html#l00011">serializer.h:11</a></div></div>
+<div class="ttc" id="classProfile_html_ae1ec7099d0cecc30b21f6b0c3d7a886b"><div class="ttname"><a href="classProfile.html#ae1ec7099d0cecc30b21f6b0c3d7a886b">Profile::nick</a></div><div class="ttdeci">std::string nick</div><div class="ttdoc">nickname del usuario </div><div class="ttdef"><b>Definition:</b> <a href="profile_8h_source.html#l00059">profile.h:59</a></div></div>
+<div class="ttc" id="classProfile_html_a605eac56a80b41d90392c90adb0b6703"><div class="ttname"><a href="classProfile.html#a605eac56a80b41d90392c90adb0b6703">Profile::toJson</a></div><div class="ttdeci">std::string toJson() const </div><div class="ttdef"><b>Definition:</b> <a href="profile_8cpp_source.html#l00068">profile.cpp:68</a></div></div>
+<div class="ttc" id="classISerializer_html_ac9e8f262c7ae3ff0b6861e2e048ec363"><div class="ttname"><a href="classISerializer.html#ac9e8f262c7ae3ff0b6861e2e048ec363">ISerializer::error</a></div><div class="ttdeci">bool error()</div><div class="ttdef"><b>Definition:</b> <a href="serializer_8cpp_source.html#l00084">serializer.cpp:84</a></div></div>
+<div class="ttc" id="classDbEntity_html_a200948c26f60a628567adee6f7a47218"><div class="ttname"><a href="classDbEntity.html#a200948c26f60a628567adee6f7a47218">DbEntity::value</a></div><div class="ttdeci">std::string value</div><div class="ttdoc">Buffer interno usado para guardar el value. </div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8h_source.html#l00076">db_entity.h:76</a></div></div>
+<div class="ttc" id="classDbEntity_html_ad965d9a41378a56af2f1fff8b0f1826d"><div class="ttname"><a href="classDbEntity.html#ad965d9a41378a56af2f1fff8b0f1826d">DbEntity::packKey</a></div><div class="ttdeci">void packKey()</div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8cpp_source.html#l00034">db_entity.cpp:34</a></div></div>
+<div class="ttc" id="classProfile_html_a5024dec233947b774c2208ff7fa4806b"><div class="ttname"><a href="classProfile.html#a5024dec233947b774c2208ff7fa4806b">Profile::online</a></div><div class="ttdeci">bool online</div><div class="ttdoc">Conectado / desconectado. </div><div class="ttdef"><b>Definition:</b> <a href="profile_8h_source.html#l00060">profile.h:60</a></div></div>
+<div class="ttc" id="classDbEntity_html_a95d121a5f129e2ec5f9e9674b6e57303"><div class="ttname"><a href="classDbEntity.html#a95d121a5f129e2ec5f9e9674b6e57303">DbEntity::packValue</a></div><div class="ttdeci">void packValue()</div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8cpp_source.html#l00038">db_entity.cpp:38</a></div></div>
+<div class="ttc" id="classProfile_html_a7043cee9565fcd1dc13a0228629cecd0"><div class="ttname"><a href="classProfile.html#a7043cee9565fcd1dc13a0228629cecd0">Profile::packKey</a></div><div class="ttdeci">void packKey(std::string &amp;key)</div><div class="ttdef"><b>Definition:</b> <a href="profile_8cpp_source.html#l00047">profile.cpp:47</a></div></div>
+<div class="ttc" id="classProfile_html_add73ad610575f01f567dc8db076321e0"><div class="ttname"><a href="classProfile.html#add73ad610575f01f567dc8db076321e0">Profile::status</a></div><div class="ttdeci">std::string status</div><div class="ttdoc">estado </div><div class="ttdef"><b>Definition:</b> <a href="profile_8h_source.html#l00061">profile.h:61</a></div></div>
+<div class="ttc" id="classDbEntity_html_ae39d72bfbb529220f377ad9953a31c4c"><div class="ttname"><a href="classDbEntity.html#ae39d72bfbb529220f377ad9953a31c4c">DbEntity::merge</a></div><div class="ttdeci">rocksdb::Status merge(const std::string &amp;value)</div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8cpp_source.html#l00050">db_entity.cpp:50</a></div></div>
+<div class="ttc" id="classProfile_html"><div class="ttname"><a href="classProfile.html">Profile</a></div><div class="ttdef"><b>Definition:</b> <a href="profile_8h_source.html#l00016">profile.h:16</a></div></div>
+<div class="ttc" id="classProfile_html_a405fc627faa24be44a12b3d1407ca506"><div class="ttname"><a href="classProfile.html#a405fc627faa24be44a12b3d1407ca506">Profile::getOnlineStatus</a></div><div class="ttdeci">bool getOnlineStatus() const </div><div class="ttdef"><b>Definition:</b> <a href="profile_8cpp_source.html#l00104">profile.cpp:104</a></div></div>
+<div class="ttc" id="classDbEntity_html_a717b824eeb538e8e69437be3e545a923"><div class="ttname"><a href="classDbEntity.html#a717b824eeb538e8e69437be3e545a923">DbEntity::unPack</a></div><div class="ttdeci">bool unPack()</div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8cpp_source.html#l00042">db_entity.cpp:42</a></div></div>
+<div class="ttc" id="classProfile_html_a0852b86872dad3bcfac4a5297d161b23"><div class="ttname"><a href="classProfile.html#a0852b86872dad3bcfac4a5297d161b23">Profile::status_time</a></div><div class="ttdeci">time_t status_time</div><div class="ttdoc">timestamp de la modificacion del estado </div><div class="ttdef"><b>Definition:</b> <a href="profile_8h_source.html#l00062">profile.h:62</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generado el Jueves, 25 de Junio de 2015 19:30:47 para MensajerO por &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
+</body>
+</html>

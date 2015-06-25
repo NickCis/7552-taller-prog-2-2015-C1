@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.9.1"/>
+<title>MensajerO: Fichero Fuente src/db/db_entity.h</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() { init_search(); });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">MensajerO
+   &#160;<span id="projectnumber">0.1</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generado por Doxygen 1.8.9.1 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li><a href="pages.html"><span>Páginas&#160;relacionadas</span></a></li>
+      <li><a href="annotated.html"><span>Clases</span></a></li>
+      <li class="current"><a href="files.html"><span>Archivos</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Lista&#160;de&#160;archivos</span></a></li>
+    </ul>
+  </div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_18fd539062cd3a2de3dfd78991cf728d.html">db</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">db_entity.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef __DB_ENTITY_H__</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define __DB_ENTITY_H__</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;rocksdb/db.h&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;rocksdb/slice.h&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;rocksdb/status.h&gt;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;rocksdb/iterator.h&gt;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;db_iterator.h&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#define DB_ENTITY_CLASS(T) \</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">    protected: \</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">        static rocksdb::DB *db; \</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">        static rocksdb::ColumnFamilyHandle *cf; \</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">        rocksdb::ColumnFamilyHandle* getCf(){ return T::cf; }\</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">        rocksdb::DB* getDb(){ return T::db; }\</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">    public: \</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">        T(const DbIterator&lt;T&gt;&amp; it) { \</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">            this-&gt;unPack(it.key().ToString(), it._value().ToString()); \</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">        } \</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">        static void SetDB(rocksdb::DB* db, rocksdb::ColumnFamilyHandle* cf){ \</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">            T::db = db; \</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">            T::cf = cf; \</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">        }</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#define DB_ENTITY_DEF(T) \</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">rocksdb::DB* T::db = NULL; \</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">rocksdb::ColumnFamilyHandle* T::cf = NULL;</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="classDbEntity.html">   33</a></span>&#160;<span class="keyword">class </span><a class="code" href="classDbEntity.html">DbEntity</a> {</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <a class="code" href="classDbEntity.html">DbEntity</a>();</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keyword">virtual</span> ~<a class="code" href="classDbEntity.html">DbEntity</a>();</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keyword">virtual</span> std::string <a class="code" href="classDbEntity.html#ac5dd05d8f0f16daf4d9866eac15dcc8b">toJson</a>() <span class="keyword">const</span> = 0;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="comment">//virtual DbIterator&lt;T&gt; NewIterator() = 0;  ///&lt; Crea iterador</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="comment">/*static void SetDB(rocksdb::DB* db, rocksdb::ColumnFamilyHandle* cf){</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="comment">            T::db = db;</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="comment">            T::cf = cf;</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="comment">        }*/</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        rocksdb::Status <span class="keyword">get</span>(<span class="keyword">const</span> std::string&amp; <a class="code" href="classDbEntity.html#a1899cea7753c397ab2216bd0814f3412">key</a>);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        rocksdb::Status <a class="code" href="classDbEntity.html#a1929d5d92f7b2293c87cc8552e04b6d8">put</a>();</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classDbEntity.html#a717b824eeb538e8e69437be3e545a923">unPack</a>(<span class="keyword">const</span> std::string&amp; <a class="code" href="classDbEntity.html#a1899cea7753c397ab2216bd0814f3412">key</a>, <span class="keyword">const</span> std::string&amp; <a class="code" href="classDbEntity.html#a200948c26f60a628567adee6f7a47218">value</a>) = 0;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="classDbEntity.html#a1899cea7753c397ab2216bd0814f3412">   75</a></span>&#160;        std::string <a class="code" href="classDbEntity.html#a1899cea7753c397ab2216bd0814f3412">key</a>; </div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="classDbEntity.html#a200948c26f60a628567adee6f7a47218">   76</a></span>&#160;        std::string <a class="code" href="classDbEntity.html#a200948c26f60a628567adee6f7a47218">value</a>; </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        rocksdb::Slice <a class="code" href="classDbEntity.html#a0015a01794df0e99d118e4809f40fb18">pack</a>();</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        rocksdb::Slice <a class="code" href="classDbEntity.html#a0015a01794df0e99d118e4809f40fb18">pack</a>(std::string&amp; key, std::string&amp; value);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classDbEntity.html#ad965d9a41378a56af2f1fff8b0f1826d">packKey</a>(std::string&amp; key) = 0;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classDbEntity.html#ad965d9a41378a56af2f1fff8b0f1826d">packKey</a>();</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classDbEntity.html#a95d121a5f129e2ec5f9e9674b6e57303">packValue</a>(std::string&amp; value) = 0;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classDbEntity.html#a95d121a5f129e2ec5f9e9674b6e57303">packValue</a>();</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classDbEntity.html#a717b824eeb538e8e69437be3e545a923">unPack</a>();</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <span class="keyword">virtual</span> rocksdb::ColumnFamilyHandle* <a class="code" href="classDbEntity.html#a07a86b5d6ae9e5792292f003151e011a">getCf</a>() = 0;</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        <span class="keyword">virtual</span> rocksdb::DB* <a class="code" href="classDbEntity.html#a5b7746dc5e58b44e619853f64b470e0d">getDb</a>() = 0;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        rocksdb::Status <a class="code" href="classDbEntity.html#a1929d5d92f7b2293c87cc8552e04b6d8">put</a>(<span class="keyword">const</span> rocksdb::Slice&amp; key, <span class="keyword">const</span> rocksdb::Slice&amp; value);</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        rocksdb::Status <a class="code" href="classDbEntity.html#ae39d72bfbb529220f377ad9953a31c4c">merge</a>(<span class="keyword">const</span> std::string&amp; value);</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;        rocksdb::Status <a class="code" href="classDbEntity.html#ae39d72bfbb529220f377ad9953a31c4c">merge</a>(<span class="keyword">const</span> rocksdb::Slice&amp; key, <span class="keyword">const</span> rocksdb::Slice&amp; value);</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;};</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="classDbEntity_html_a1899cea7753c397ab2216bd0814f3412"><div class="ttname"><a href="classDbEntity.html#a1899cea7753c397ab2216bd0814f3412">DbEntity::key</a></div><div class="ttdeci">std::string key</div><div class="ttdoc">Buffer interno usado para guarda el key. </div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8h_source.html#l00075">db_entity.h:75</a></div></div>
+<div class="ttc" id="classDbEntity_html_a5b7746dc5e58b44e619853f64b470e0d"><div class="ttname"><a href="classDbEntity.html#a5b7746dc5e58b44e619853f64b470e0d">DbEntity::getDb</a></div><div class="ttdeci">virtual rocksdb::DB * getDb()=0</div></div>
+<div class="ttc" id="classDbEntity_html_a0015a01794df0e99d118e4809f40fb18"><div class="ttname"><a href="classDbEntity.html#a0015a01794df0e99d118e4809f40fb18">DbEntity::pack</a></div><div class="ttdeci">rocksdb::Slice pack()</div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8cpp_source.html#l00024">db_entity.cpp:24</a></div></div>
+<div class="ttc" id="classDbEntity_html_a1929d5d92f7b2293c87cc8552e04b6d8"><div class="ttname"><a href="classDbEntity.html#a1929d5d92f7b2293c87cc8552e04b6d8">DbEntity::put</a></div><div class="ttdeci">rocksdb::Status put()</div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8cpp_source.html#l00019">db_entity.cpp:19</a></div></div>
+<div class="ttc" id="classDbEntity_html_a07a86b5d6ae9e5792292f003151e011a"><div class="ttname"><a href="classDbEntity.html#a07a86b5d6ae9e5792292f003151e011a">DbEntity::getCf</a></div><div class="ttdeci">virtual rocksdb::ColumnFamilyHandle * getCf()=0</div></div>
+<div class="ttc" id="classDbEntity_html_a200948c26f60a628567adee6f7a47218"><div class="ttname"><a href="classDbEntity.html#a200948c26f60a628567adee6f7a47218">DbEntity::value</a></div><div class="ttdeci">std::string value</div><div class="ttdoc">Buffer interno usado para guardar el value. </div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8h_source.html#l00076">db_entity.h:76</a></div></div>
+<div class="ttc" id="classDbEntity_html_ad965d9a41378a56af2f1fff8b0f1826d"><div class="ttname"><a href="classDbEntity.html#ad965d9a41378a56af2f1fff8b0f1826d">DbEntity::packKey</a></div><div class="ttdeci">void packKey()</div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8cpp_source.html#l00034">db_entity.cpp:34</a></div></div>
+<div class="ttc" id="classDbEntity_html_ac5dd05d8f0f16daf4d9866eac15dcc8b"><div class="ttname"><a href="classDbEntity.html#ac5dd05d8f0f16daf4d9866eac15dcc8b">DbEntity::toJson</a></div><div class="ttdeci">virtual std::string toJson() const =0</div></div>
+<div class="ttc" id="classDbEntity_html"><div class="ttname"><a href="classDbEntity.html">DbEntity</a></div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8h_source.html#l00033">db_entity.h:33</a></div></div>
+<div class="ttc" id="classDbEntity_html_a95d121a5f129e2ec5f9e9674b6e57303"><div class="ttname"><a href="classDbEntity.html#a95d121a5f129e2ec5f9e9674b6e57303">DbEntity::packValue</a></div><div class="ttdeci">void packValue()</div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8cpp_source.html#l00038">db_entity.cpp:38</a></div></div>
+<div class="ttc" id="classDbEntity_html_ae39d72bfbb529220f377ad9953a31c4c"><div class="ttname"><a href="classDbEntity.html#ae39d72bfbb529220f377ad9953a31c4c">DbEntity::merge</a></div><div class="ttdeci">rocksdb::Status merge(const std::string &amp;value)</div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8cpp_source.html#l00050">db_entity.cpp:50</a></div></div>
+<div class="ttc" id="classDbEntity_html_a717b824eeb538e8e69437be3e545a923"><div class="ttname"><a href="classDbEntity.html#a717b824eeb538e8e69437be3e545a923">DbEntity::unPack</a></div><div class="ttdeci">bool unPack()</div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8cpp_source.html#l00042">db_entity.cpp:42</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generado el Jueves, 25 de Junio de 2015 19:30:47 para MensajerO por &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.9.1"/>
+<title>MensajerO: Fichero Fuente src/util/notifier.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() { init_search(); });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">MensajerO
+   &#160;<span id="projectnumber">0.1</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generado por Doxygen 1.8.9.1 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li><a href="pages.html"><span>Páginas&#160;relacionadas</span></a></li>
+      <li><a href="annotated.html"><span>Clases</span></a></li>
+      <li class="current"><a href="files.html"><span>Archivos</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Lista&#160;de&#160;archivos</span></a></li>
+    </ul>
+  </div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_b7878ad5ecbf2506f4125b9d34c97e45.html">util</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">notifier.cpp</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &quot;notifier.h&quot;</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;../db/suscriber_list.h&quot;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;../db/notification.h&quot;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;../db/profile.h&quot;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;../db/checkin.h&quot;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;ctime&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;sstream&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;functional&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">using</span> std::time;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">using</span> std::string;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">using</span> std::stringstream;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<a class="code" href="classMgServer.html">MgServer</a>* Notifier::mgServer = NULL;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keywordtype">bool</span> sse_check(<a class="code" href="classMgConnection.html">MgConnection</a>&amp; conn, <a class="code" href="classNotification.html">Notification</a>&amp; n){</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordflow">if</span>(conn.<a class="code" href="classMgConnection.html#a7dc9ec970bec9fca3c48393a8d3abf30">getParameter</a>(<span class="stringliteral">&quot;sse&quot;</span>) == <span class="stringliteral">&quot;yes&quot;</span> &amp;&amp; n.<a class="code" href="classNotification.html#aa1fda1d3bc8ab714e0a36a7380d7b480">getOwner</a>() == conn.<a class="code" href="classMgConnection.html#a7dc9ec970bec9fca3c48393a8d3abf30">getParameter</a>(<span class="stringliteral">&quot;logged_user&quot;</span>))</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;}</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keywordtype">void</span> sse_push(<a class="code" href="classMgConnection.html">MgConnection</a>&amp; conn, <a class="code" href="classNotification.html">Notification</a>&amp; n){</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    conn.<a class="code" href="classMgConnection.html#aa1324f4f27c4fe055e39242a1151e017">printfData</a>(<span class="stringliteral">&quot;id: %s\ndata: %s\n\n&quot;</span>, n.<a class="code" href="classNotification.html#a637d2a3004f477b1179f0fba290094e8">getId</a>().c_str(), n.<a class="code" href="classNotification.html#a1ee653d54b789f16008d12d6467f308c">toJson</a>().c_str());</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;}</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keywordtype">void</span> Notifier::add_push_notification(<span class="keyword">const</span> <span class="keywordtype">string</span>&amp; u, <span class="keyword">const</span> <a class="code" href="classNotification.html#a5331b7de1d1105d1e6c98f8bdf3f7391">Notification::NotificationType</a>&amp; type, <span class="keyword">const</span> <span class="keywordtype">string</span>&amp; json){</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <a class="code" href="classNotification.html">Notification</a> n = <a class="code" href="classNotification.html#a1e8e91c87ef307ac9b3af2542f76d188">Notification::Now</a>(u, type, json);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    n.<a class="code" href="classDbEntity.html#a1929d5d92f7b2293c87cc8552e04b6d8">put</a>();</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    mgServer-&gt;doConnection(</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        std::bind(sse_check, std::placeholders::_1, std::ref(n)),</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        std::bind(sse_push, std::placeholders::_1, std::ref(n))</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    );</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;}</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="classNotifier.html#a6e85121743577d8ed84cbd3bd9388c68">   38</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classNotifier.html#a6e85121743577d8ed84cbd3bd9388c68">Notifier::OnMessage</a>(<span class="keyword">const</span> <a class="code" href="classMessage.html">Message</a>&amp; msg){</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    add_push_notification(msg.<a class="code" href="classMessage.html#a61d0049308a4d63f9bbfca2037c9a0a4">getTo</a>(), <a class="code" href="classNotification.html#a5331b7de1d1105d1e6c98f8bdf3f7391a6283dc679f202af1dafac6716cab6264">Notification::NOTIFICATION_MESSAGE</a>, msg.<a class="code" href="classMessage.html#a3f7e51a39cd038788c96112a379cfa51">toJson</a>());</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;}</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classNotifier.html#aed7861fbf66087c983e3dcc8bc8fc727">   42</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classNotifier.html#aed7861fbf66087c983e3dcc8bc8fc727">Notifier::OnMessageAck</a>(<span class="keyword">const</span> <a class="code" href="classMessage.html">Message</a>&amp; msg){</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    add_push_notification(msg.<a class="code" href="classMessage.html#a7a16024d652e671f0f96e1f292787bf9">getFrom</a>(), <a class="code" href="classNotification.html#a5331b7de1d1105d1e6c98f8bdf3f7391a53857ae076bc984ca99add20ce8346f3">Notification::NOTIFICATION_ACK</a>, msg.<a class="code" href="classMessage.html#a3f7e51a39cd038788c96112a379cfa51">toJson</a>());</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;}</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classNotifier.html#a906023d049e2e4d3396664f8c702b955">   46</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classNotifier.html#a906023d049e2e4d3396664f8c702b955">Notifier::OnChangeAvatar</a>(<span class="keyword">const</span> <span class="keywordtype">string</span>&amp; u){</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <a class="code" href="classSuscriberList.html">SuscriberList</a> sl;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    sl.get(u);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    stringstream ss;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    ss &lt;&lt; <span class="stringliteral">&quot;{\&quot;username\&quot;:\&quot;&quot;</span> &lt;&lt; u &lt;&lt; <span class="stringliteral">&quot;\&quot;,\&quot;time\&quot;:&quot;</span> &lt;&lt; time(NULL) &lt;&lt; <span class="stringliteral">&quot;}&quot;</span>;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordflow">for</span>(<span class="keyword">auto</span> it=sl.getList().begin(); it != sl.getList().end(); it++)</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        add_push_notification(*it, <a class="code" href="classNotification.html#a5331b7de1d1105d1e6c98f8bdf3f7391acc20f32879e48c7bc0a149a7c3009ee7">Notification::NOTIFICATION_AVATAR</a>, ss.str());</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;}</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="classNotifier.html#a12e29741f532548277c94ed028ecf3bb">   56</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classNotifier.html#a12e29741f532548277c94ed028ecf3bb">Notifier::OnChangeProfile</a>(<span class="keyword">const</span> <a class="code" href="classProfile.html">Profile</a>&amp; p){</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <a class="code" href="classSuscriberList.html">SuscriberList</a> sl;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    sl.get(p.getOwner());</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keywordtype">string</span> json = p.<a class="code" href="classProfile.html#a605eac56a80b41d90392c90adb0b6703">toJson</a>();</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordflow">for</span>(<span class="keyword">auto</span> it=sl.getList().begin(); it != sl.getList().end(); it++)</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        add_push_notification(*it, <a class="code" href="classNotification.html#a5331b7de1d1105d1e6c98f8bdf3f7391ab88b1384aeb5cdc3d336d08517cd614b">Notification::NOTIFICATION_PROFILE</a>, json);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;}</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="classNotifier.html#ad77d864b35fcf65b97606b858750d70b">   65</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classNotifier.html#ad77d864b35fcf65b97606b858750d70b">Notifier::OnCheckIn</a>(<span class="keyword">const</span> <a class="code" href="classCheckin.html">Checkin</a>&amp; c){</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <a class="code" href="classSuscriberList.html">SuscriberList</a> sl;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    sl.get(c.getOwner());</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordtype">string</span> json = c.<a class="code" href="classCheckin.html#a69a8230c30b09fd63ea42651ce2e5fe7">toJson</a>();</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keywordflow">for</span>(<span class="keyword">auto</span> it=sl.getList().begin(); it != sl.getList().end(); it++)</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        add_push_notification(*it, <a class="code" href="classNotification.html#a5331b7de1d1105d1e6c98f8bdf3f7391ac529680aa6d0743d4fb769052b6bfdaa">Notification::NOTIFICATION_CHECKIN</a>, json);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;}</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
+<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="classNotifier.html#a32421f67e6ce7b258ad1850ecb073437">   74</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classNotifier.html#a32421f67e6ce7b258ad1850ecb073437">Notifier::setServer</a>(<a class="code" href="classMgServer.html">MgServer</a>* s){</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    Notifier::mgServer = s;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;}</div>
+<div class="ttc" id="classSuscriberList_html"><div class="ttname"><a href="classSuscriberList.html">SuscriberList</a></div><div class="ttdef"><b>Definition:</b> <a href="suscriber__list_8h_source.html#l00016">suscriber_list.h:16</a></div></div>
+<div class="ttc" id="classNotification_html"><div class="ttname"><a href="classNotification.html">Notification</a></div><div class="ttdef"><b>Definition:</b> <a href="notification_8h_source.html#l00015">notification.h:15</a></div></div>
+<div class="ttc" id="classMessage_html"><div class="ttname"><a href="classMessage.html">Message</a></div><div class="ttdef"><b>Definition:</b> <a href="message_8h_source.html#l00015">message.h:15</a></div></div>
+<div class="ttc" id="classNotification_html_a1e8e91c87ef307ac9b3af2542f76d188"><div class="ttname"><a href="classNotification.html#a1e8e91c87ef307ac9b3af2542f76d188">Notification::Now</a></div><div class="ttdeci">static Notification Now()</div><div class="ttdef"><b>Definition:</b> <a href="notification_8cpp_source.html#l00042">notification.cpp:42</a></div></div>
+<div class="ttc" id="classNotifier_html_aed7861fbf66087c983e3dcc8bc8fc727"><div class="ttname"><a href="classNotifier.html#aed7861fbf66087c983e3dcc8bc8fc727">Notifier::OnMessageAck</a></div><div class="ttdeci">static void OnMessageAck(const Message &amp;msg)</div><div class="ttdef"><b>Definition:</b> <a href="notifier_8cpp_source.html#l00042">notifier.cpp:42</a></div></div>
+<div class="ttc" id="classDbEntity_html_a1929d5d92f7b2293c87cc8552e04b6d8"><div class="ttname"><a href="classDbEntity.html#a1929d5d92f7b2293c87cc8552e04b6d8">DbEntity::put</a></div><div class="ttdeci">rocksdb::Status put()</div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8cpp_source.html#l00019">db_entity.cpp:19</a></div></div>
+<div class="ttc" id="classNotification_html_a5331b7de1d1105d1e6c98f8bdf3f7391a53857ae076bc984ca99add20ce8346f3"><div class="ttname"><a href="classNotification.html#a5331b7de1d1105d1e6c98f8bdf3f7391a53857ae076bc984ca99add20ce8346f3">Notification::NOTIFICATION_ACK</a></div><div class="ttdoc">Tipo ACK. </div><div class="ttdef"><b>Definition:</b> <a href="notification_8h_source.html#l00025">notification.h:25</a></div></div>
+<div class="ttc" id="classMgConnection_html_aa1324f4f27c4fe055e39242a1151e017"><div class="ttname"><a href="classMgConnection.html#aa1324f4f27c4fe055e39242a1151e017">MgConnection::printfData</a></div><div class="ttdeci">size_t printfData(const char *format,...)</div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8cpp_source.html#l00045">mg_connection.cpp:45</a></div></div>
+<div class="ttc" id="classProfile_html_a605eac56a80b41d90392c90adb0b6703"><div class="ttname"><a href="classProfile.html#a605eac56a80b41d90392c90adb0b6703">Profile::toJson</a></div><div class="ttdeci">std::string toJson() const </div><div class="ttdef"><b>Definition:</b> <a href="profile_8cpp_source.html#l00068">profile.cpp:68</a></div></div>
+<div class="ttc" id="classNotification_html_a1ee653d54b789f16008d12d6467f308c"><div class="ttname"><a href="classNotification.html#a1ee653d54b789f16008d12d6467f308c">Notification::toJson</a></div><div class="ttdeci">std::string toJson() const </div><div class="ttdoc">Representacion en JSON. </div><div class="ttdef"><b>Definition:</b> <a href="notification_8cpp_source.html#l00112">notification.cpp:112</a></div></div>
+<div class="ttc" id="classCheckin_html"><div class="ttname"><a href="classCheckin.html">Checkin</a></div><div class="ttdef"><b>Definition:</b> <a href="checkin_8h_source.html#l00015">checkin.h:15</a></div></div>
+<div class="ttc" id="classNotifier_html_a32421f67e6ce7b258ad1850ecb073437"><div class="ttname"><a href="classNotifier.html#a32421f67e6ce7b258ad1850ecb073437">Notifier::setServer</a></div><div class="ttdeci">static void setServer(MgServer *)</div><div class="ttdef"><b>Definition:</b> <a href="notifier_8cpp_source.html#l00074">notifier.cpp:74</a></div></div>
+<div class="ttc" id="classNotifier_html_ad77d864b35fcf65b97606b858750d70b"><div class="ttname"><a href="classNotifier.html#ad77d864b35fcf65b97606b858750d70b">Notifier::OnCheckIn</a></div><div class="ttdeci">static void OnCheckIn(const Checkin &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="notifier_8cpp_source.html#l00065">notifier.cpp:65</a></div></div>
+<div class="ttc" id="classNotifier_html_a12e29741f532548277c94ed028ecf3bb"><div class="ttname"><a href="classNotifier.html#a12e29741f532548277c94ed028ecf3bb">Notifier::OnChangeProfile</a></div><div class="ttdeci">static void OnChangeProfile(const Profile &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="notifier_8cpp_source.html#l00056">notifier.cpp:56</a></div></div>
+<div class="ttc" id="classMgConnection_html"><div class="ttname"><a href="classMgConnection.html">MgConnection</a></div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00011">mg_connection.h:11</a></div></div>
+<div class="ttc" id="classNotification_html_a5331b7de1d1105d1e6c98f8bdf3f7391a6283dc679f202af1dafac6716cab6264"><div class="ttname"><a href="classNotification.html#a5331b7de1d1105d1e6c98f8bdf3f7391a6283dc679f202af1dafac6716cab6264">Notification::NOTIFICATION_MESSAGE</a></div><div class="ttdoc">Tipo mensaje. </div><div class="ttdef"><b>Definition:</b> <a href="notification_8h_source.html#l00024">notification.h:24</a></div></div>
+<div class="ttc" id="classNotifier_html_a6e85121743577d8ed84cbd3bd9388c68"><div class="ttname"><a href="classNotifier.html#a6e85121743577d8ed84cbd3bd9388c68">Notifier::OnMessage</a></div><div class="ttdeci">static void OnMessage(const Message &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="notifier_8cpp_source.html#l00038">notifier.cpp:38</a></div></div>
+<div class="ttc" id="classNotifier_html_a906023d049e2e4d3396664f8c702b955"><div class="ttname"><a href="classNotifier.html#a906023d049e2e4d3396664f8c702b955">Notifier::OnChangeAvatar</a></div><div class="ttdeci">static void OnChangeAvatar(const std::string &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="notifier_8cpp_source.html#l00046">notifier.cpp:46</a></div></div>
+<div class="ttc" id="classNotification_html_a5331b7de1d1105d1e6c98f8bdf3f7391"><div class="ttname"><a href="classNotification.html#a5331b7de1d1105d1e6c98f8bdf3f7391">Notification::NotificationType</a></div><div class="ttdeci">NotificationType</div><div class="ttdef"><b>Definition:</b> <a href="notification_8h_source.html#l00023">notification.h:23</a></div></div>
+<div class="ttc" id="classNotification_html_aa1fda1d3bc8ab714e0a36a7380d7b480"><div class="ttname"><a href="classNotification.html#aa1fda1d3bc8ab714e0a36a7380d7b480">Notification::getOwner</a></div><div class="ttdeci">const std::string &amp; getOwner() const </div><div class="ttdoc">Devuelve el due~no de la notificacion. </div><div class="ttdef"><b>Definition:</b> <a href="notification_8cpp_source.html#l00108">notification.cpp:108</a></div></div>
+<div class="ttc" id="classMessage_html_a3f7e51a39cd038788c96112a379cfa51"><div class="ttname"><a href="classMessage.html#a3f7e51a39cd038788c96112a379cfa51">Message::toJson</a></div><div class="ttdeci">std::string toJson() const </div><div class="ttdoc">Representacion en JSON del mensaje. </div><div class="ttdef"><b>Definition:</b> <a href="message_8cpp_source.html#l00121">message.cpp:121</a></div></div>
+<div class="ttc" id="classCheckin_html_a69a8230c30b09fd63ea42651ce2e5fe7"><div class="ttname"><a href="classCheckin.html#a69a8230c30b09fd63ea42651ce2e5fe7">Checkin::toJson</a></div><div class="ttdeci">std::string toJson() const </div><div class="ttdef"><b>Definition:</b> <a href="checkin_8cpp_source.html#l00065">checkin.cpp:65</a></div></div>
+<div class="ttc" id="classNotification_html_a637d2a3004f477b1179f0fba290094e8"><div class="ttname"><a href="classNotification.html#a637d2a3004f477b1179f0fba290094e8">Notification::getId</a></div><div class="ttdeci">std::string getId() const </div><div class="ttdoc">id en formato hexa </div><div class="ttdef"><b>Definition:</b> <a href="notification_8cpp_source.html#l00080">notification.cpp:80</a></div></div>
+<div class="ttc" id="classProfile_html"><div class="ttname"><a href="classProfile.html">Profile</a></div><div class="ttdef"><b>Definition:</b> <a href="profile_8h_source.html#l00016">profile.h:16</a></div></div>
+<div class="ttc" id="classNotification_html_a5331b7de1d1105d1e6c98f8bdf3f7391acc20f32879e48c7bc0a149a7c3009ee7"><div class="ttname"><a href="classNotification.html#a5331b7de1d1105d1e6c98f8bdf3f7391acc20f32879e48c7bc0a149a7c3009ee7">Notification::NOTIFICATION_AVATAR</a></div><div class="ttdoc">Tipo Avatar. </div><div class="ttdef"><b>Definition:</b> <a href="notification_8h_source.html#l00026">notification.h:26</a></div></div>
+<div class="ttc" id="classMessage_html_a61d0049308a4d63f9bbfca2037c9a0a4"><div class="ttname"><a href="classMessage.html#a61d0049308a4d63f9bbfca2037c9a0a4">Message::getTo</a></div><div class="ttdeci">const std::string &amp; getTo() const </div><div class="ttdoc">Devuelve receptor del mensaje. </div><div class="ttdef"><b>Definition:</b> <a href="message_8cpp_source.html#l00101">message.cpp:101</a></div></div>
+<div class="ttc" id="classMessage_html_a7a16024d652e671f0f96e1f292787bf9"><div class="ttname"><a href="classMessage.html#a7a16024d652e671f0f96e1f292787bf9">Message::getFrom</a></div><div class="ttdeci">const std::string &amp; getFrom() const </div><div class="ttdoc">Devuelve Emisor del mensaje. </div><div class="ttdef"><b>Definition:</b> <a href="message_8cpp_source.html#l00097">message.cpp:97</a></div></div>
+<div class="ttc" id="classNotification_html_a5331b7de1d1105d1e6c98f8bdf3f7391ab88b1384aeb5cdc3d336d08517cd614b"><div class="ttname"><a href="classNotification.html#a5331b7de1d1105d1e6c98f8bdf3f7391ab88b1384aeb5cdc3d336d08517cd614b">Notification::NOTIFICATION_PROFILE</a></div><div class="ttdoc">Tipo Profile. </div><div class="ttdef"><b>Definition:</b> <a href="notification_8h_source.html#l00027">notification.h:27</a></div></div>
+<div class="ttc" id="classNotification_html_a5331b7de1d1105d1e6c98f8bdf3f7391ac529680aa6d0743d4fb769052b6bfdaa"><div class="ttname"><a href="classNotification.html#a5331b7de1d1105d1e6c98f8bdf3f7391ac529680aa6d0743d4fb769052b6bfdaa">Notification::NOTIFICATION_CHECKIN</a></div><div class="ttdoc">Tipo checkin. </div><div class="ttdef"><b>Definition:</b> <a href="notification_8h_source.html#l00028">notification.h:28</a></div></div>
+<div class="ttc" id="classMgServer_html"><div class="ttname"><a href="classMgServer.html">MgServer</a></div><div class="ttdef"><b>Definition:</b> <a href="mg__server_8h_source.html#l00018">mg_server.h:18</a></div></div>
+<div class="ttc" id="classMgConnection_html_a7dc9ec970bec9fca3c48393a8d3abf30"><div class="ttname"><a href="classMgConnection.html#a7dc9ec970bec9fca3c48393a8d3abf30">MgConnection::getParameter</a></div><div class="ttdeci">const std::string &amp; getParameter(const std::string &amp;key)</div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8cpp_source.html#l00075">mg_connection.cpp:75</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generado el Jueves, 25 de Junio de 2015 19:30:47 para MensajerO por &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
+</body>
+</html>

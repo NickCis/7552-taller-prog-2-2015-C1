@@ -1,0 +1,264 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.9.1"/>
+<title>MensajerO: Fichero Fuente src/db/db_manager.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() { init_search(); });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">MensajerO
+   &#160;<span id="projectnumber">0.1</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generado por Doxygen 1.8.9.1 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li><a href="pages.html"><span>Páginas&#160;relacionadas</span></a></li>
+      <li><a href="annotated.html"><span>Clases</span></a></li>
+      <li class="current"><a href="files.html"><span>Archivos</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Lista&#160;de&#160;archivos</span></a></li>
+    </ul>
+  </div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_18fd539062cd3a2de3dfd78991cf728d.html">db</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">db_manager.cpp</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &quot;db_manager.h&quot;</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &quot;user.h&quot;</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;access_token.h&quot;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;message.h&quot;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;notification.h&quot;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;contact_list.h&quot;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;list_merge_operator.h&quot;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;avatar.h&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;profile.h&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;checkin.h&quot;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;suscriber_list.h&quot;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;user_merge_operator.h&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;cstring&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">using</span> std::string;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">using</span> std::strcmp;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">using</span> std::vector;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">using</span> std::unique_ptr;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">using</span> rocksdb::DB;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">using</span> rocksdb::Status;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">using</span> rocksdb::Options;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">using</span> rocksdb::DBOptions;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">using</span> rocksdb::ColumnFamilyHandle;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">using</span> rocksdb::ColumnFamilyOptions;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="comment">//using rocksdb::ColumnFamilyDescriptor;</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">using</span> rocksdb::kDefaultColumnFamilyName;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">const</span> <a class="code" href="structDBManager_1_1ColumnFamilyDescriptor.html">DBManager::ColumnFamilyDescriptor</a> <a class="code" href="classDBManager.html#a0b510d7b23ba244fa3e5263cef44e3ac">DBManager::ColumnFamilyDescriptors</a>[] = {</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    { <span class="stringliteral">&quot;messages&quot;</span>, COMPARATOR_DB_COMPARATOR_REVERSE, MERGE_DEFAULT },</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    { <span class="stringliteral">&quot;users&quot;</span>, COMPARATOR_DB_COMPARATOR, MERGE_DB_USER },</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    { <span class="stringliteral">&quot;notifications&quot;</span>, COMPARATOR_DB_COMPARATOR, MERGE_DEFAULT },</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    { <span class="stringliteral">&quot;access_tokens&quot;</span>, COMPARATOR_DEFAULT, MERGE_DEFAULT },</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    { <span class="stringliteral">&quot;contact_list&quot;</span>, COMPARATOR_DEFAULT, MERGE_DB_LIST },</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    { NULL, COMPARATOR_DEFAULT, MERGE_DEFAULT }</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;};</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classDBManager.html#aa5fb3cccecf84a4407e066f0f4a63b7d">   40</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classDBManager.html#aa5fb3cccecf84a4407e066f0f4a63b7d">DBManager::columnFamilyOptionsFromDescriptor</a>(<span class="keyword">const</span> <a class="code" href="structDBManager_1_1ColumnFamilyDescriptor.html">DBManager::ColumnFamilyDescriptor</a>&amp; cfd, ColumnFamilyOptions &amp;cfo){</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordflow">switch</span>(cfd.<a class="code" href="structDBManager_1_1ColumnFamilyDescriptor.html#ad4fed6eaf1132be87280274f4553629b">comparator</a>){</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordflow">case</span> <a class="code" href="classDBManager.html#a7fec7f7dbe271ad5328c10e309f2450ba4ff06dfcecbc5b66aaf731ec134f4ce8">COMPARATOR_DB_COMPARATOR</a>:</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            cfo.comparator = &amp;this-&gt;comparator;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keywordflow">case</span> <a class="code" href="classDBManager.html#a7fec7f7dbe271ad5328c10e309f2450ba499b72a394ab02768af6ac501e78fb62">COMPARATOR_DB_COMPARATOR_REVERSE</a>:</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            cfo.comparator = &amp;this-&gt;comparatorReverse;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordflow">default</span>:</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    }</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordflow">switch</span>(cfd.<a class="code" href="structDBManager_1_1ColumnFamilyDescriptor.html#a9005fc18010d7cdd8113302e984255da">mergeOperator</a>){</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keywordflow">case</span> <a class="code" href="classDBManager.html#a1f4dfbd2171fb985c8f746dfb75b7e4aa79003314242f32509d712ca3b69173aa">MERGE_DB_LIST</a>:</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            cfo.merge_operator.reset(<span class="keyword">new</span> <a class="code" href="classListMergeOperator.html">ListMergeOperator</a>);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keywordflow">case</span> <a class="code" href="classDBManager.html#a1f4dfbd2171fb985c8f746dfb75b7e4aa5dca47baf6f6adb4cf53a40e8fadd20d">MERGE_DB_USER</a>:</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            cfo.merge_operator.reset(<span class="keyword">new</span> <a class="code" href="classUserMergeOperator.html">UserMergeOperator</a>);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keywordflow">default</span>:</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    }</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;}</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="classDBManager.html#a47bcbc4a82aa937ab47d329a15637187">   64</a></span>&#160;<a class="code" href="classDBManager.html#a47bcbc4a82aa937ab47d329a15637187">DBManager::DBManager</a>(<span class="keyword">const</span> <span class="keywordtype">string</span>&amp; p, Status&amp; s) : path(p){</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    this-&gt;<a class="code" href="classDBManager.html#a9f73f4acc49a5ae39e1bdfdd95fc9a42">create</a>(s);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordflow">if</span>(s.ok())</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        this-&gt;<a class="code" href="classDBManager.html#a32dcf1b7b3c185409770a86c64906a95">open</a>(s);</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;}</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="classDBManager.html#a9f73f4acc49a5ae39e1bdfdd95fc9a42">   70</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classDBManager.html#a9f73f4acc49a5ae39e1bdfdd95fc9a42">DBManager::create</a>(Status&amp; s){</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    Options options;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    DB* _db;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    options.error_if_exists = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    options.create_if_missing = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    s = DB::Open(options, <a class="code" href="classDBManager.html#a9ada311c6f9264a86b9c9313965696c3">path</a>, &amp;_db);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordflow">if</span>(s.ok()){</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        ColumnFamilyHandle* cf;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i=0; DBManager::ColumnFamilyDescriptors[i].<a class="code" href="structDBManager_1_1ColumnFamilyDescriptor.html#a105cb37ed0fa393ffc08259f75016315">name</a>; i++){</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            <span class="keyword">const</span> <a class="code" href="structDBManager_1_1ColumnFamilyDescriptor.html">DBManager::ColumnFamilyDescriptor</a>&amp; cfd = DBManager::ColumnFamilyDescriptors[i];</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            ColumnFamilyOptions cfo;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            this-&gt;<a class="code" href="classDBManager.html#aa5fb3cccecf84a4407e066f0f4a63b7d">columnFamilyOptionsFromDescriptor</a>(cfd, cfo);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            s = _db-&gt;CreateColumnFamily(cfo, cfd.<a class="code" href="structDBManager_1_1ColumnFamilyDescriptor.html#a105cb37ed0fa393ffc08259f75016315">name</a>, &amp;cf);</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            <span class="keyword">delete</span> cf;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            <span class="keywordflow">if</span>(!s.ok())</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        }</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    }<span class="keywordflow">else</span> <span class="keywordflow">if</span>(s.IsInvalidArgument() &amp;&amp; s.ToString().find(<span class="stringliteral">&quot;error_if_exists is true&quot;</span>) != string::npos){</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        s = Status::OK();</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    }</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keyword">delete</span> _db;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;}</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;</div>
+<div class="line"><a name="l00095"></a><span class="lineno"><a class="line" href="classDBManager.html#a32dcf1b7b3c185409770a86c64906a95">   95</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classDBManager.html#a32dcf1b7b3c185409770a86c64906a95">DBManager::open</a>(Status&amp; s){</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    DB* _db;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    vector&lt;rocksdb::ColumnFamilyDescriptor&gt; column_families;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    column_families.push_back(rocksdb::ColumnFamilyDescriptor(kDefaultColumnFamilyName, ColumnFamilyOptions()));</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i=0; DBManager::ColumnFamilyDescriptors[i].<a class="code" href="structDBManager_1_1ColumnFamilyDescriptor.html#a105cb37ed0fa393ffc08259f75016315">name</a>; i++){</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        ColumnFamilyOptions cfo;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        <span class="keyword">const</span> <a class="code" href="structDBManager_1_1ColumnFamilyDescriptor.html">DBManager::ColumnFamilyDescriptor</a>&amp; cfd = DBManager::ColumnFamilyDescriptors[i];</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        this-&gt;<a class="code" href="classDBManager.html#aa5fb3cccecf84a4407e066f0f4a63b7d">columnFamilyOptionsFromDescriptor</a>(cfd, cfo);</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        column_families.push_back(rocksdb::ColumnFamilyDescriptor(cfd.<a class="code" href="structDBManager_1_1ColumnFamilyDescriptor.html#a105cb37ed0fa393ffc08259f75016315">name</a>, cfo));</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    }</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    std::vector&lt;ColumnFamilyHandle*&gt; handles;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    Options options;</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    options.comparator = &amp;this-&gt;comparator;</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    s = DB::Open(DBOptions(options), this-&gt;<a class="code" href="classDBManager.html#a9ada311c6f9264a86b9c9313965696c3">path</a>, column_families, &amp;handles, &amp;_db);</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordflow">if</span>(s.ok()){</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        this-&gt;<a class="code" href="classDBManager.html#ace98eed331b66db19ec7789fc44ec0fd">db</a> = unique_ptr&lt;DB&gt;(_db);</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        <span class="keywordflow">for</span>(<span class="keyword">auto</span> h : handles)</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;            <a class="code" href="classDBManager.html#a21814a0cc928161ffb40f1b4475f6ce9">cfs</a>.push_back(unique_ptr&lt;ColumnFamilyHandle&gt;(h));</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    }</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;}</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;</div>
+<div class="line"><a name="l00118"></a><span class="lineno"><a class="line" href="classDBManager.html#a83e24a5ebe154d056a01c025e70be591">  118</a></span>&#160;DB* <a class="code" href="classDBManager.html#a83e24a5ebe154d056a01c025e70be591">DBManager::get</a>(){</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keywordflow">return</span> this-&gt;<a class="code" href="classDBManager.html#ace98eed331b66db19ec7789fc44ec0fd">db</a>.get();</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;}</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;</div>
+<div class="line"><a name="l00122"></a><span class="lineno"><a class="line" href="classDBManager.html#a2f8981136b44f69fd487ab03e343251f">  122</a></span>&#160;ColumnFamilyHandle* <a class="code" href="classDBManager.html#a2f8981136b44f69fd487ab03e343251f">DBManager::getColumnFamily</a>(<a class="code" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53">DBManager::ColumnFamilies</a> c){</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="keywordflow">return</span> this-&gt;<a class="code" href="classDBManager.html#a21814a0cc928161ffb40f1b4475f6ce9">cfs</a>[c].get();</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;}</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;</div>
+<div class="line"><a name="l00126"></a><span class="lineno"><a class="line" href="classDBManager.html#a67f0664603ffdfcfca8b43fc9c25f4cc">  126</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classDBManager.html#a67f0664603ffdfcfca8b43fc9c25f4cc">DBManager::setEnviroment</a>(){</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    User::SetDB(this-&gt;<a class="code" href="classDBManager.html#ace98eed331b66db19ec7789fc44ec0fd">db</a>.get(), this-&gt;<a class="code" href="classDBManager.html#a21814a0cc928161ffb40f1b4475f6ce9">cfs</a>[<a class="code" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a0b42bfee279fae5380b1b81c84e8ca97">DBManager::COLUMN_FAMILY_USERS</a>].get());</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    Avatar::SetDB(this-&gt;<a class="code" href="classDBManager.html#ace98eed331b66db19ec7789fc44ec0fd">db</a>.get(), this-&gt;<a class="code" href="classDBManager.html#a21814a0cc928161ffb40f1b4475f6ce9">cfs</a>[<a class="code" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a0b42bfee279fae5380b1b81c84e8ca97">DBManager::COLUMN_FAMILY_USERS</a>].get());</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    Profile::SetDB(this-&gt;<a class="code" href="classDBManager.html#ace98eed331b66db19ec7789fc44ec0fd">db</a>.get(), this-&gt;<a class="code" href="classDBManager.html#a21814a0cc928161ffb40f1b4475f6ce9">cfs</a>[<a class="code" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a0b42bfee279fae5380b1b81c84e8ca97">DBManager::COLUMN_FAMILY_USERS</a>].get());</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    Checkin::SetDB(this-&gt;<a class="code" href="classDBManager.html#ace98eed331b66db19ec7789fc44ec0fd">db</a>.get(), this-&gt;<a class="code" href="classDBManager.html#a21814a0cc928161ffb40f1b4475f6ce9">cfs</a>[<a class="code" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a0b42bfee279fae5380b1b81c84e8ca97">DBManager::COLUMN_FAMILY_USERS</a>].get());</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    SuscriberList::SetDB(this-&gt;<a class="code" href="classDBManager.html#ace98eed331b66db19ec7789fc44ec0fd">db</a>.get(), this-&gt;<a class="code" href="classDBManager.html#a21814a0cc928161ffb40f1b4475f6ce9">cfs</a>[<a class="code" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a0b42bfee279fae5380b1b81c84e8ca97">DBManager::COLUMN_FAMILY_USERS</a>].get());</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    AccessToken::SetDB(this-&gt;<a class="code" href="classDBManager.html#ace98eed331b66db19ec7789fc44ec0fd">db</a>.get(), this-&gt;<a class="code" href="classDBManager.html#a21814a0cc928161ffb40f1b4475f6ce9">cfs</a>[<a class="code" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a0fc93e3d39d1d407126ca7116ae11b1c">DBManager::COLUMN_FAMILY_ACCESS_TOKENS</a>].get());</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    Message::SetDB(this-&gt;<a class="code" href="classDBManager.html#ace98eed331b66db19ec7789fc44ec0fd">db</a>.get(), this-&gt;<a class="code" href="classDBManager.html#a21814a0cc928161ffb40f1b4475f6ce9">cfs</a>[<a class="code" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a9c5138ccb0d1c38378cc7da589a71ce1">DBManager::COLUMN_FAMILY_MESSAGES</a>].get());</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    Notification::SetDB(this-&gt;<a class="code" href="classDBManager.html#ace98eed331b66db19ec7789fc44ec0fd">db</a>.get(), this-&gt;<a class="code" href="classDBManager.html#a21814a0cc928161ffb40f1b4475f6ce9">cfs</a>[<a class="code" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a6695ebe19f4297696cfb41aeb7f17086">DBManager::COLUMN_FAMILY_NOTIFICATIONS</a>].get());</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    ContactList::SetDB(this-&gt;<a class="code" href="classDBManager.html#ace98eed331b66db19ec7789fc44ec0fd">db</a>.get(), this-&gt;<a class="code" href="classDBManager.html#a21814a0cc928161ffb40f1b4475f6ce9">cfs</a>[<a class="code" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a8ba7b38650dc906418a1fa592f66f489">DBManager::COLUMN_FAMILY_CONTACT_LIST</a>].get());</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;}</div>
+<div class="ttc" id="classListMergeOperator_html"><div class="ttname"><a href="classListMergeOperator.html">ListMergeOperator</a></div><div class="ttdef"><b>Definition:</b> <a href="list__merge__operator_8h_source.html#l00009">list_merge_operator.h:9</a></div></div>
+<div class="ttc" id="classDBManager_html_a60d4e39148f33f28eae459c346975c53a8ba7b38650dc906418a1fa592f66f489"><div class="ttname"><a href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a8ba7b38650dc906418a1fa592f66f489">DBManager::COLUMN_FAMILY_CONTACT_LIST</a></div><div class="ttdoc">Column Family Para la lista de contactos. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00026">db_manager.h:26</a></div></div>
+<div class="ttc" id="classDBManager_html_a1f4dfbd2171fb985c8f746dfb75b7e4aa79003314242f32509d712ca3b69173aa"><div class="ttname"><a href="classDBManager.html#a1f4dfbd2171fb985c8f746dfb75b7e4aa79003314242f32509d712ca3b69173aa">DBManager::MERGE_DB_LIST</a></div><div class="ttdoc">Merge operator usado por la List (una lista con push_back y erase) </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00064">db_manager.h:64</a></div></div>
+<div class="ttc" id="classDBManager_html_a60d4e39148f33f28eae459c346975c53a9c5138ccb0d1c38378cc7da589a71ce1"><div class="ttname"><a href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a9c5138ccb0d1c38378cc7da589a71ce1">DBManager::COLUMN_FAMILY_MESSAGES</a></div><div class="ttdoc">Column Family Para los mensajes. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00022">db_manager.h:22</a></div></div>
+<div class="ttc" id="classDBManager_html_a2f8981136b44f69fd487ab03e343251f"><div class="ttname"><a href="classDBManager.html#a2f8981136b44f69fd487ab03e343251f">DBManager::getColumnFamily</a></div><div class="ttdeci">rocksdb::ColumnFamilyHandle * getColumnFamily(DBManager::ColumnFamilies c)</div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8cpp_source.html#l00122">db_manager.cpp:122</a></div></div>
+<div class="ttc" id="classDBManager_html_a60d4e39148f33f28eae459c346975c53"><div class="ttname"><a href="classDBManager.html#a60d4e39148f33f28eae459c346975c53">DBManager::ColumnFamilies</a></div><div class="ttdeci">ColumnFamilies</div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00020">db_manager.h:20</a></div></div>
+<div class="ttc" id="classDBManager_html_a67f0664603ffdfcfca8b43fc9c25f4cc"><div class="ttname"><a href="classDBManager.html#a67f0664603ffdfcfca8b43fc9c25f4cc">DBManager::setEnviroment</a></div><div class="ttdeci">void setEnviroment()</div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8cpp_source.html#l00126">db_manager.cpp:126</a></div></div>
+<div class="ttc" id="classDBManager_html_aa5fb3cccecf84a4407e066f0f4a63b7d"><div class="ttname"><a href="classDBManager.html#aa5fb3cccecf84a4407e066f0f4a63b7d">DBManager::columnFamilyOptionsFromDescriptor</a></div><div class="ttdeci">void columnFamilyOptionsFromDescriptor(const DBManager::ColumnFamilyDescriptor &amp;cfd, rocksdb::ColumnFamilyOptions &amp;cfo)</div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8cpp_source.html#l00040">db_manager.cpp:40</a></div></div>
+<div class="ttc" id="classDBManager_html_ace98eed331b66db19ec7789fc44ec0fd"><div class="ttname"><a href="classDBManager.html#ace98eed331b66db19ec7789fc44ec0fd">DBManager::db</a></div><div class="ttdeci">std::unique_ptr&lt; rocksdb::DB &gt; db</div><div class="ttdoc">Instancia de la db. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00085">db_manager.h:85</a></div></div>
+<div class="ttc" id="classDBManager_html_a47bcbc4a82aa937ab47d329a15637187"><div class="ttname"><a href="classDBManager.html#a47bcbc4a82aa937ab47d329a15637187">DBManager::DBManager</a></div><div class="ttdeci">DBManager(const std::string &amp;path, rocksdb::Status &amp;s)</div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8cpp_source.html#l00064">db_manager.cpp:64</a></div></div>
+<div class="ttc" id="structDBManager_1_1ColumnFamilyDescriptor_html_a105cb37ed0fa393ffc08259f75016315"><div class="ttname"><a href="structDBManager_1_1ColumnFamilyDescriptor.html#a105cb37ed0fa393ffc08259f75016315">DBManager::ColumnFamilyDescriptor::name</a></div><div class="ttdeci">const char * name</div><div class="ttdoc">Nombre de la column familyt. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00071">db_manager.h:71</a></div></div>
+<div class="ttc" id="classDBManager_html_a7fec7f7dbe271ad5328c10e309f2450ba4ff06dfcecbc5b66aaf731ec134f4ce8"><div class="ttname"><a href="classDBManager.html#a7fec7f7dbe271ad5328c10e309f2450ba4ff06dfcecbc5b66aaf731ec134f4ce8">DBManager::COMPARATOR_DB_COMPARATOR</a></div><div class="ttdoc">Comparador que ordena alfabeticamente diviendo las palabras por el caracter /. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00056">db_manager.h:56</a></div></div>
+<div class="ttc" id="classDBManager_html_a32dcf1b7b3c185409770a86c64906a95"><div class="ttname"><a href="classDBManager.html#a32dcf1b7b3c185409770a86c64906a95">DBManager::open</a></div><div class="ttdeci">void open(rocksdb::Status &amp;s)</div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8cpp_source.html#l00095">db_manager.cpp:95</a></div></div>
+<div class="ttc" id="classDBManager_html_a60d4e39148f33f28eae459c346975c53a0b42bfee279fae5380b1b81c84e8ca97"><div class="ttname"><a href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a0b42bfee279fae5380b1b81c84e8ca97">DBManager::COLUMN_FAMILY_USERS</a></div><div class="ttdoc">Column Family Para los usuarios. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00023">db_manager.h:23</a></div></div>
+<div class="ttc" id="classDBManager_html_a0b510d7b23ba244fa3e5263cef44e3ac"><div class="ttname"><a href="classDBManager.html#a0b510d7b23ba244fa3e5263cef44e3ac">DBManager::ColumnFamilyDescriptors</a></div><div class="ttdeci">static const DBManager::ColumnFamilyDescriptor ColumnFamilyDescriptors[]</div><div class="ttdoc">Lista de column families a crear / utilizar. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00082">db_manager.h:82</a></div></div>
+<div class="ttc" id="classDBManager_html_a9f73f4acc49a5ae39e1bdfdd95fc9a42"><div class="ttname"><a href="classDBManager.html#a9f73f4acc49a5ae39e1bdfdd95fc9a42">DBManager::create</a></div><div class="ttdeci">void create(rocksdb::Status &amp;s)</div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8cpp_source.html#l00070">db_manager.cpp:70</a></div></div>
+<div class="ttc" id="structDBManager_1_1ColumnFamilyDescriptor_html_a9005fc18010d7cdd8113302e984255da"><div class="ttname"><a href="structDBManager_1_1ColumnFamilyDescriptor.html#a9005fc18010d7cdd8113302e984255da">DBManager::ColumnFamilyDescriptor::mergeOperator</a></div><div class="ttdeci">const DBManager::MergeOperator mergeOperator</div><div class="ttdoc">Tipo de MergeOperator a utilizar. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00073">db_manager.h:73</a></div></div>
+<div class="ttc" id="classDBManager_html_a1f4dfbd2171fb985c8f746dfb75b7e4aa5dca47baf6f6adb4cf53a40e8fadd20d"><div class="ttname"><a href="classDBManager.html#a1f4dfbd2171fb985c8f746dfb75b7e4aa5dca47baf6f6adb4cf53a40e8fadd20d">DBManager::MERGE_DB_USER</a></div><div class="ttdoc">Merge operator usado por Profile (permite actualizar el last_activity) </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00065">db_manager.h:65</a></div></div>
+<div class="ttc" id="classDBManager_html_a21814a0cc928161ffb40f1b4475f6ce9"><div class="ttname"><a href="classDBManager.html#a21814a0cc928161ffb40f1b4475f6ce9">DBManager::cfs</a></div><div class="ttdeci">std::vector&lt; std::unique_ptr&lt; rocksdb::ColumnFamilyHandle &gt; &gt; cfs</div><div class="ttdoc">vector con todas las instancias de column families </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00086">db_manager.h:86</a></div></div>
+<div class="ttc" id="classDBManager_html_a60d4e39148f33f28eae459c346975c53a0fc93e3d39d1d407126ca7116ae11b1c"><div class="ttname"><a href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a0fc93e3d39d1d407126ca7116ae11b1c">DBManager::COLUMN_FAMILY_ACCESS_TOKENS</a></div><div class="ttdoc">Column Family Para los access token. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00025">db_manager.h:25</a></div></div>
+<div class="ttc" id="classDBManager_html_a83e24a5ebe154d056a01c025e70be591"><div class="ttname"><a href="classDBManager.html#a83e24a5ebe154d056a01c025e70be591">DBManager::get</a></div><div class="ttdeci">rocksdb::DB * get()</div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8cpp_source.html#l00118">db_manager.cpp:118</a></div></div>
+<div class="ttc" id="structDBManager_1_1ColumnFamilyDescriptor_html_ad4fed6eaf1132be87280274f4553629b"><div class="ttname"><a href="structDBManager_1_1ColumnFamilyDescriptor.html#ad4fed6eaf1132be87280274f4553629b">DBManager::ColumnFamilyDescriptor::comparator</a></div><div class="ttdeci">const DBManager::Comparator comparator</div><div class="ttdoc">Tipo de comparador a utilizar. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00072">db_manager.h:72</a></div></div>
+<div class="ttc" id="classDBManager_html_a7fec7f7dbe271ad5328c10e309f2450ba499b72a394ab02768af6ac501e78fb62"><div class="ttname"><a href="classDBManager.html#a7fec7f7dbe271ad5328c10e309f2450ba499b72a394ab02768af6ac501e78fb62">DBManager::COMPARATOR_DB_COMPARATOR_REVERSE</a></div><div class="ttdoc">*-1 de COMPARATOR_DB_COMPARATOR </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00057">db_manager.h:57</a></div></div>
+<div class="ttc" id="classDBManager_html_a60d4e39148f33f28eae459c346975c53a6695ebe19f4297696cfb41aeb7f17086"><div class="ttname"><a href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a6695ebe19f4297696cfb41aeb7f17086">DBManager::COLUMN_FAMILY_NOTIFICATIONS</a></div><div class="ttdoc">Column Family Para las notificaciones. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00024">db_manager.h:24</a></div></div>
+<div class="ttc" id="classUserMergeOperator_html"><div class="ttname"><a href="classUserMergeOperator.html">UserMergeOperator</a></div><div class="ttdef"><b>Definition:</b> <a href="user__merge__operator_8h_source.html#l00010">user_merge_operator.h:10</a></div></div>
+<div class="ttc" id="classDBManager_html_a9ada311c6f9264a86b9c9313965696c3"><div class="ttname"><a href="classDBManager.html#a9ada311c6f9264a86b9c9313965696c3">DBManager::path</a></div><div class="ttdeci">std::string path</div><div class="ttdoc">Path a la db. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00084">db_manager.h:84</a></div></div>
+<div class="ttc" id="structDBManager_1_1ColumnFamilyDescriptor_html"><div class="ttname"><a href="structDBManager_1_1ColumnFamilyDescriptor.html">DBManager::ColumnFamilyDescriptor</a></div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00070">db_manager.h:70</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generado el Jueves, 25 de Junio de 2015 19:30:47 para MensajerO por &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
+</body>
+</html>

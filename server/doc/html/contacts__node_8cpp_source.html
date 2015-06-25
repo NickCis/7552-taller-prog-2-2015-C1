@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.9.1"/>
+<title>MensajerO: Fichero Fuente src/rest/contacts_node.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() { init_search(); });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">MensajerO
+   &#160;<span id="projectnumber">0.1</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generado por Doxygen 1.8.9.1 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li><a href="pages.html"><span>Páginas&#160;relacionadas</span></a></li>
+      <li><a href="annotated.html"><span>Clases</span></a></li>
+      <li class="current"><a href="files.html"><span>Archivos</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Lista&#160;de&#160;archivos</span></a></li>
+    </ul>
+  </div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_d7e94c978dd7652d53b152d482eda33a.html">rest</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">contacts_node.cpp</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &quot;contacts_node.h&quot;</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;cstdlib&gt;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;../db/contact_list.h&quot;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;../db/user.h&quot;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">using</span> std::string;</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">using</span> rocksdb::Status;</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;ContactsNode::ContactsNode() : <a class="code" href="classWAMethodAuthNode.html">WAMethodAuthNode</a>(<span class="stringliteral">&quot;contacts&quot;</span>) {</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;}</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="classContactsNode.html#aa6db84cc9310ec9ec40c1026c4345898">   15</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classContactsNode.html#aa6db84cc9310ec9ec40c1026c4345898">ContactsNode::executeGet</a>(<a class="code" href="classMgConnection.html">MgConnection</a>&amp; conn, <span class="keyword">const</span> <span class="keywordtype">char</span>*){</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <a class="code" href="classContactList.html">ContactList</a> cl;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordflow">if</span>(! cl.<a class="code" href="classDbEntity.html#a811caa96b6e09f2fa016f69f9fe11cba">get</a>(conn.<a class="code" href="classMgConnection.html#a7dc9ec970bec9fca3c48393a8d3abf30">getParameter</a>(<span class="stringliteral">&quot;logged_user&quot;</span>)).ok()){</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="comment">/*conn.sendStatus(MgConnection::STATUS_CODE_INTERNAL_ERROR);</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment">        conn.sendContentType(MgConnection::CONTENT_TYPE_JSON);</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">        conn.printfData(&quot;{\&quot;error\&quot;:{\&quot;message\&quot;:\&quot;Error interno\&quot;,\&quot;code\&quot;:1,\&quot;error_user_msg\&quot;:\&quot;Ups Hubo problemas\&quot;}}&quot;);*/</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        conn.<a class="code" href="classMgConnection.html#a1bc73121b1d69483ef0127676f645576">sendStatus</a>(<a class="code" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba6e8c4a47dd013efe16b946d01003f0a0">MgConnection::STATUS_CODE_OK</a>);</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        conn.<a class="code" href="classMgConnection.html#a79f1e546aa877d0fc9a3edb7b0add499">sendContentType</a>(<a class="code" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225aace675124114daa6397554ca5f4b7aee">MgConnection::CONTENT_TYPE_JSON</a>);</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        conn.<a class="code" href="classMgConnection.html#aa1324f4f27c4fe055e39242a1151e017">printfData</a>(<span class="stringliteral">&quot;{\&quot;contacts\&quot;:[]}&quot;</span>);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    }</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    conn.<a class="code" href="classMgConnection.html#a1bc73121b1d69483ef0127676f645576">sendStatus</a>(<a class="code" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba6e8c4a47dd013efe16b946d01003f0a0">MgConnection::STATUS_CODE_OK</a>);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    conn.<a class="code" href="classMgConnection.html#a79f1e546aa877d0fc9a3edb7b0add499">sendContentType</a>(<a class="code" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225aace675124114daa6397554ca5f4b7aee">MgConnection::CONTENT_TYPE_JSON</a>);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    conn.<a class="code" href="classMgConnection.html#aa1324f4f27c4fe055e39242a1151e017">printfData</a>(<span class="stringliteral">&quot;%s&quot;</span>, cl.<a class="code" href="classContactList.html#a08fb96677d560ce8ffd001d7e86544f6">toJson</a>().c_str());</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;}</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classContactsNode.html#ab1086ff56272c1eede199249b7e9cf25">   34</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classContactsNode.html#ab1086ff56272c1eede199249b7e9cf25">ContactsNode::executeDelete</a>(<a class="code" href="classMgConnection.html">MgConnection</a>&amp; conn, <span class="keyword">const</span> <span class="keywordtype">char</span>*){</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordtype">string</span> loggedUser = conn.<a class="code" href="classMgConnection.html#a7dc9ec970bec9fca3c48393a8d3abf30">getParameter</a>(<span class="stringliteral">&quot;logged_user&quot;</span>);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <a class="code" href="classContactList.html">ContactList</a> contactList;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    contactList.setOwner(loggedUser);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">string</span> user;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">string</span> success;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">string</span> error;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">bool</span> firstSuccess = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">bool</span> firstError = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <a class="code" href="classUser.html">User</a> u;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> n=0; (user = conn.<a class="code" href="classMgConnection.html#a9db5bb4f3c683cbeb894cfb249bd8ee7">getVarStr</a>(<span class="stringliteral">&quot;users[]&quot;</span>, n)).length(); n++){</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordflow">if</span>(u.<a class="code" href="classDbEntity.html#a811caa96b6e09f2fa016f69f9fe11cba">get</a>(user).ok() &amp;&amp; contactList.erase(user).ok()){</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            <span class="keywordflow">if</span>(!firstSuccess)</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                success += <span class="stringliteral">&quot;,&quot;</span>;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                firstSuccess = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;            success += string(<span class="stringliteral">&quot;\&quot;&quot;</span>)+user+string(<span class="stringliteral">&quot;\&quot;&quot;</span>);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        }<span class="keywordflow">else</span>{</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            <span class="keywordflow">if</span>(!firstError)</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                error += <span class="stringliteral">&quot;,&quot;</span>;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                firstError = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            error += string(<span class="stringliteral">&quot;\&quot;&quot;</span>)+user+string(<span class="stringliteral">&quot;\&quot;&quot;</span>);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        }</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    }</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    conn.<a class="code" href="classMgConnection.html#a1bc73121b1d69483ef0127676f645576">sendStatus</a>(<a class="code" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba6e8c4a47dd013efe16b946d01003f0a0">MgConnection::STATUS_CODE_OK</a>);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    conn.<a class="code" href="classMgConnection.html#a79f1e546aa877d0fc9a3edb7b0add499">sendContentType</a>(<a class="code" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225aace675124114daa6397554ca5f4b7aee">MgConnection::CONTENT_TYPE_JSON</a>);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    conn.<a class="code" href="classMgConnection.html#aa1324f4f27c4fe055e39242a1151e017">printfData</a>(<span class="stringliteral">&quot;{\&quot;success\&quot;:[%s],\&quot;error\&quot;:[%s]}&quot;</span>, success.c_str(), error.c_str());</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;}</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="classContactsNode.html#a42c948d1e0e153be70a40a99de15bb48">   68</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classContactsNode.html#a42c948d1e0e153be70a40a99de15bb48">ContactsNode::executePost</a>(<a class="code" href="classMgConnection.html">MgConnection</a>&amp; conn, <span class="keyword">const</span> <span class="keywordtype">char</span>*){</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordtype">string</span> loggedUser = conn.<a class="code" href="classMgConnection.html#a7dc9ec970bec9fca3c48393a8d3abf30">getParameter</a>(<span class="stringliteral">&quot;logged_user&quot;</span>);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <a class="code" href="classContactList.html">ContactList</a> contactList;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    contactList.setOwner(loggedUser);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keywordtype">string</span> user;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keywordtype">string</span> success;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordtype">string</span> error;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keywordtype">bool</span> firstSuccess = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordtype">bool</span> firstError = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <a class="code" href="classUser.html">User</a> u;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> n=0; (user = conn.<a class="code" href="classMgConnection.html#a9db5bb4f3c683cbeb894cfb249bd8ee7">getVarStr</a>(<span class="stringliteral">&quot;users[]&quot;</span>, n)).length(); n++){</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="keywordflow">if</span>(u.<a class="code" href="classDbEntity.html#a811caa96b6e09f2fa016f69f9fe11cba">get</a>(user).ok() &amp;&amp; contactList.push_back(user).ok()){</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            <span class="keywordflow">if</span>(!firstSuccess)</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                success += <span class="stringliteral">&quot;,&quot;</span>;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                firstSuccess = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            success += string(<span class="stringliteral">&quot;\&quot;&quot;</span>)+user+string(<span class="stringliteral">&quot;\&quot;&quot;</span>);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        }<span class="keywordflow">else</span>{</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            <span class="keywordflow">if</span>(!firstError)</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                error += <span class="stringliteral">&quot;,&quot;</span>;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;            <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                firstError = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            error += string(<span class="stringliteral">&quot;\&quot;&quot;</span>)+user+string(<span class="stringliteral">&quot;\&quot;&quot;</span>);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        }</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    }</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    conn.<a class="code" href="classMgConnection.html#a1bc73121b1d69483ef0127676f645576">sendStatus</a>(<a class="code" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffbac88f4f52d8ed7e2f7851a5e7483e6002">MgConnection::STATUS_CODE_CREATED</a>);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    conn.<a class="code" href="classMgConnection.html#a79f1e546aa877d0fc9a3edb7b0add499">sendContentType</a>(<a class="code" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225aace675124114daa6397554ca5f4b7aee">MgConnection::CONTENT_TYPE_JSON</a>);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    conn.<a class="code" href="classMgConnection.html#aa1324f4f27c4fe055e39242a1151e017">printfData</a>(<span class="stringliteral">&quot;{\&quot;success\&quot;:[%s],\&quot;error\&quot;:[%s]}&quot;</span>, success.c_str(), error.c_str());</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;}</div>
+<div class="ttc" id="classDbEntity_html_a811caa96b6e09f2fa016f69f9fe11cba"><div class="ttname"><a href="classDbEntity.html#a811caa96b6e09f2fa016f69f9fe11cba">DbEntity::get</a></div><div class="ttdeci">rocksdb::Status get(const std::string &amp;key)</div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8cpp_source.html#l00009">db_entity.cpp:9</a></div></div>
+<div class="ttc" id="classContactsNode_html_a42c948d1e0e153be70a40a99de15bb48"><div class="ttname"><a href="classContactsNode.html#a42c948d1e0e153be70a40a99de15bb48">ContactsNode::executePost</a></div><div class="ttdeci">void executePost(MgConnection &amp;conn, const char *url)</div><div class="ttdef"><b>Definition:</b> <a href="contacts__node_8cpp_source.html#l00068">contacts_node.cpp:68</a></div></div>
+<div class="ttc" id="classMgConnection_html_ae6ce65078cfb6554251e5a09daca0ffba6e8c4a47dd013efe16b946d01003f0a0"><div class="ttname"><a href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba6e8c4a47dd013efe16b946d01003f0a0">MgConnection::STATUS_CODE_OK</a></div><div class="ttdoc">Todo bien. </div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00022">mg_connection.h:22</a></div></div>
+<div class="ttc" id="classMgConnection_html_aa1324f4f27c4fe055e39242a1151e017"><div class="ttname"><a href="classMgConnection.html#aa1324f4f27c4fe055e39242a1151e017">MgConnection::printfData</a></div><div class="ttdeci">size_t printfData(const char *format,...)</div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8cpp_source.html#l00045">mg_connection.cpp:45</a></div></div>
+<div class="ttc" id="classUser_html"><div class="ttname"><a href="classUser.html">User</a></div><div class="ttdef"><b>Definition:</b> <a href="user_8h_source.html#l00013">user.h:13</a></div></div>
+<div class="ttc" id="classWAMethodAuthNode_html"><div class="ttname"><a href="classWAMethodAuthNode.html">WAMethodAuthNode</a></div><div class="ttdef"><b>Definition:</b> <a href="wa__method__auth__node_8h_source.html#l00008">wa_method_auth_node.h:8</a></div></div>
+<div class="ttc" id="classContactList_html_a08fb96677d560ce8ffd001d7e86544f6"><div class="ttname"><a href="classContactList.html#a08fb96677d560ce8ffd001d7e86544f6">ContactList::toJson</a></div><div class="ttdeci">std::string toJson() const </div><div class="ttdoc">Representacion en JSON. </div><div class="ttdef"><b>Definition:</b> <a href="contact__list_8cpp_source.html#l00028">contact_list.cpp:28</a></div></div>
+<div class="ttc" id="classMgConnection_html_a9db5bb4f3c683cbeb894cfb249bd8ee7"><div class="ttname"><a href="classMgConnection.html#a9db5bb4f3c683cbeb894cfb249bd8ee7">MgConnection::getVarStr</a></div><div class="ttdeci">std::string getVarStr(const char *varName, int n=0, size_t max=64)</div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8cpp_source.html#l00099">mg_connection.cpp:99</a></div></div>
+<div class="ttc" id="classContactList_html"><div class="ttname"><a href="classContactList.html">ContactList</a></div><div class="ttdef"><b>Definition:</b> <a href="contact__list_8h_source.html#l00016">contact_list.h:16</a></div></div>
+<div class="ttc" id="classContactsNode_html_aa6db84cc9310ec9ec40c1026c4345898"><div class="ttname"><a href="classContactsNode.html#aa6db84cc9310ec9ec40c1026c4345898">ContactsNode::executeGet</a></div><div class="ttdeci">void executeGet(MgConnection &amp;conn, const char *url)</div><div class="ttdef"><b>Definition:</b> <a href="contacts__node_8cpp_source.html#l00015">contacts_node.cpp:15</a></div></div>
+<div class="ttc" id="classMgConnection_html_a79f1e546aa877d0fc9a3edb7b0add499"><div class="ttname"><a href="classMgConnection.html#a79f1e546aa877d0fc9a3edb7b0add499">MgConnection::sendContentType</a></div><div class="ttdeci">void sendContentType(const std::string &amp;type)</div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8cpp_source.html#l00061">mg_connection.cpp:61</a></div></div>
+<div class="ttc" id="classMgConnection_html_abc7d0ef886d32d6aaab551e484bc6225aace675124114daa6397554ca5f4b7aee"><div class="ttname"><a href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225aace675124114daa6397554ca5f4b7aee">MgConnection::CONTENT_TYPE_JSON</a></div><div class="ttdoc">Se envia un JSON. </div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00040">mg_connection.h:40</a></div></div>
+<div class="ttc" id="classMgConnection_html"><div class="ttname"><a href="classMgConnection.html">MgConnection</a></div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00011">mg_connection.h:11</a></div></div>
+<div class="ttc" id="classMgConnection_html_ae6ce65078cfb6554251e5a09daca0ffbac88f4f52d8ed7e2f7851a5e7483e6002"><div class="ttname"><a href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffbac88f4f52d8ed7e2f7851a5e7483e6002">MgConnection::STATUS_CODE_CREATED</a></div><div class="ttdoc">Se creo algo. </div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00023">mg_connection.h:23</a></div></div>
+<div class="ttc" id="classMgConnection_html_a1bc73121b1d69483ef0127676f645576"><div class="ttname"><a href="classMgConnection.html#a1bc73121b1d69483ef0127676f645576">MgConnection::sendStatus</a></div><div class="ttdeci">void sendStatus(MgConnection::StatusCodes code)</div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8cpp_source.html#l00029">mg_connection.cpp:29</a></div></div>
+<div class="ttc" id="classContactsNode_html_ab1086ff56272c1eede199249b7e9cf25"><div class="ttname"><a href="classContactsNode.html#ab1086ff56272c1eede199249b7e9cf25">ContactsNode::executeDelete</a></div><div class="ttdeci">void executeDelete(MgConnection &amp;conn, const char *url)</div><div class="ttdef"><b>Definition:</b> <a href="contacts__node_8cpp_source.html#l00034">contacts_node.cpp:34</a></div></div>
+<div class="ttc" id="classMgConnection_html_a7dc9ec970bec9fca3c48393a8d3abf30"><div class="ttname"><a href="classMgConnection.html#a7dc9ec970bec9fca3c48393a8d3abf30">MgConnection::getParameter</a></div><div class="ttdeci">const std::string &amp; getParameter(const std::string &amp;key)</div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8cpp_source.html#l00075">mg_connection.cpp:75</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generado el Jueves, 25 de Junio de 2015 19:30:47 para MensajerO por &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
+</body>
+</html>

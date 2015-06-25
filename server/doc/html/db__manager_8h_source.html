@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.9.1"/>
+<title>MensajerO: Fichero Fuente src/db/db_manager.h</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() { init_search(); });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">MensajerO
+   &#160;<span id="projectnumber">0.1</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generado por Doxygen 1.8.9.1 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li><a href="pages.html"><span>Páginas&#160;relacionadas</span></a></li>
+      <li><a href="annotated.html"><span>Clases</span></a></li>
+      <li class="current"><a href="files.html"><span>Archivos</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Lista&#160;de&#160;archivos</span></a></li>
+    </ul>
+  </div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_18fd539062cd3a2de3dfd78991cf728d.html">db</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">db_manager.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef __DB_HANDLE_H__</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define __DB_HANDLE_H__</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;rocksdb/db.h&gt;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;rocksdb/status.h&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;rocksdb/options.h&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;db_comparator.h&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="classDBManager.html">   16</a></span>&#160;<span class="keyword">class </span><a class="code" href="classDBManager.html">DBManager</a> {</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53">   20</a></span>&#160;        <span class="keyword">typedef</span> <span class="keyword">enum</span> <a class="code" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53">ColumnFamilies</a> {</div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a39af5a722901a232fa2ea9ad892ccd65">   21</a></span>&#160;            <a class="code" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a39af5a722901a232fa2ea9ad892ccd65">COLUMN_FAMILY_DEFAULT</a>=0, </div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a9c5138ccb0d1c38378cc7da589a71ce1">   22</a></span>&#160;            <a class="code" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a9c5138ccb0d1c38378cc7da589a71ce1">COLUMN_FAMILY_MESSAGES</a>, </div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a0b42bfee279fae5380b1b81c84e8ca97">   23</a></span>&#160;            <a class="code" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a0b42bfee279fae5380b1b81c84e8ca97">COLUMN_FAMILY_USERS</a>, </div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a6695ebe19f4297696cfb41aeb7f17086">   24</a></span>&#160;            <a class="code" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a6695ebe19f4297696cfb41aeb7f17086">COLUMN_FAMILY_NOTIFICATIONS</a>, </div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a0fc93e3d39d1d407126ca7116ae11b1c">   25</a></span>&#160;            <a class="code" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a0fc93e3d39d1d407126ca7116ae11b1c">COLUMN_FAMILY_ACCESS_TOKENS</a>, </div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a8ba7b38650dc906418a1fa592f66f489">   26</a></span>&#160;            <a class="code" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a8ba7b38650dc906418a1fa592f66f489">COLUMN_FAMILY_CONTACT_LIST</a>, </div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a2fe5773cdf49b160796b01670e44f1f7">   27</a></span>&#160;            <a class="code" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a2fe5773cdf49b160796b01670e44f1f7">COLUMN_FAMILY_TOTAL</a> </div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        } <a class="code" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53">ColumnFamilies</a>;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <a class="code" href="classDBManager.html#a47bcbc4a82aa937ab47d329a15637187">DBManager</a>(<span class="keyword">const</span> std::string&amp; <a class="code" href="classDBManager.html#a9ada311c6f9264a86b9c9313965696c3">path</a>, rocksdb::Status&amp; s);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        rocksdb::DB* <span class="keyword">get</span>();</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        rocksdb::ColumnFamilyHandle* <a class="code" href="classDBManager.html#a2f8981136b44f69fd487ab03e343251f">getColumnFamily</a>(<a class="code" href="classDBManager.html#a60d4e39148f33f28eae459c346975c53">DBManager::ColumnFamilies</a> c);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classDBManager.html#a67f0664603ffdfcfca8b43fc9c25f4cc">setEnviroment</a>();</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="classDBManager.html#a7fec7f7dbe271ad5328c10e309f2450b">   54</a></span>&#160;        <span class="keyword">typedef</span> <span class="keyword">enum</span> <a class="code" href="classDBManager.html#a7fec7f7dbe271ad5328c10e309f2450b">Comparator</a> {</div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="classDBManager.html#a7fec7f7dbe271ad5328c10e309f2450ba1a992ba114b16e35b7f2d17c2a6085b1">   55</a></span>&#160;            <a class="code" href="classDBManager.html#a7fec7f7dbe271ad5328c10e309f2450ba1a992ba114b16e35b7f2d17c2a6085b1">COMPARATOR_DEFAULT</a>=0, </div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="classDBManager.html#a7fec7f7dbe271ad5328c10e309f2450ba4ff06dfcecbc5b66aaf731ec134f4ce8">   56</a></span>&#160;            <a class="code" href="classDBManager.html#a7fec7f7dbe271ad5328c10e309f2450ba4ff06dfcecbc5b66aaf731ec134f4ce8">COMPARATOR_DB_COMPARATOR</a>, </div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="classDBManager.html#a7fec7f7dbe271ad5328c10e309f2450ba499b72a394ab02768af6ac501e78fb62">   57</a></span>&#160;            <a class="code" href="classDBManager.html#a7fec7f7dbe271ad5328c10e309f2450ba499b72a394ab02768af6ac501e78fb62">COMPARATOR_DB_COMPARATOR_REVERSE</a>, </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        } <a class="code" href="classDBManager.html#a7fec7f7dbe271ad5328c10e309f2450b">Comparator</a>;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="classDBManager.html#a1f4dfbd2171fb985c8f746dfb75b7e4a">   62</a></span>&#160;        <span class="keyword">typedef</span> <span class="keyword">enum</span> <a class="code" href="classDBManager.html#a1f4dfbd2171fb985c8f746dfb75b7e4a">MergeOperator</a> {</div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="classDBManager.html#a1f4dfbd2171fb985c8f746dfb75b7e4aa62c4d4fd5d67b356a184faa2a59e6a72">   63</a></span>&#160;            <a class="code" href="classDBManager.html#a1f4dfbd2171fb985c8f746dfb75b7e4aa62c4d4fd5d67b356a184faa2a59e6a72">MERGE_DEFAULT</a>=0, </div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="classDBManager.html#a1f4dfbd2171fb985c8f746dfb75b7e4aa79003314242f32509d712ca3b69173aa">   64</a></span>&#160;            <a class="code" href="classDBManager.html#a1f4dfbd2171fb985c8f746dfb75b7e4aa79003314242f32509d712ca3b69173aa">MERGE_DB_LIST</a>, </div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="classDBManager.html#a1f4dfbd2171fb985c8f746dfb75b7e4aa5dca47baf6f6adb4cf53a40e8fadd20d">   65</a></span>&#160;            <a class="code" href="classDBManager.html#a1f4dfbd2171fb985c8f746dfb75b7e4aa5dca47baf6f6adb4cf53a40e8fadd20d">MERGE_DB_USER</a> </div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        } <a class="code" href="classDBManager.html#a1f4dfbd2171fb985c8f746dfb75b7e4a">MergeOperator</a>;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="structDBManager_1_1ColumnFamilyDescriptor.html">   70</a></span>&#160;        <span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="structDBManager_1_1ColumnFamilyDescriptor.html#a105cb37ed0fa393ffc08259f75016315">   71</a></span>&#160;            <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="structDBManager_1_1ColumnFamilyDescriptor.html#a105cb37ed0fa393ffc08259f75016315">name</a>; </div>
+<div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="structDBManager_1_1ColumnFamilyDescriptor.html#ad4fed6eaf1132be87280274f4553629b">   72</a></span>&#160;            <span class="keyword">const</span> <a class="code" href="classDBManager.html#a7fec7f7dbe271ad5328c10e309f2450b">DBManager::Comparator</a> <a class="code" href="structDBManager_1_1ColumnFamilyDescriptor.html#ad4fed6eaf1132be87280274f4553629b">comparator</a>; </div>
+<div class="line"><a name="l00073"></a><span class="lineno"><a class="line" href="structDBManager_1_1ColumnFamilyDescriptor.html#a9005fc18010d7cdd8113302e984255da">   73</a></span>&#160;            <span class="keyword">const</span> <a class="code" href="classDBManager.html#a1f4dfbd2171fb985c8f746dfb75b7e4a">DBManager::MergeOperator</a> <a class="code" href="structDBManager_1_1ColumnFamilyDescriptor.html#a9005fc18010d7cdd8113302e984255da">mergeOperator</a>; </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        } <a class="code" href="structDBManager_1_1ColumnFamilyDescriptor.html">ColumnFamilyDescriptor</a>;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classDBManager.html#aa5fb3cccecf84a4407e066f0f4a63b7d">columnFamilyOptionsFromDescriptor</a>(<span class="keyword">const</span> <a class="code" href="structDBManager_1_1ColumnFamilyDescriptor.html">DBManager::ColumnFamilyDescriptor</a>&amp; cfd, rocksdb::ColumnFamilyOptions &amp;cfo);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
+<div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="classDBManager.html#a0b510d7b23ba244fa3e5263cef44e3ac">   82</a></span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="structDBManager_1_1ColumnFamilyDescriptor.html">DBManager::ColumnFamilyDescriptor</a> <a class="code" href="classDBManager.html#a0b510d7b23ba244fa3e5263cef44e3ac">ColumnFamilyDescriptors</a>[]; </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
+<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="classDBManager.html#a9ada311c6f9264a86b9c9313965696c3">   84</a></span>&#160;        std::string <a class="code" href="classDBManager.html#a9ada311c6f9264a86b9c9313965696c3">path</a>; </div>
+<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="classDBManager.html#ace98eed331b66db19ec7789fc44ec0fd">   85</a></span>&#160;        std::unique_ptr&lt;rocksdb::DB&gt; <a class="code" href="classDBManager.html#ace98eed331b66db19ec7789fc44ec0fd">db</a>; </div>
+<div class="line"><a name="l00086"></a><span class="lineno"><a class="line" href="classDBManager.html#a21814a0cc928161ffb40f1b4475f6ce9">   86</a></span>&#160;        std::vector &lt; std::unique_ptr &lt; rocksdb::ColumnFamilyHandle &gt; &gt; <a class="code" href="classDBManager.html#a21814a0cc928161ffb40f1b4475f6ce9">cfs</a>; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <a class="code" href="classDbComparator.html">DbComparator</a> comparator; <span class="comment">//&lt; Clase comparadora</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        <a class="code" href="classDbComparatorReverse.html">DbComparatorReverse</a> comparatorReverse; <span class="comment">//&lt; Clase comparadora</span></div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classDBManager.html#a9f73f4acc49a5ae39e1bdfdd95fc9a42">create</a>(rocksdb::Status&amp; s);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classDBManager.html#a32dcf1b7b3c185409770a86c64906a95">open</a>(rocksdb::Status&amp; s);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;};</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="classDBManager_html_a1f4dfbd2171fb985c8f746dfb75b7e4a"><div class="ttname"><a href="classDBManager.html#a1f4dfbd2171fb985c8f746dfb75b7e4a">DBManager::MergeOperator</a></div><div class="ttdeci">MergeOperator</div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00062">db_manager.h:62</a></div></div>
+<div class="ttc" id="classDBManager_html_a60d4e39148f33f28eae459c346975c53a8ba7b38650dc906418a1fa592f66f489"><div class="ttname"><a href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a8ba7b38650dc906418a1fa592f66f489">DBManager::COLUMN_FAMILY_CONTACT_LIST</a></div><div class="ttdoc">Column Family Para la lista de contactos. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00026">db_manager.h:26</a></div></div>
+<div class="ttc" id="classDBManager_html_a1f4dfbd2171fb985c8f746dfb75b7e4aa79003314242f32509d712ca3b69173aa"><div class="ttname"><a href="classDBManager.html#a1f4dfbd2171fb985c8f746dfb75b7e4aa79003314242f32509d712ca3b69173aa">DBManager::MERGE_DB_LIST</a></div><div class="ttdoc">Merge operator usado por la List (una lista con push_back y erase) </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00064">db_manager.h:64</a></div></div>
+<div class="ttc" id="classDBManager_html_a60d4e39148f33f28eae459c346975c53a9c5138ccb0d1c38378cc7da589a71ce1"><div class="ttname"><a href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a9c5138ccb0d1c38378cc7da589a71ce1">DBManager::COLUMN_FAMILY_MESSAGES</a></div><div class="ttdoc">Column Family Para los mensajes. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00022">db_manager.h:22</a></div></div>
+<div class="ttc" id="classDBManager_html_a2f8981136b44f69fd487ab03e343251f"><div class="ttname"><a href="classDBManager.html#a2f8981136b44f69fd487ab03e343251f">DBManager::getColumnFamily</a></div><div class="ttdeci">rocksdb::ColumnFamilyHandle * getColumnFamily(DBManager::ColumnFamilies c)</div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8cpp_source.html#l00122">db_manager.cpp:122</a></div></div>
+<div class="ttc" id="classDBManager_html_a60d4e39148f33f28eae459c346975c53"><div class="ttname"><a href="classDBManager.html#a60d4e39148f33f28eae459c346975c53">DBManager::ColumnFamilies</a></div><div class="ttdeci">ColumnFamilies</div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00020">db_manager.h:20</a></div></div>
+<div class="ttc" id="classDBManager_html_a67f0664603ffdfcfca8b43fc9c25f4cc"><div class="ttname"><a href="classDBManager.html#a67f0664603ffdfcfca8b43fc9c25f4cc">DBManager::setEnviroment</a></div><div class="ttdeci">void setEnviroment()</div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8cpp_source.html#l00126">db_manager.cpp:126</a></div></div>
+<div class="ttc" id="classDBManager_html_a7fec7f7dbe271ad5328c10e309f2450b"><div class="ttname"><a href="classDBManager.html#a7fec7f7dbe271ad5328c10e309f2450b">DBManager::Comparator</a></div><div class="ttdeci">Comparator</div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00054">db_manager.h:54</a></div></div>
+<div class="ttc" id="classDBManager_html_aa5fb3cccecf84a4407e066f0f4a63b7d"><div class="ttname"><a href="classDBManager.html#aa5fb3cccecf84a4407e066f0f4a63b7d">DBManager::columnFamilyOptionsFromDescriptor</a></div><div class="ttdeci">void columnFamilyOptionsFromDescriptor(const DBManager::ColumnFamilyDescriptor &amp;cfd, rocksdb::ColumnFamilyOptions &amp;cfo)</div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8cpp_source.html#l00040">db_manager.cpp:40</a></div></div>
+<div class="ttc" id="classDBManager_html_ace98eed331b66db19ec7789fc44ec0fd"><div class="ttname"><a href="classDBManager.html#ace98eed331b66db19ec7789fc44ec0fd">DBManager::db</a></div><div class="ttdeci">std::unique_ptr&lt; rocksdb::DB &gt; db</div><div class="ttdoc">Instancia de la db. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00085">db_manager.h:85</a></div></div>
+<div class="ttc" id="classDBManager_html_a47bcbc4a82aa937ab47d329a15637187"><div class="ttname"><a href="classDBManager.html#a47bcbc4a82aa937ab47d329a15637187">DBManager::DBManager</a></div><div class="ttdeci">DBManager(const std::string &amp;path, rocksdb::Status &amp;s)</div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8cpp_source.html#l00064">db_manager.cpp:64</a></div></div>
+<div class="ttc" id="classDBManager_html_a7fec7f7dbe271ad5328c10e309f2450ba1a992ba114b16e35b7f2d17c2a6085b1"><div class="ttname"><a href="classDBManager.html#a7fec7f7dbe271ad5328c10e309f2450ba1a992ba114b16e35b7f2d17c2a6085b1">DBManager::COMPARATOR_DEFAULT</a></div><div class="ttdoc">Comparador por defecto. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00055">db_manager.h:55</a></div></div>
+<div class="ttc" id="structDBManager_1_1ColumnFamilyDescriptor_html_a105cb37ed0fa393ffc08259f75016315"><div class="ttname"><a href="structDBManager_1_1ColumnFamilyDescriptor.html#a105cb37ed0fa393ffc08259f75016315">DBManager::ColumnFamilyDescriptor::name</a></div><div class="ttdeci">const char * name</div><div class="ttdoc">Nombre de la column familyt. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00071">db_manager.h:71</a></div></div>
+<div class="ttc" id="classDBManager_html_a7fec7f7dbe271ad5328c10e309f2450ba4ff06dfcecbc5b66aaf731ec134f4ce8"><div class="ttname"><a href="classDBManager.html#a7fec7f7dbe271ad5328c10e309f2450ba4ff06dfcecbc5b66aaf731ec134f4ce8">DBManager::COMPARATOR_DB_COMPARATOR</a></div><div class="ttdoc">Comparador que ordena alfabeticamente diviendo las palabras por el caracter /. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00056">db_manager.h:56</a></div></div>
+<div class="ttc" id="classDbComparator_html"><div class="ttname"><a href="classDbComparator.html">DbComparator</a></div><div class="ttdef"><b>Definition:</b> <a href="db__comparator_8h_source.html#l00011">db_comparator.h:11</a></div></div>
+<div class="ttc" id="classDBManager_html_a32dcf1b7b3c185409770a86c64906a95"><div class="ttname"><a href="classDBManager.html#a32dcf1b7b3c185409770a86c64906a95">DBManager::open</a></div><div class="ttdeci">void open(rocksdb::Status &amp;s)</div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8cpp_source.html#l00095">db_manager.cpp:95</a></div></div>
+<div class="ttc" id="classDBManager_html_a60d4e39148f33f28eae459c346975c53a0b42bfee279fae5380b1b81c84e8ca97"><div class="ttname"><a href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a0b42bfee279fae5380b1b81c84e8ca97">DBManager::COLUMN_FAMILY_USERS</a></div><div class="ttdoc">Column Family Para los usuarios. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00023">db_manager.h:23</a></div></div>
+<div class="ttc" id="classDBManager_html_a0b510d7b23ba244fa3e5263cef44e3ac"><div class="ttname"><a href="classDBManager.html#a0b510d7b23ba244fa3e5263cef44e3ac">DBManager::ColumnFamilyDescriptors</a></div><div class="ttdeci">static const DBManager::ColumnFamilyDescriptor ColumnFamilyDescriptors[]</div><div class="ttdoc">Lista de column families a crear / utilizar. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00082">db_manager.h:82</a></div></div>
+<div class="ttc" id="classDBManager_html_a9f73f4acc49a5ae39e1bdfdd95fc9a42"><div class="ttname"><a href="classDBManager.html#a9f73f4acc49a5ae39e1bdfdd95fc9a42">DBManager::create</a></div><div class="ttdeci">void create(rocksdb::Status &amp;s)</div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8cpp_source.html#l00070">db_manager.cpp:70</a></div></div>
+<div class="ttc" id="classDBManager_html_a60d4e39148f33f28eae459c346975c53a39af5a722901a232fa2ea9ad892ccd65"><div class="ttname"><a href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a39af5a722901a232fa2ea9ad892ccd65">DBManager::COLUMN_FAMILY_DEFAULT</a></div><div class="ttdoc">Column Family Default. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00021">db_manager.h:21</a></div></div>
+<div class="ttc" id="structDBManager_1_1ColumnFamilyDescriptor_html_a9005fc18010d7cdd8113302e984255da"><div class="ttname"><a href="structDBManager_1_1ColumnFamilyDescriptor.html#a9005fc18010d7cdd8113302e984255da">DBManager::ColumnFamilyDescriptor::mergeOperator</a></div><div class="ttdeci">const DBManager::MergeOperator mergeOperator</div><div class="ttdoc">Tipo de MergeOperator a utilizar. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00073">db_manager.h:73</a></div></div>
+<div class="ttc" id="classDBManager_html_a1f4dfbd2171fb985c8f746dfb75b7e4aa5dca47baf6f6adb4cf53a40e8fadd20d"><div class="ttname"><a href="classDBManager.html#a1f4dfbd2171fb985c8f746dfb75b7e4aa5dca47baf6f6adb4cf53a40e8fadd20d">DBManager::MERGE_DB_USER</a></div><div class="ttdoc">Merge operator usado por Profile (permite actualizar el last_activity) </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00065">db_manager.h:65</a></div></div>
+<div class="ttc" id="classDBManager_html_a1f4dfbd2171fb985c8f746dfb75b7e4aa62c4d4fd5d67b356a184faa2a59e6a72"><div class="ttname"><a href="classDBManager.html#a1f4dfbd2171fb985c8f746dfb75b7e4aa62c4d4fd5d67b356a184faa2a59e6a72">DBManager::MERGE_DEFAULT</a></div><div class="ttdoc">Merge operador por default. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00063">db_manager.h:63</a></div></div>
+<div class="ttc" id="classDBManager_html_a21814a0cc928161ffb40f1b4475f6ce9"><div class="ttname"><a href="classDBManager.html#a21814a0cc928161ffb40f1b4475f6ce9">DBManager::cfs</a></div><div class="ttdeci">std::vector&lt; std::unique_ptr&lt; rocksdb::ColumnFamilyHandle &gt; &gt; cfs</div><div class="ttdoc">vector con todas las instancias de column families </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00086">db_manager.h:86</a></div></div>
+<div class="ttc" id="classDBManager_html_a60d4e39148f33f28eae459c346975c53a0fc93e3d39d1d407126ca7116ae11b1c"><div class="ttname"><a href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a0fc93e3d39d1d407126ca7116ae11b1c">DBManager::COLUMN_FAMILY_ACCESS_TOKENS</a></div><div class="ttdoc">Column Family Para los access token. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00025">db_manager.h:25</a></div></div>
+<div class="ttc" id="structDBManager_1_1ColumnFamilyDescriptor_html_ad4fed6eaf1132be87280274f4553629b"><div class="ttname"><a href="structDBManager_1_1ColumnFamilyDescriptor.html#ad4fed6eaf1132be87280274f4553629b">DBManager::ColumnFamilyDescriptor::comparator</a></div><div class="ttdeci">const DBManager::Comparator comparator</div><div class="ttdoc">Tipo de comparador a utilizar. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00072">db_manager.h:72</a></div></div>
+<div class="ttc" id="classDBManager_html"><div class="ttname"><a href="classDBManager.html">DBManager</a></div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00016">db_manager.h:16</a></div></div>
+<div class="ttc" id="classDBManager_html_a7fec7f7dbe271ad5328c10e309f2450ba499b72a394ab02768af6ac501e78fb62"><div class="ttname"><a href="classDBManager.html#a7fec7f7dbe271ad5328c10e309f2450ba499b72a394ab02768af6ac501e78fb62">DBManager::COMPARATOR_DB_COMPARATOR_REVERSE</a></div><div class="ttdoc">*-1 de COMPARATOR_DB_COMPARATOR </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00057">db_manager.h:57</a></div></div>
+<div class="ttc" id="classDBManager_html_a60d4e39148f33f28eae459c346975c53a6695ebe19f4297696cfb41aeb7f17086"><div class="ttname"><a href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a6695ebe19f4297696cfb41aeb7f17086">DBManager::COLUMN_FAMILY_NOTIFICATIONS</a></div><div class="ttdoc">Column Family Para las notificaciones. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00024">db_manager.h:24</a></div></div>
+<div class="ttc" id="classDBManager_html_a60d4e39148f33f28eae459c346975c53a2fe5773cdf49b160796b01670e44f1f7"><div class="ttname"><a href="classDBManager.html#a60d4e39148f33f28eae459c346975c53a2fe5773cdf49b160796b01670e44f1f7">DBManager::COLUMN_FAMILY_TOTAL</a></div><div class="ttdoc">Numero total de column families. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00027">db_manager.h:27</a></div></div>
+<div class="ttc" id="classDBManager_html_a9ada311c6f9264a86b9c9313965696c3"><div class="ttname"><a href="classDBManager.html#a9ada311c6f9264a86b9c9313965696c3">DBManager::path</a></div><div class="ttdeci">std::string path</div><div class="ttdoc">Path a la db. </div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00084">db_manager.h:84</a></div></div>
+<div class="ttc" id="classDbComparatorReverse_html"><div class="ttname"><a href="classDbComparatorReverse.html">DbComparatorReverse</a></div><div class="ttdef"><b>Definition:</b> <a href="db__comparator_8h_source.html#l00043">db_comparator.h:43</a></div></div>
+<div class="ttc" id="structDBManager_1_1ColumnFamilyDescriptor_html"><div class="ttname"><a href="structDBManager_1_1ColumnFamilyDescriptor.html">DBManager::ColumnFamilyDescriptor</a></div><div class="ttdef"><b>Definition:</b> <a href="db__manager_8h_source.html#l00070">db_manager.h:70</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generado el Jueves, 25 de Junio de 2015 19:30:47 para MensajerO por &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
+</body>
+</html>

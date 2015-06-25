@@ -1,0 +1,274 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.9.1"/>
+<title>MensajerO: Fichero Fuente src/util/serializer.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() { init_search(); });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">MensajerO
+   &#160;<span id="projectnumber">0.1</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generado por Doxygen 1.8.9.1 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li><a href="pages.html"><span>Páginas&#160;relacionadas</span></a></li>
+      <li><a href="annotated.html"><span>Clases</span></a></li>
+      <li class="current"><a href="files.html"><span>Archivos</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Lista&#160;de&#160;archivos</span></a></li>
+    </ul>
+  </div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_b7878ad5ecbf2506f4125b9d34c97e45.html">util</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">serializer.cpp</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &quot;serializer.h&quot;</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;cstring&gt;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;cstdlib&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">using</span> std::copy;</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">using</span> std::string;</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">using</span> std::vector;</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">using</span> std::strlen;</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">using</span> std::calloc;</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;Ignore::Ignore() :</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    _size(0) {}</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="classIgnore.html#abcad238f1ae3f58e551c733134be0867">   15</a></span>&#160;Ignore::Ignore(<span class="keyword">const</span> <span class="keywordtype">size_t</span>  s) :</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    _size(s) {}</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classIgnore.html#a889c413897731cb246955d131c022b3b">   18</a></span>&#160;Ignore::Ignore(<span class="keyword">const</span> <span class="keywordtype">int</span>  s) :</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    _size(s) {}</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;</div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="classIgnore.html#aa964a9334f552a534967a41cde7c14b3">   21</a></span>&#160;Ignore::Ignore(<span class="keyword">const</span> <span class="keywordtype">char</span>* str) :</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    _size(strlen(str)) {}</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classIgnore.html#a561df10bac9db31e5143214f17fbc0fb">   24</a></span>&#160;Ignore::Ignore(<span class="keyword">const</span> <span class="keywordtype">char</span>) :</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    _size(sizeof(char)) {}</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classIgnore.html#abd99ccccaa8903b1aa67352565e05160">   27</a></span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="classIgnore.html#abd99ccccaa8903b1aa67352565e05160">Ignore::size</a>(){</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordflow">return</span> this-&gt;<a class="code" href="classIgnore.html#a2c4073e139aaa49dee9f182a012fa4d6">_size</a>;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;}</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classOSerializer.html#a3484b0231d94595024684e91f2d876d0">   31</a></span>&#160;<a class="code" href="classOSerializer.html#a3484b0231d94595024684e91f2d876d0">OSerializer::OSerializer</a>(<span class="keywordtype">string</span> &amp;b, <span class="keywordtype">size_t</span> size) :</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    buffer(b)</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;{</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordflow">if</span>(size &gt; 0)</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        this-&gt;buffer.reserve(size);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    this-&gt;buffer.resize(0);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;}</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<a class="code" href="classOSerializer.html">OSerializer</a>&amp; <a class="code" href="classOSerializer.html#ad1e3cb011d6ad9972f424cd362c5cc00">OSerializer::operator&lt;&lt;</a>(<span class="keyword">const</span> <span class="keywordtype">string</span>&amp; str){</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">size_t</span> size = str.size();</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    (*this) &lt;&lt; size;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    buffer.reserve(buffer.size()+str.size());</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    buffer.append(str.begin(), str.end());</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordflow">return</span> (*<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;}</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<a class="code" href="classOSerializer.html">OSerializer</a>&amp; OSerializer::operator&lt;&lt;(const vector&lt;char&gt;&amp; str){</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordtype">size_t</span> size = str.size();</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    (*this) &lt;&lt; size;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    buffer.reserve(buffer.size()+str.size());</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    buffer.append(str.begin(), str.end());</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordflow">return</span> (*<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;}</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="classOSerializer.html#afa0d3950ea974ed52301098f66a0ba89">   57</a></span>&#160;<a class="code" href="classOSerializer.html">OSerializer</a>&amp; <a class="code" href="classOSerializer.html#ad1e3cb011d6ad9972f424cd362c5cc00">OSerializer::operator&lt;&lt;</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* &amp; str){</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordtype">size_t</span> size = strlen(str);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    (*this) &lt;&lt; size;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    buffer.reserve(buffer.size()+size);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    buffer.append(str, size);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordflow">return</span> (*<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="classOSerializer.html#ab68eb4c2ec889ef1e646d56c035b0e41">   66</a></span>&#160;<a class="code" href="classOSerializer.html">OSerializer</a>&amp; <a class="code" href="classOSerializer.html#ad1e3cb011d6ad9972f424cd362c5cc00">OSerializer::operator&lt;&lt;</a>(<a class="code" href="classNoPrefix.html">StrNoPrefix</a> str){</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordflow">return</span> (*<span class="keyword">this</span>) &lt;&lt; <a class="code" href="classNoPrefix.html">ConstStrNoPrefix</a>(str-&gt;data(), str.<a class="code" href="classNoPrefix.html#a9cf75d07105b2db883bc5d1c12c4f9f3">size</a>());</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;}</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<a class="code" href="classOSerializer.html">OSerializer</a>&amp; <a class="code" href="classOSerializer.html#ad1e3cb011d6ad9972f424cd362c5cc00">OSerializer::operator&lt;&lt;</a>(<a class="code" href="classNoPrefix.html">ConstStrNoPrefix</a> str){</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    buffer.reserve(buffer.size()+str-&gt;<a class="code" href="classNoPrefix.html#a9cf75d07105b2db883bc5d1c12c4f9f3">size</a>());</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    buffer.append(str-&gt;begin(), str-&gt;end());</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keywordflow">return</span> (*<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;}</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="classISerializer.html#a498089e15812ab1dc6ac1baa76bba022">   76</a></span>&#160;<a class="code" href="classISerializer.html#a498089e15812ab1dc6ac1baa76bba022">ISerializer::ISerializer</a>(<span class="keyword">const</span> <span class="keywordtype">string</span> &amp;b) :</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    buffer(b),</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    it(b.begin()),</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    bufferSize(b.size()),</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    _error(false)</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;{</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;}</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
+<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="classISerializer.html#ac9e8f262c7ae3ff0b6861e2e048ec363">   84</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classISerializer.html#ac9e8f262c7ae3ff0b6861e2e048ec363">ISerializer::error</a>(){</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordflow">return</span> this-&gt;<a class="code" href="classISerializer.html#a1a30e23fa4027b73da4014c4890790de">_error</a>;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;}</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<a class="code" href="classISerializer.html">ISerializer</a>&amp; <a class="code" href="classISerializer.html#a9008898e5257aab61f2f0a5288b7e4cd">ISerializer::operator&gt;&gt;</a>(<span class="keywordtype">string</span>&amp; str){</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keywordtype">size_t</span> size;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    (*this) &gt;&gt; size;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keywordflow">if</span>(! this-&gt;<a class="code" href="classISerializer.html#a7b9c2cbfb846f0d7c63b75510fdcdf18">errorCheck</a>(size)){</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        str.resize(0);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        str.reserve(size);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        str.append(<a class="code" href="classISerializer.html#ab047e5a30477de8178c4dae9eab590ba">it</a>, <a class="code" href="classISerializer.html#ab047e5a30477de8178c4dae9eab590ba">it</a>+size);</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        this-&gt;<a class="code" href="classISerializer.html#a52014f5d60a410d8eb23972a0fc349ce">advance</a>(size);</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    }</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keywordflow">return</span> (*<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;}</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<a class="code" href="classISerializer.html">ISerializer</a>&amp; <a class="code" href="classISerializer.html#a9008898e5257aab61f2f0a5288b7e4cd">ISerializer::operator&gt;&gt;</a>(vector&lt;char&gt;&amp; str){</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keywordtype">size_t</span> size;</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    (*this) &gt;&gt; size;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <span class="keywordflow">if</span>(! this-&gt;<a class="code" href="classISerializer.html#a7b9c2cbfb846f0d7c63b75510fdcdf18">errorCheck</a>(size)){</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        str.resize(size);</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        copy(<a class="code" href="classISerializer.html#ab047e5a30477de8178c4dae9eab590ba">it</a>, <a class="code" href="classISerializer.html#ab047e5a30477de8178c4dae9eab590ba">it</a>+size, str.begin());</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        this-&gt;<a class="code" href="classISerializer.html#a52014f5d60a410d8eb23972a0fc349ce">advance</a>(size);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    }</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keywordflow">return</span> (*<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;}</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;</div>
+<div class="line"><a name="l00115"></a><span class="lineno"><a class="line" href="classISerializer.html#ada8c5ccbfd7fedd6f28f1ec261f163e0">  115</a></span>&#160;<a class="code" href="classISerializer.html">ISerializer</a>&amp; <a class="code" href="classISerializer.html#a9008898e5257aab61f2f0a5288b7e4cd">ISerializer::operator&gt;&gt;</a>(<span class="keywordtype">char</span>* &amp; str){</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keywordtype">size_t</span> size;</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    (*this) &gt;&gt; size;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keywordflow">if</span>(! this-&gt;<a class="code" href="classISerializer.html#a7b9c2cbfb846f0d7c63b75510fdcdf18">errorCheck</a>(size)){</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        str = (<span class="keywordtype">char</span>*) calloc(size+1, <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>));</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        copy(<a class="code" href="classISerializer.html#ab047e5a30477de8178c4dae9eab590ba">it</a>, <a class="code" href="classISerializer.html#ab047e5a30477de8178c4dae9eab590ba">it</a>+size, str);</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        this-&gt;<a class="code" href="classISerializer.html#a52014f5d60a410d8eb23972a0fc349ce">advance</a>(size);</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    }</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="keywordflow">return</span> (*<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;}</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;</div>
+<div class="line"><a name="l00128"></a><span class="lineno"><a class="line" href="classISerializer.html#ac66df5a309f454e7790b2cb4b7c612be">  128</a></span>&#160;<a class="code" href="classISerializer.html">ISerializer</a>&amp; <a class="code" href="classISerializer.html#a9008898e5257aab61f2f0a5288b7e4cd">ISerializer::operator&gt;&gt;</a>(<a class="code" href="classNoPrefix.html">StrNoPrefix</a> str){</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <span class="keywordflow">if</span>(! this-&gt;<a class="code" href="classISerializer.html#a7b9c2cbfb846f0d7c63b75510fdcdf18">errorCheck</a>(str.<a class="code" href="classNoPrefix.html#a9cf75d07105b2db883bc5d1c12c4f9f3">size</a>())){</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        str-&gt;resize(0);</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        str-&gt;reserve(str.<a class="code" href="classNoPrefix.html#a9cf75d07105b2db883bc5d1c12c4f9f3">size</a>());</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        str-&gt;append(<a class="code" href="classISerializer.html#ab047e5a30477de8178c4dae9eab590ba">it</a>, <a class="code" href="classISerializer.html#ab047e5a30477de8178c4dae9eab590ba">it</a>+str.<a class="code" href="classNoPrefix.html#a9cf75d07105b2db883bc5d1c12c4f9f3">size</a>());</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        this-&gt;<a class="code" href="classISerializer.html#a52014f5d60a410d8eb23972a0fc349ce">advance</a>(str.<a class="code" href="classNoPrefix.html#a9cf75d07105b2db883bc5d1c12c4f9f3">size</a>());</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    }</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    <span class="keywordflow">return</span> (*<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;}</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;</div>
+<div class="line"><a name="l00139"></a><span class="lineno"><a class="line" href="classISerializer.html#aa7bdccea4685026cbb0adcf53c15d608">  139</a></span>&#160;<a class="code" href="classISerializer.html">ISerializer</a>&amp; <a class="code" href="classISerializer.html#a9008898e5257aab61f2f0a5288b7e4cd">ISerializer::operator&gt;&gt;</a>(<a class="code" href="classIgnore.html">Ignore</a> ig){</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    <span class="keywordflow">if</span>(! this-&gt;<a class="code" href="classISerializer.html#a7b9c2cbfb846f0d7c63b75510fdcdf18">errorCheck</a>(ig.<a class="code" href="classIgnore.html#abd99ccccaa8903b1aa67352565e05160">size</a>())){</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;        this-&gt;<a class="code" href="classISerializer.html#a52014f5d60a410d8eb23972a0fc349ce">advance</a>(ig.<a class="code" href="classIgnore.html#abd99ccccaa8903b1aa67352565e05160">size</a>());</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    }</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    <span class="keywordflow">return</span> (*<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;}</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;</div>
+<div class="line"><a name="l00147"></a><span class="lineno"><a class="line" href="classISerializer.html#a7b9c2cbfb846f0d7c63b75510fdcdf18">  147</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classISerializer.html#a7b9c2cbfb846f0d7c63b75510fdcdf18">ISerializer::errorCheck</a>(<span class="keywordtype">size_t</span> size){</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    <span class="keywordflow">if</span>(this-&gt;<a class="code" href="classISerializer.html#a1a30e23fa4027b73da4014c4890790de">_error</a> || this-&gt;<a class="code" href="classISerializer.html#a555ddf4812d3b84ba106d354c0c6c168">bufferSize</a> &lt; size)</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keywordflow">return</span> (this-&gt;<a class="code" href="classISerializer.html#a1a30e23fa4027b73da4014c4890790de">_error</a> = <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;}</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;</div>
+<div class="line"><a name="l00154"></a><span class="lineno"><a class="line" href="classISerializer.html#a52014f5d60a410d8eb23972a0fc349ce">  154</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classISerializer.html#a52014f5d60a410d8eb23972a0fc349ce">ISerializer::advance</a>(<span class="keywordtype">size_t</span> size){</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    this-&gt;<a class="code" href="classISerializer.html#ab047e5a30477de8178c4dae9eab590ba">it</a> += size;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    this-&gt;<a class="code" href="classISerializer.html#a555ddf4812d3b84ba106d354c0c6c168">bufferSize</a> -= size;</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;}</div>
+<div class="ttc" id="classOSerializer_html"><div class="ttname"><a href="classOSerializer.html">OSerializer</a></div><div class="ttdef"><b>Definition:</b> <a href="serializer_8h_source.html#l00079">serializer.h:79</a></div></div>
+<div class="ttc" id="classISerializer_html_a498089e15812ab1dc6ac1baa76bba022"><div class="ttname"><a href="classISerializer.html#a498089e15812ab1dc6ac1baa76bba022">ISerializer::ISerializer</a></div><div class="ttdeci">ISerializer(const std::string &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="serializer_8cpp_source.html#l00076">serializer.cpp:76</a></div></div>
+<div class="ttc" id="classISerializer_html"><div class="ttname"><a href="classISerializer.html">ISerializer</a></div><div class="ttdef"><b>Definition:</b> <a href="serializer_8h_source.html#l00124">serializer.h:124</a></div></div>
+<div class="ttc" id="classOSerializer_html_ad1e3cb011d6ad9972f424cd362c5cc00"><div class="ttname"><a href="classOSerializer.html#ad1e3cb011d6ad9972f424cd362c5cc00">OSerializer::operator&lt;&lt;</a></div><div class="ttdeci">OSerializer &amp; operator&lt;&lt;(const std::string &amp;)</div></div>
+<div class="ttc" id="classISerializer_html_a52014f5d60a410d8eb23972a0fc349ce"><div class="ttname"><a href="classISerializer.html#a52014f5d60a410d8eb23972a0fc349ce">ISerializer::advance</a></div><div class="ttdeci">void advance(size_t)</div><div class="ttdef"><b>Definition:</b> <a href="serializer_8cpp_source.html#l00154">serializer.cpp:154</a></div></div>
+<div class="ttc" id="classNoPrefix_html"><div class="ttname"><a href="classNoPrefix.html">NoPrefix</a></div><div class="ttdef"><b>Definition:</b> <a href="serializer_8h_source.html#l00011">serializer.h:11</a></div></div>
+<div class="ttc" id="classOSerializer_html_a3484b0231d94595024684e91f2d876d0"><div class="ttname"><a href="classOSerializer.html#a3484b0231d94595024684e91f2d876d0">OSerializer::OSerializer</a></div><div class="ttdeci">OSerializer(std::string &amp;buffer, size_t size=0)</div><div class="ttdef"><b>Definition:</b> <a href="serializer_8cpp_source.html#l00031">serializer.cpp:31</a></div></div>
+<div class="ttc" id="classISerializer_html_a555ddf4812d3b84ba106d354c0c6c168"><div class="ttname"><a href="classISerializer.html#a555ddf4812d3b84ba106d354c0c6c168">ISerializer::bufferSize</a></div><div class="ttdeci">size_t bufferSize</div><div class="ttdoc">tama~no del buffer restante </div><div class="ttdef"><b>Definition:</b> <a href="serializer_8h_source.html#l00172">serializer.h:172</a></div></div>
+<div class="ttc" id="classISerializer_html_ac9e8f262c7ae3ff0b6861e2e048ec363"><div class="ttname"><a href="classISerializer.html#ac9e8f262c7ae3ff0b6861e2e048ec363">ISerializer::error</a></div><div class="ttdeci">bool error()</div><div class="ttdef"><b>Definition:</b> <a href="serializer_8cpp_source.html#l00084">serializer.cpp:84</a></div></div>
+<div class="ttc" id="classIgnore_html_abd99ccccaa8903b1aa67352565e05160"><div class="ttname"><a href="classIgnore.html#abd99ccccaa8903b1aa67352565e05160">Ignore::size</a></div><div class="ttdeci">size_t size()</div><div class="ttdef"><b>Definition:</b> <a href="serializer_8cpp_source.html#l00027">serializer.cpp:27</a></div></div>
+<div class="ttc" id="classISerializer_html_a9008898e5257aab61f2f0a5288b7e4cd"><div class="ttname"><a href="classISerializer.html#a9008898e5257aab61f2f0a5288b7e4cd">ISerializer::operator&gt;&gt;</a></div><div class="ttdeci">ISerializer &amp; operator&gt;&gt;(std::string &amp;)</div></div>
+<div class="ttc" id="classISerializer_html_ab047e5a30477de8178c4dae9eab590ba"><div class="ttname"><a href="classISerializer.html#ab047e5a30477de8178c4dae9eab590ba">ISerializer::it</a></div><div class="ttdeci">std::string::const_iterator it</div><div class="ttdoc">Iterador de la posicion actual. </div><div class="ttdef"><b>Definition:</b> <a href="serializer_8h_source.html#l00171">serializer.h:171</a></div></div>
+<div class="ttc" id="classISerializer_html_a1a30e23fa4027b73da4014c4890790de"><div class="ttname"><a href="classISerializer.html#a1a30e23fa4027b73da4014c4890790de">ISerializer::_error</a></div><div class="ttdeci">bool _error</div><div class="ttdoc">Si hubo un error al extraer. </div><div class="ttdef"><b>Definition:</b> <a href="serializer_8h_source.html#l00173">serializer.h:173</a></div></div>
+<div class="ttc" id="classIgnore_html_a2c4073e139aaa49dee9f182a012fa4d6"><div class="ttname"><a href="classIgnore.html#a2c4073e139aaa49dee9f182a012fa4d6">Ignore::_size</a></div><div class="ttdeci">size_t _size</div><div class="ttdoc">Tama~no a ignorar. </div><div class="ttdef"><b>Definition:</b> <a href="serializer_8h_source.html#l00074">serializer.h:74</a></div></div>
+<div class="ttc" id="classISerializer_html_a7b9c2cbfb846f0d7c63b75510fdcdf18"><div class="ttname"><a href="classISerializer.html#a7b9c2cbfb846f0d7c63b75510fdcdf18">ISerializer::errorCheck</a></div><div class="ttdeci">bool errorCheck(size_t)</div><div class="ttdef"><b>Definition:</b> <a href="serializer_8cpp_source.html#l00147">serializer.cpp:147</a></div></div>
+<div class="ttc" id="classIgnore_html"><div class="ttname"><a href="classIgnore.html">Ignore</a></div><div class="ttdef"><b>Definition:</b> <a href="serializer_8h_source.html#l00048">serializer.h:48</a></div></div>
+<div class="ttc" id="classNoPrefix_html_a9cf75d07105b2db883bc5d1c12c4f9f3"><div class="ttname"><a href="classNoPrefix.html#a9cf75d07105b2db883bc5d1c12c4f9f3">NoPrefix::size</a></div><div class="ttdeci">size_t size()</div><div class="ttdef"><b>Definition:</b> <a href="serializer_8h_source.html#l00029">serializer.h:29</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generado el Jueves, 25 de Junio de 2015 19:30:47 para MensajerO por &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
+</body>
+</html>

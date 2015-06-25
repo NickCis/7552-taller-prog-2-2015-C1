@@ -1,0 +1,748 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.9.1"/>
+<title>MensajerO: Referencia de la Clase MgConnection</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() { init_search(); });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">MensajerO
+   &#160;<span id="projectnumber">0.1</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generado por Doxygen 1.8.9.1 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li><a href="pages.html"><span>Páginas&#160;relacionadas</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Clases</span></a></li>
+      <li><a href="files.html"><span>Archivos</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Lista&#160;de&#160;clases</span></a></li>
+      <li><a href="classes.html"><span>Índice&#160;de&#160;clases</span></a></li>
+      <li><a href="hierarchy.html"><span>Jerarquía&#160;de&#160;la&#160;clase</span></a></li>
+      <li><a href="functions.html"><span>Miembros&#160;de&#160;las&#160;clases</span></a></li>
+    </ul>
+  </div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+</div><!-- top -->
+<div class="header">
+  <div class="summary">
+<a href="#pub-types">Tipos públicos</a> &#124;
+<a href="#pub-methods">Métodos públicos</a> &#124;
+<a href="#pro-attribs">Atributos protegidos</a> &#124;
+<a href="classMgConnection-members.html">Lista de todos los miembros</a>  </div>
+  <div class="headertitle">
+<div class="title">Referencia de la Clase MgConnection</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p><code>#include &lt;<a class="el" href="mg__connection_8h_source.html">mg_connection.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Tipos públicos</h2></td></tr>
+<tr class="memitem:ae6ce65078cfb6554251e5a09daca0ffb"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffb">StatusCodes</a> { <br />
+&#160;&#160;<a class="el" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba6e8c4a47dd013efe16b946d01003f0a0">STATUS_CODE_OK</a> =200, 
+<a class="el" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffbac88f4f52d8ed7e2f7851a5e7483e6002">STATUS_CODE_CREATED</a> =201, 
+<a class="el" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba0ed9817af2a00c571a62006f73130e7b">STATUS_CODE_BAD_REQUEST</a> =400, 
+<a class="el" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba1622f2fb3a60e26402213649f768db8d">STATUS_CODE_UNAUTHORIZED</a> =401, 
+<br />
+&#160;&#160;<a class="el" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba6a492b56127bca142c3ca2551ac666d3">STATUS_CODE_FORBIDDEN</a> =403, 
+<a class="el" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba19ac5ba0f082c365103fdbcfa28918ed">STATUS_CODE_NOT_FOUND</a> =404, 
+<a class="el" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffba9504fff2a034bef55a64ac07f1e7a87c">STATUS_CODE_METHOD_NOT_ALLOWED</a> =405, 
+<a class="el" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffbaf9e7dbab0800251c684946037ab0170c">STATUS_CODE_INTERNAL_ERROR</a> =500
+<br />
+ }</td></tr>
+<tr class="separator:ae6ce65078cfb6554251e5a09daca0ffb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc7d0ef886d32d6aaab551e484bc6225"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225">ContentTypes</a> { <br />
+&#160;&#160;<a class="el" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225aace675124114daa6397554ca5f4b7aee">CONTENT_TYPE_JSON</a> =0, 
+<a class="el" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225a787f85b93c99ebaaa21e4dfdb977ca55">CONTENT_TYPE_HTML</a>, 
+<a class="el" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225a867bcbbc80cf21ab4330b1e17168e83f">CONTENT_TYPE_JPG</a>, 
+<a class="el" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225a12af1050210fe4d38153b49f9b50ca27">CONTENT_TYPE_EVENT_STREAM</a>, 
+<br />
+&#160;&#160;<b>CONTENT_TYPE_TOTAL</b>
+<br />
+ }</td></tr>
+<tr class="separator:abc7d0ef886d32d6aaab551e484bc6225"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c5d61f45823ae7c7d68e07da63002da"><td class="memItemLeft" align="right" valign="top">typedef enum <a class="el" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffb">MgConnection::StatusCodes</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMgConnection.html#a6c5d61f45823ae7c7d68e07da63002da">StatusCodes</a></td></tr>
+<tr class="separator:a6c5d61f45823ae7c7d68e07da63002da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56ebc58ff8d93af8d50c1b4b1565c3f0"><td class="memItemLeft" align="right" valign="top">typedef enum <a class="el" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225">MgConnection::ContentTypes</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMgConnection.html#a56ebc58ff8d93af8d50c1b4b1565c3f0">ContentTypes</a></td></tr>
+<tr class="separator:a56ebc58ff8d93af8d50c1b4b1565c3f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Métodos públicos</h2></td></tr>
+<tr class="memitem:a4d73d63395706afce85eb052080db91e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMgConnection.html#a4d73d63395706afce85eb052080db91e">MgConnection</a> (struct <a class="el" href="structmg__connection.html">mg_connection</a> *<a class="el" href="classMgConnection.html#a5f47a7c5d384dbcdde31efb4fe6aa6b2">conn</a>)</td></tr>
+<tr class="separator:a4d73d63395706afce85eb052080db91e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1bc73121b1d69483ef0127676f645576"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMgConnection.html#a1bc73121b1d69483ef0127676f645576">sendStatus</a> (<a class="el" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffb">MgConnection::StatusCodes</a> code)</td></tr>
+<tr class="separator:a1bc73121b1d69483ef0127676f645576"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2812b85db55e3cb3fc3626b9818aed4d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMgConnection.html#a2812b85db55e3cb3fc3626b9818aed4d">sendStatus</a> (int code)</td></tr>
+<tr class="separator:a2812b85db55e3cb3fc3626b9818aed4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5caacfb604787d8a7f27a880305c07fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMgConnection.html#a5caacfb604787d8a7f27a880305c07fa">sendHeader</a> (const std::string &amp;name, const std::string &amp;val)</td></tr>
+<tr class="separator:a5caacfb604787d8a7f27a880305c07fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34c7204a89a3230445b61af72d996881"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a34c7204a89a3230445b61af72d996881"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>sendHeader</b> (const char *name, const char *val)</td></tr>
+<tr class="separator:a34c7204a89a3230445b61af72d996881"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79f1e546aa877d0fc9a3edb7b0add499"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMgConnection.html#a79f1e546aa877d0fc9a3edb7b0add499">sendContentType</a> (const std::string &amp;type)</td></tr>
+<tr class="separator:a79f1e546aa877d0fc9a3edb7b0add499"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adcd26ebb7cbd77aeec93e2dbb5d04615"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adcd26ebb7cbd77aeec93e2dbb5d04615"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>sendContentType</b> (const char *type)</td></tr>
+<tr class="separator:adcd26ebb7cbd77aeec93e2dbb5d04615"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a822066aa6608e431c96a2b791cea89a7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a822066aa6608e431c96a2b791cea89a7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>sendContentType</b> (<a class="el" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225">MgConnection::ContentTypes</a> type)</td></tr>
+<tr class="separator:a822066aa6608e431c96a2b791cea89a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1324f4f27c4fe055e39242a1151e017"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMgConnection.html#aa1324f4f27c4fe055e39242a1151e017">printfData</a> (const char *format,...)</td></tr>
+<tr class="separator:aa1324f4f27c4fe055e39242a1151e017"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1be92d3ce4c02bf2cc32af7e8f3c0c92"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMgConnection.html#a1be92d3ce4c02bf2cc32af7e8f3c0c92">send_data</a> (const void *buf, size_t len)</td></tr>
+<tr class="separator:a1be92d3ce4c02bf2cc32af7e8f3c0c92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1724d917268bc1e3ca59ae57c347c52"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structmg__connection.html">mg_connection</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMgConnection.html#aa1724d917268bc1e3ca59ae57c347c52">operator-&gt;</a> ()</td></tr>
+<tr class="separator:aa1724d917268bc1e3ca59ae57c347c52"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7dc9ec970bec9fca3c48393a8d3abf30"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMgConnection.html#a7dc9ec970bec9fca3c48393a8d3abf30">getParameter</a> (const std::string &amp;key)</td></tr>
+<tr class="separator:a7dc9ec970bec9fca3c48393a8d3abf30"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0fc40563d447132bf19bf53bb821562"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMgConnection.html#ab0fc40563d447132bf19bf53bb821562">setParameter</a> (const std::string &amp;key, const std::string &amp;value)</td></tr>
+<tr class="separator:ab0fc40563d447132bf19bf53bb821562"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92e485b2a6df5fe83a77a144c3ddb608"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMgConnection.html#a92e485b2a6df5fe83a77a144c3ddb608">setResponse</a> (enum mg_result)</td></tr>
+<tr class="separator:a92e485b2a6df5fe83a77a144c3ddb608"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d2bb5859f7a8155fc51a3806526b58c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4d2bb5859f7a8155fc51a3806526b58c"></a>
+enum mg_result&#160;</td><td class="memItemRight" valign="bottom"><b>getResponse</b> ()</td></tr>
+<tr class="separator:a4d2bb5859f7a8155fc51a3806526b58c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2128e65dfb47fa3ad67a02c7cab26bf6"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMgConnection.html#a2128e65dfb47fa3ad67a02c7cab26bf6">getHeader</a> (const std::string &amp;)</td></tr>
+<tr class="separator:a2128e65dfb47fa3ad67a02c7cab26bf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a129db916a0a0564b1c879105ad194539"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a129db916a0a0564b1c879105ad194539"></a>
+const char *&#160;</td><td class="memItemRight" valign="bottom"><b>getHeader</b> (const char *)</td></tr>
+<tr class="separator:a129db916a0a0564b1c879105ad194539"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9db5bb4f3c683cbeb894cfb249bd8ee7"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMgConnection.html#a9db5bb4f3c683cbeb894cfb249bd8ee7">getVarStr</a> (const char *varName, int n=0, size_t max=64)</td></tr>
+<tr class="separator:a9db5bb4f3c683cbeb894cfb249bd8ee7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa63374bbfb7313270705d9f9139d8b05"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa63374bbfb7313270705d9f9139d8b05"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>getVarStr</b> (const std::string &amp;varName, int n=0, size_t max=64)</td></tr>
+<tr class="separator:aa63374bbfb7313270705d9f9139d8b05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a893b67833ca040cf0b439d43569d7d55"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMgConnection.html#a893b67833ca040cf0b439d43569d7d55">getVarInt</a> (const char *varName, int n=0, size_t max=64)</td></tr>
+<tr class="separator:a893b67833ca040cf0b439d43569d7d55"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a229f75be5c9ab5cd1a13e892baa65969"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a229f75be5c9ab5cd1a13e892baa65969"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>getVarInt</b> (const std::string &amp;varName, int n=0, size_t max=64)</td></tr>
+<tr class="separator:a229f75be5c9ab5cd1a13e892baa65969"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee38f39dc74e2befae727b69a70e9abf"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMgConnection.html#aee38f39dc74e2befae727b69a70e9abf">getVarDouble</a> (const char *varName, int n=0, size_t max=64)</td></tr>
+<tr class="separator:aee38f39dc74e2befae727b69a70e9abf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5c08c4d8c0d1938d8ee8931dca438fa"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad5c08c4d8c0d1938d8ee8931dca438fa"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>getVarDouble</b> (const std::string &amp;varName, int n=0, size_t max=64)</td></tr>
+<tr class="separator:ad5c08c4d8c0d1938d8ee8931dca438fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c8671db4fd5063b4cd5d2b37b820181"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5c8671db4fd5063b4cd5d2b37b820181"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>getMultipartData</b> (std::string &amp;var_name, std::string &amp;file_name)</td></tr>
+<tr class="separator:a5c8671db4fd5063b4cd5d2b37b820181"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Atributos protegidos</h2></td></tr>
+<tr class="memitem:a5f47a7c5d384dbcdde31efb4fe6aa6b2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5f47a7c5d384dbcdde31efb4fe6aa6b2"></a>
+struct <a class="el" href="structmg__connection.html">mg_connection</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMgConnection.html#a5f47a7c5d384dbcdde31efb4fe6aa6b2">conn</a></td></tr>
+<tr class="memdesc:a5f47a7c5d384dbcdde31efb4fe6aa6b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Instacia de <a class="el" href="structmg__connection.html">mg_connection</a>. <br /></td></tr>
+<tr class="separator:a5f47a7c5d384dbcdde31efb4fe6aa6b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1e49ad9ce6d00c887dde6f02ea4aaf6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac1e49ad9ce6d00c887dde6f02ea4aaf6"></a>
+std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMgConnection.html#ac1e49ad9ce6d00c887dde6f02ea4aaf6">parameters</a></td></tr>
+<tr class="memdesc:ac1e49ad9ce6d00c887dde6f02ea4aaf6"><td class="mdescLeft">&#160;</td><td class="mdescRight">map de los parametros guardados por el usuario <br /></td></tr>
+<tr class="separator:ac1e49ad9ce6d00c887dde6f02ea4aaf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c6bb0d16dec01185aa1b211081d19ea"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0c6bb0d16dec01185aa1b211081d19ea"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>multipartOffset</b></td></tr>
+<tr class="separator:a0c6bb0d16dec01185aa1b211081d19ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c0552be9b56bf39c04a26fd564724c4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2c0552be9b56bf39c04a26fd564724c4"></a>
+enum mg_result&#160;</td><td class="memItemRight" valign="bottom"><b>response</b></td></tr>
+<tr class="separator:a2c0552be9b56bf39c04a26fd564724c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Descripción detallada</h2>
+<div class="textblock"><p>Clase que representa una coneccion, abstrae struct <a class="el" href="structmg__connection.html">mg_connection</a> de mongoose </p>
+
+<p>Definición en la línea <a class="el" href="mg__connection_8h_source.html#l00011">11</a> del archivo <a class="el" href="mg__connection_8h_source.html">mg_connection.h</a>.</p>
+</div><h2 class="groupheader">Documentación de los 'Typedef' miembros de la clase</h2>
+<a class="anchor" id="a56ebc58ff8d93af8d50c1b4b1565c3f0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef enum <a class="el" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225">MgConnection::ContentTypes</a>  <a class="el" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225">MgConnection::ContentTypes</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Enum que representa los content types que puede tener la respuesta </p>
+
+</div>
+</div>
+<a class="anchor" id="a6c5d61f45823ae7c7d68e07da63002da"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef enum <a class="el" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffb">MgConnection::StatusCodes</a>  <a class="el" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffb">MgConnection::StatusCodes</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Enum que representa los codigos de estado de html </p>
+
+</div>
+</div>
+<h2 class="groupheader">Documentación de las enumeraciones miembro de la clase</h2>
+<a class="anchor" id="abc7d0ef886d32d6aaab551e484bc6225"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classMgConnection.html#abc7d0ef886d32d6aaab551e484bc6225">MgConnection::ContentTypes</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Enum que representa los content types que puede tener la respuesta </p>
+<table class="fieldtable">
+<tr><th colspan="2">Valores de enumeraciones</th></tr><tr><td class="fieldname"><a class="anchor" id="abc7d0ef886d32d6aaab551e484bc6225aace675124114daa6397554ca5f4b7aee"></a>CONTENT_TYPE_JSON&#160;</td><td class="fielddoc">
+<p>Se envia un JSON. </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="abc7d0ef886d32d6aaab551e484bc6225a787f85b93c99ebaaa21e4dfdb977ca55"></a>CONTENT_TYPE_HTML&#160;</td><td class="fielddoc">
+<p>Se envia un HTML. </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="abc7d0ef886d32d6aaab551e484bc6225a867bcbbc80cf21ab4330b1e17168e83f"></a>CONTENT_TYPE_JPG&#160;</td><td class="fielddoc">
+<p>Se envia un JPG. </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="abc7d0ef886d32d6aaab551e484bc6225a12af1050210fe4d38153b49f9b50ca27"></a>CONTENT_TYPE_EVENT_STREAM&#160;</td><td class="fielddoc">
+<p>para stream </p>
+</td></tr>
+</table>
+
+<p>Definición en la línea <a class="el" href="mg__connection_8h_source.html#l00039">39</a> del archivo <a class="el" href="mg__connection_8h_source.html">mg_connection.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae6ce65078cfb6554251e5a09daca0ffb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffb">MgConnection::StatusCodes</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Enum que representa los codigos de estado de html </p>
+<table class="fieldtable">
+<tr><th colspan="2">Valores de enumeraciones</th></tr><tr><td class="fieldname"><a class="anchor" id="ae6ce65078cfb6554251e5a09daca0ffba6e8c4a47dd013efe16b946d01003f0a0"></a>STATUS_CODE_OK&#160;</td><td class="fielddoc">
+<p>Todo bien. </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ae6ce65078cfb6554251e5a09daca0ffbac88f4f52d8ed7e2f7851a5e7483e6002"></a>STATUS_CODE_CREATED&#160;</td><td class="fielddoc">
+<p>Se creo algo. </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ae6ce65078cfb6554251e5a09daca0ffba0ed9817af2a00c571a62006f73130e7b"></a>STATUS_CODE_BAD_REQUEST&#160;</td><td class="fielddoc">
+<p>El cliente no paso toda la informacion, request malo. </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ae6ce65078cfb6554251e5a09daca0ffba1622f2fb3a60e26402213649f768db8d"></a>STATUS_CODE_UNAUTHORIZED&#160;</td><td class="fielddoc">
+<p>Cliente no esta autorizado para lo que quiere hacer. </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ae6ce65078cfb6554251e5a09daca0ffba6a492b56127bca142c3ca2551ac666d3"></a>STATUS_CODE_FORBIDDEN&#160;</td><td class="fielddoc">
+<p>El cliente tiene prohibido hacer eso (no es un tema de permisos) </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ae6ce65078cfb6554251e5a09daca0ffba19ac5ba0f082c365103fdbcfa28918ed"></a>STATUS_CODE_NOT_FOUND&#160;</td><td class="fielddoc">
+<p>No se encuentro. </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ae6ce65078cfb6554251e5a09daca0ffba9504fff2a034bef55a64ac07f1e7a87c"></a>STATUS_CODE_METHOD_NOT_ALLOWED&#160;</td><td class="fielddoc">
+<p>Se pidio un GET/POST/DELETE y no se implementa ese metodo. </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ae6ce65078cfb6554251e5a09daca0ffbaf9e7dbab0800251c684946037ab0170c"></a>STATUS_CODE_INTERNAL_ERROR&#160;</td><td class="fielddoc">
+<p>Error del servidor. </p>
+</td></tr>
+</table>
+
+<p>Definición en la línea <a class="el" href="mg__connection_8h_source.html#l00020">20</a> del archivo <a class="el" href="mg__connection_8h_source.html">mg_connection.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Documentación del constructor y destructor</h2>
+<a class="anchor" id="a4d73d63395706afce85eb052080db91e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">MgConnection::MgConnection </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structmg__connection.html">mg_connection</a> *&#160;</td>
+          <td class="paramname"><em>conn</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Constructor </p><dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">coneccion</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definición en la línea <a class="el" href="mg__connection_8cpp_source.html#l00022">22</a> del archivo <a class="el" href="mg__connection_8cpp_source.html">mg_connection.cpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Documentación de las funciones miembro</h2>
+<a class="anchor" id="a2128e65dfb47fa3ad67a02c7cab26bf6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* MgConnection::getHeader </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Devuelve el valor de un header de la conneccion http </p><dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">nombre</td><td>del header </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Devuelve</dt><dd>NULL si no esta presente, o el valor del mismo </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a7dc9ec970bec9fca3c48393a8d3abf30"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string &amp; MgConnection::getParameter </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Obtiene un parametro que anteriormente fue guardado para esta coneccion </p><dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td>clave por la cual fue guardado </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Devuelve</dt><dd>valor del parametro o "" si no existe </dd></dl>
+
+<p>Definición en la línea <a class="el" href="mg__connection_8cpp_source.html#l00075">75</a> del archivo <a class="el" href="mg__connection_8cpp_source.html">mg_connection.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aee38f39dc74e2befae727b69a70e9abf"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double MgConnection::getVarDouble </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>varName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>n</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>max</em> = <code>64</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Obtiene un parametro de la url, lo convierte a un double </p><dl class="section see"><dt>Ver también</dt><dd><a class="el" href="classMgConnection.html#a9db5bb4f3c683cbeb894cfb249bd8ee7">MgConnection::getVarStr</a> </dd></dl>
+
+<p>Definición en la línea <a class="el" href="mg__connection_8cpp_source.html#l00134">134</a> del archivo <a class="el" href="mg__connection_8cpp_source.html">mg_connection.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a893b67833ca040cf0b439d43569d7d55"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int MgConnection::getVarInt </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>varName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>n</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>max</em> = <code>64</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Obtiene un parametro de la url, lo convierte a entero </p><dl class="section see"><dt>Ver también</dt><dd><a class="el" href="classMgConnection.html#a9db5bb4f3c683cbeb894cfb249bd8ee7">MgConnection::getVarStr</a> </dd></dl>
+
+<p>Definición en la línea <a class="el" href="mg__connection_8cpp_source.html#l00126">126</a> del archivo <a class="el" href="mg__connection_8cpp_source.html">mg_connection.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9db5bb4f3c683cbeb894cfb249bd8ee7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string MgConnection::getVarStr </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>varName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>n</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>max</em> = <code>64</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Obtiene un parametro de la url o de post (si es url encoded) </p><dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">varName</td><td>nombre del parametro </td></tr>
+    <tr><td class="paramname">n</td><td>posicion del valor </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>Ver también</dt><dd>mg_get_var_n(), para la primera aparicion usar 0 </dd></dl>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">max</td><td>buffer a allocar </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Devuelve</dt><dd>valor del parametro o "" si no existe </dd></dl>
+
+<p>Definición en la línea <a class="el" href="mg__connection_8cpp_source.html#l00099">99</a> del archivo <a class="el" href="mg__connection_8cpp_source.html">mg_connection.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa1724d917268bc1e3ca59ae57c347c52"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct <a class="el" href="structmg__connection.html">mg_connection</a> * MgConnection::operator-&gt; </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Operador derreferencia. </p><dl class="section return"><dt>Devuelve</dt><dd>puntero a <a class="el" href="structmg__connection.html">mg_connection</a> </dd></dl>
+
+<p>Definición en la línea <a class="el" href="mg__connection_8cpp_source.html#l00057">57</a> del archivo <a class="el" href="mg__connection_8cpp_source.html">mg_connection.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa1324f4f27c4fe055e39242a1151e017"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t MgConnection::printfData </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>format</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Printf - abstrae mg_vprintf_data </p>
+
+<p>Definición en la línea <a class="el" href="mg__connection_8cpp_source.html#l00045">45</a> del archivo <a class="el" href="mg__connection_8cpp_source.html">mg_connection.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1be92d3ce4c02bf2cc32af7e8f3c0c92"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t MgConnection::send_data </td>
+          <td>(</td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>buf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>len</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>manda un binario - abstrae mg_send_data() </p>
+
+<p>Definición en la línea <a class="el" href="mg__connection_8cpp_source.html#l00053">53</a> del archivo <a class="el" href="mg__connection_8cpp_source.html">mg_connection.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a79f1e546aa877d0fc9a3edb7b0add499"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MgConnection::sendContentType </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>type</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Setea el content type </p>
+
+<p>Definición en la línea <a class="el" href="mg__connection_8cpp_source.html#l00061">61</a> del archivo <a class="el" href="mg__connection_8cpp_source.html">mg_connection.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a5caacfb604787d8a7f27a880305c07fa"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MgConnection::sendHeader </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Setea un header del request </p><dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>nombre del header </td></tr>
+    <tr><td class="paramname">val</td><td>valor </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a1bc73121b1d69483ef0127676f645576"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MgConnection::sendStatus </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMgConnection.html#ae6ce65078cfb6554251e5a09daca0ffb">MgConnection::StatusCodes</a>&#160;</td>
+          <td class="paramname"><em>code</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Envia el codigo de estado </p><dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">codigo</td><td>(enum) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definición en la línea <a class="el" href="mg__connection_8cpp_source.html#l00029">29</a> del archivo <a class="el" href="mg__connection_8cpp_source.html">mg_connection.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a2812b85db55e3cb3fc3626b9818aed4d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MgConnection::sendStatus </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>code</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Envia el codigo de estado </p><dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">codigo</td><td>entero </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definición en la línea <a class="el" href="mg__connection_8cpp_source.html#l00033">33</a> del archivo <a class="el" href="mg__connection_8cpp_source.html">mg_connection.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab0fc40563d447132bf19bf53bb821562"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MgConnection::setParameter </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Guarda un parametro para la coneccion </p><dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td>clave </td></tr>
+    <tr><td class="paramname">value</td><td>valor </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definición en la línea <a class="el" href="mg__connection_8cpp_source.html#l00079">79</a> del archivo <a class="el" href="mg__connection_8cpp_source.html">mg_connection.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a92e485b2a6df5fe83a77a144c3ddb608"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MgConnection::setResponse </td>
+          <td>(</td>
+          <td class="paramtype">enum mg_result&#160;</td>
+          <td class="paramname"><em>r</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Setea la respuesta de la conneccion </p><dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">response</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definición en la línea <a class="el" href="mg__connection_8cpp_source.html#l00083">83</a> del archivo <a class="el" href="mg__connection_8cpp_source.html">mg_connection.cpp</a>.</p>
+
+</div>
+</div>
+<hr/>La documentación para esta clase fue generada a partir de los siguientes ficheros:<ul>
+<li>src/mg/<a class="el" href="mg__connection_8h_source.html">mg_connection.h</a></li>
+<li>src/mg/<a class="el" href="mg__connection_8cpp_source.html">mg_connection.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generado el Jueves, 25 de Junio de 2015 19:30:48 para MensajerO por &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
+</body>
+</html>

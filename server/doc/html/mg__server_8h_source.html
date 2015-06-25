@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.9.1"/>
+<title>MensajerO: Fichero Fuente src/mg/mg_server.h</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() { init_search(); });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">MensajerO
+   &#160;<span id="projectnumber">0.1</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generado por Doxygen 1.8.9.1 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li><a href="pages.html"><span>Páginas&#160;relacionadas</span></a></li>
+      <li><a href="annotated.html"><span>Clases</span></a></li>
+      <li class="current"><a href="files.html"><span>Archivos</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Lista&#160;de&#160;archivos</span></a></li>
+    </ul>
+  </div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_1d197ef0d9947f4cc1ac44e7f59e2b57.html">mg</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">mg_server.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef __MG_SERVER_H__</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define __MG_SERVER_H__</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;functional&gt;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">    #include &lt;pthread.h&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;}</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;mongoose/mongoose.h&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;mg_connection.h&quot;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classMgServer.html">   18</a></span>&#160;<span class="keyword">class </span><a class="code" href="classMgServer.html">MgServer</a> {</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <a class="code" href="classMgServer.html#a2705061d3a922c2ff9235d120cadfb3b">MgServer</a>();</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        ~<a class="code" href="classMgServer.html">MgServer</a>();</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classMgServer.html#aa873c5f96d1ee3651f61549023dc67ea">setListeningConfig</a>(<span class="keywordtype">int</span> port=80, <span class="keyword">const</span> std::string&amp; ssl=std::string(<span class="stringliteral">&quot;&quot;</span>));</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classMgServer.html#aed3c0ff3560fd0c1bf4621196b6b9cfe">setOption</a>(<span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> std::string&amp; value);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classMgServer.html#aed3c0ff3560fd0c1bf4621196b6b9cfe">setOption</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>*name, <span class="keyword">const</span> <span class="keywordtype">char</span>*value);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classMgServer.html#a0682f33e1ef08f2981a94c4d82b9f201">setThreadNumber</a>(<span class="keywordtype">size_t</span>);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classMgServer.html#abf4ce5e212ddde549a69c2bf7edc2a43">run</a>();</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classMgServer.html#afb983f9df5700f8600643a31b1a89a3c">stop</a>();</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordtype">void</span> doConnection(std::function&lt;<span class="keywordtype">bool</span>(<a class="code" href="classMgConnection.html">MgConnection</a>&amp;)&gt;, std::function&lt;<span class="keywordtype">void</span>(<a class="code" href="classMgConnection.html">MgConnection</a>&amp;)&gt;);</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keyword">struct </span><a class="code" href="structmg__server.html">mg_server</a>* createInstance();</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">int</span> <a class="code" href="classMgServer.html#a92d584f0124a6c64bd70e2ea809062a6">handlerCaller</a>(<span class="keyword">struct</span> <a class="code" href="structmg__connection.html">mg_connection</a>*, <span class="keyword">enum</span> mg_event);</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span>* <a class="code" href="classMgServer.html#ab4b3f5fdf09fdd24c3754921b2af5721">threadHandler</a>(<span class="keywordtype">void</span>*);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="keyword">virtual</span> <span class="keyword">enum</span> mg_result <a class="code" href="classMgServer.html#ab784111834d9e184fa72273e02d77995">handler</a>(<a class="code" href="classMgConnection.html">MgConnection</a>* conn, <span class="keyword">enum</span> mg_event ev);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="keyword">virtual</span> <span class="keyword">enum</span> mg_result <a class="code" href="classMgServer.html#a56b0a418b0e2ea439626623092c59459">handlerAuth</a>(<a class="code" href="classMgConnection.html">MgConnection</a>&amp; conn);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keyword">virtual</span> <span class="keyword">enum</span> mg_result <a class="code" href="classMgServer.html#a05e162df9cfd54d3745685dd173c7223">handlerRequest</a>(<a class="code" href="classMgConnection.html">MgConnection</a>&amp; conn) = 0;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="keyword">virtual</span> <span class="keyword">enum</span> mg_result <a class="code" href="classMgServer.html#a87ffa4b86d8a1c4dc330809480f8e10a">handlerClose</a>(<a class="code" href="classMgConnection.html">MgConnection</a>* conn);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="classMgServer.html#a3a30c8e02615e02c309e8a7f9751aaca">   75</a></span>&#160;        std::vector&lt;struct mg_server*&gt; <a class="code" href="classMgServer.html#a3a30c8e02615e02c309e8a7f9751aaca">servers</a>; </div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="classMgServer.html#ab1eafcbbbd48f4c056cdd54c232cc2c2">   76</a></span>&#160;        std::vector&lt;pthread_t&gt; <a class="code" href="classMgServer.html#ab1eafcbbbd48f4c056cdd54c232cc2c2">threads</a>; </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keywordtype">int</span> running;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <span class="keywordtype">size_t</span> threadsNumber;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;};</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="classMgServer_html_aed3c0ff3560fd0c1bf4621196b6b9cfe"><div class="ttname"><a href="classMgServer.html#aed3c0ff3560fd0c1bf4621196b6b9cfe">MgServer::setOption</a></div><div class="ttdeci">const char * setOption(const std::string &amp;name, const std::string &amp;value)</div></div>
+<div class="ttc" id="classMgServer_html_a87ffa4b86d8a1c4dc330809480f8e10a"><div class="ttname"><a href="classMgServer.html#a87ffa4b86d8a1c4dc330809480f8e10a">MgServer::handlerClose</a></div><div class="ttdeci">virtual enum mg_result handlerClose(MgConnection *conn)</div><div class="ttdef"><b>Definition:</b> <a href="mg__server_8cpp_source.html#l00091">mg_server.cpp:91</a></div></div>
+<div class="ttc" id="classMgServer_html_a2705061d3a922c2ff9235d120cadfb3b"><div class="ttname"><a href="classMgServer.html#a2705061d3a922c2ff9235d120cadfb3b">MgServer::MgServer</a></div><div class="ttdeci">MgServer()</div><div class="ttdef"><b>Definition:</b> <a href="mg__server_8cpp_source.html#l00006">mg_server.cpp:6</a></div></div>
+<div class="ttc" id="classMgConnection_html"><div class="ttname"><a href="classMgConnection.html">MgConnection</a></div><div class="ttdef"><b>Definition:</b> <a href="mg__connection_8h_source.html#l00011">mg_connection.h:11</a></div></div>
+<div class="ttc" id="classMgServer_html_afb983f9df5700f8600643a31b1a89a3c"><div class="ttname"><a href="classMgServer.html#afb983f9df5700f8600643a31b1a89a3c">MgServer::stop</a></div><div class="ttdeci">void stop()</div><div class="ttdef"><b>Definition:</b> <a href="mg__server_8cpp_source.html#l00054">mg_server.cpp:54</a></div></div>
+<div class="ttc" id="structmg__server_html"><div class="ttname"><a href="structmg__server.html">mg_server</a></div><div class="ttdef"><b>Definition:</b> <a href="mongoose_8c_source.html#l01495">mongoose.c:1495</a></div></div>
+<div class="ttc" id="classMgServer_html_abf4ce5e212ddde549a69c2bf7edc2a43"><div class="ttname"><a href="classMgServer.html#abf4ce5e212ddde549a69c2bf7edc2a43">MgServer::run</a></div><div class="ttdeci">void run()</div><div class="ttdef"><b>Definition:</b> <a href="mg__server_8cpp_source.html#l00039">mg_server.cpp:39</a></div></div>
+<div class="ttc" id="classMgServer_html_ab4b3f5fdf09fdd24c3754921b2af5721"><div class="ttname"><a href="classMgServer.html#ab4b3f5fdf09fdd24c3754921b2af5721">MgServer::threadHandler</a></div><div class="ttdeci">static void * threadHandler(void *)</div><div class="ttdef"><b>Definition:</b> <a href="mg__server_8cpp_source.html#l00100">mg_server.cpp:100</a></div></div>
+<div class="ttc" id="classMgServer_html_ab784111834d9e184fa72273e02d77995"><div class="ttname"><a href="classMgServer.html#ab784111834d9e184fa72273e02d77995">MgServer::handler</a></div><div class="ttdeci">virtual enum mg_result handler(MgConnection *conn, enum mg_event ev)</div><div class="ttdef"><b>Definition:</b> <a href="mg__server_8cpp_source.html#l00073">mg_server.cpp:73</a></div></div>
+<div class="ttc" id="structmg__connection_html"><div class="ttname"><a href="structmg__connection.html">mg_connection</a></div><div class="ttdef"><b>Definition:</b> <a href="mongoose_8h_source.html#l00032">mongoose.h:32</a></div></div>
+<div class="ttc" id="classMgServer_html_a56b0a418b0e2ea439626623092c59459"><div class="ttname"><a href="classMgServer.html#a56b0a418b0e2ea439626623092c59459">MgServer::handlerAuth</a></div><div class="ttdeci">virtual enum mg_result handlerAuth(MgConnection &amp;conn)</div><div class="ttdef"><b>Definition:</b> <a href="mg__server_8cpp_source.html#l00087">mg_server.cpp:87</a></div></div>
+<div class="ttc" id="classMgServer_html_ab1eafcbbbd48f4c056cdd54c232cc2c2"><div class="ttname"><a href="classMgServer.html#ab1eafcbbbd48f4c056cdd54c232cc2c2">MgServer::threads</a></div><div class="ttdeci">std::vector&lt; pthread_t &gt; threads</div><div class="ttdoc">vector de threads corriendo </div><div class="ttdef"><b>Definition:</b> <a href="mg__server_8h_source.html#l00076">mg_server.h:76</a></div></div>
+<div class="ttc" id="classMgServer_html_a92d584f0124a6c64bd70e2ea809062a6"><div class="ttname"><a href="classMgServer.html#a92d584f0124a6c64bd70e2ea809062a6">MgServer::handlerCaller</a></div><div class="ttdeci">static int handlerCaller(struct mg_connection *, enum mg_event)</div><div class="ttdef"><b>Definition:</b> <a href="mg__server_8cpp_source.html#l00064">mg_server.cpp:64</a></div></div>
+<div class="ttc" id="classMgServer_html_a3a30c8e02615e02c309e8a7f9751aaca"><div class="ttname"><a href="classMgServer.html#a3a30c8e02615e02c309e8a7f9751aaca">MgServer::servers</a></div><div class="ttdeci">std::vector&lt; struct mg_server * &gt; servers</div><div class="ttdoc">Vector de servers utilizados (uno por cada thread) </div><div class="ttdef"><b>Definition:</b> <a href="mg__server_8h_source.html#l00075">mg_server.h:75</a></div></div>
+<div class="ttc" id="classMgServer_html_a0682f33e1ef08f2981a94c4d82b9f201"><div class="ttname"><a href="classMgServer.html#a0682f33e1ef08f2981a94c4d82b9f201">MgServer::setThreadNumber</a></div><div class="ttdeci">void setThreadNumber(size_t)</div><div class="ttdef"><b>Definition:</b> <a href="mg__server_8cpp_source.html#l00114">mg_server.cpp:114</a></div></div>
+<div class="ttc" id="classMgServer_html_a05e162df9cfd54d3745685dd173c7223"><div class="ttname"><a href="classMgServer.html#a05e162df9cfd54d3745685dd173c7223">MgServer::handlerRequest</a></div><div class="ttdeci">virtual enum mg_result handlerRequest(MgConnection &amp;conn)=0</div></div>
+<div class="ttc" id="classMgServer_html_aa873c5f96d1ee3651f61549023dc67ea"><div class="ttname"><a href="classMgServer.html#aa873c5f96d1ee3651f61549023dc67ea">MgServer::setListeningConfig</a></div><div class="ttdeci">const char * setListeningConfig(int port=80, const std::string &amp;ssl=std::string(&quot;&quot;))</div><div class="ttdef"><b>Definition:</b> <a href="mg__server_8cpp_source.html#l00018">mg_server.cpp:18</a></div></div>
+<div class="ttc" id="classMgServer_html"><div class="ttname"><a href="classMgServer.html">MgServer</a></div><div class="ttdef"><b>Definition:</b> <a href="mg__server_8h_source.html#l00018">mg_server.h:18</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generado el Jueves, 25 de Junio de 2015 19:30:47 para MensajerO por &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
+</body>
+</html>

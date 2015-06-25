@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.9.1"/>
+<title>MensajerO: Fichero Fuente src/db/message.h</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() { init_search(); });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">MensajerO
+   &#160;<span id="projectnumber">0.1</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generado por Doxygen 1.8.9.1 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li><a href="pages.html"><span>Páginas&#160;relacionadas</span></a></li>
+      <li><a href="annotated.html"><span>Clases</span></a></li>
+      <li class="current"><a href="files.html"><span>Archivos</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Lista&#160;de&#160;archivos</span></a></li>
+    </ul>
+  </div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_18fd539062cd3a2de3dfd78991cf728d.html">db</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">message.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef __MESSAGE_H__</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define __MESSAGE_H__</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;ctime&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;rocksdb/db.h&gt;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;rocksdb/status.h&gt;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;rocksdb/iterator.h&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;db_entity.h&quot;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="classMessage.html">   15</a></span>&#160;<span class="keyword">class </span><a class="code" href="classMessage.html">Message</a> : <span class="keyword">public</span> <a class="code" href="classDbEntity.html">DbEntity</a> {</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    DB_ENTITY_CLASS(<a class="code" href="classMessage.html">Message</a>)</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <span class="keyword">class </span><a class="code" href="classMessage_1_1Iterator.html">Iterator</a>;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        <a class="code" href="classMessage.html#a4fc4f717b634e66070366cb7722d7761">Message</a>();</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keyword">static</span> <a class="code" href="classMessage.html">Message</a> <a class="code" href="classMessage.html#a8e25dd548e8939ccd19015657a5c752d">Now</a>();</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keyword">static</span> <a class="code" href="classMessage.html">Message</a> <a class="code" href="classMessage.html#a8e25dd548e8939ccd19015657a5c752d">Now</a>(<span class="keyword">const</span> std::string&amp; <a class="code" href="classMessage.html#a094146d3f34095c1ab1395cd06c91c06">to</a>, <span class="keyword">const</span> std::string&amp; <a class="code" href="classMessage.html#a9d1b7342dff5fedbef018e9517820263">from</a>, <span class="keyword">const</span> std::string&amp;);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keyword">static</span> <a class="code" href="classMessage_1_1Iterator.html">Message::Iterator</a> <a class="code" href="classMessage.html#abbfba86d5ba3c8beaa6ab50c0d59c7ca">NewIterator</a>();</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keyword">const</span> std::string&amp; <a class="code" href="classMessage.html#a7a16024d652e671f0f96e1f292787bf9">getFrom</a>() <span class="keyword">const</span>; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keyword">const</span> std::string&amp; <a class="code" href="classMessage.html#a61d0049308a4d63f9bbfca2037c9a0a4">getTo</a>() <span class="keyword">const</span>; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keyword">const</span> std::string&amp; <a class="code" href="classMessage.html#a65ce745ab70a14f328d5cca191eb96eb">getMsg</a>() <span class="keyword">const</span>; </div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keyword">const</span> time_t&amp; <a class="code" href="classMessage.html#ae7c596be6b662493cbd3c61d78dd352f">getTime</a>() <span class="keyword">const</span>; </div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        std::string <a class="code" href="classMessage.html#aae553789e5adb8373e61ff8d05e578b8">getId</a>() <span class="keyword">const</span>; </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keyword">const</span> uint64_t&amp; <a class="code" href="classMessage.html#ab6948515d58fa7a4d2586b942395431e">getIdBin</a>() <span class="keyword">const</span>; </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        std::string <a class="code" href="classMessage.html#a3f7e51a39cd038788c96112a379cfa51">toJson</a>() <span class="keyword">const</span>; </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classMessage.html#ad1a3c4d7c3938c0d79ed126c18a3516c">setFrom</a>(<span class="keyword">const</span> std::string&amp;); </div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classMessage.html#a1ad4628dbf3d7ed2612596f6bf2f05c0">setTo</a>(<span class="keyword">const</span> std::string&amp;); </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classMessage.html#a85fbd0669aa0c7433f684fa85a781bce">setMsg</a>(<span class="keyword">const</span> std::string&amp;); </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classMessage.html#a543ade4066d5153f1f88e99c14639051">setRead</a>(); </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classMessage.html#a0481d8813e51bca6b879d0144b4befc6">setArrived</a>(); </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classDbEntity.html#a717b824eeb538e8e69437be3e545a923">unPack</a>(<span class="keyword">const</span> std::string&amp; <a class="code" href="classDbEntity.html#a1899cea7753c397ab2216bd0814f3412">key</a>, <span class="keyword">const</span> std::string&amp; <a class="code" href="classDbEntity.html#a200948c26f60a628567adee6f7a47218">value</a>);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        rocksdb::Status <span class="keyword">get</span>(<span class="keyword">const</span> std::string&amp; <a class="code" href="classMessage.html#a46573773d5b65a28f527a44b3e4f8f2e">id</a>);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keyword">using</span> <a class="code" href="classDbEntity.html#ad965d9a41378a56af2f1fff8b0f1826d">DbEntity::packKey</a>;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classDbEntity.html#ad965d9a41378a56af2f1fff8b0f1826d">packKey</a>(std::string&amp; key);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classDbEntity.html#a95d121a5f129e2ec5f9e9674b6e57303">packValue</a>(std::string&amp; value);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
+<div class="line"><a name="l00073"></a><span class="lineno"><a class="line" href="classMessage.html#a46573773d5b65a28f527a44b3e4f8f2e">   73</a></span>&#160;        uint64_t <a class="code" href="classMessage.html#a46573773d5b65a28f527a44b3e4f8f2e">id</a>; </div>
+<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="classMessage.html#a094146d3f34095c1ab1395cd06c91c06">   74</a></span>&#160;        std::string <a class="code" href="classMessage.html#a094146d3f34095c1ab1395cd06c91c06">to</a>; </div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="classMessage.html#a9d1b7342dff5fedbef018e9517820263">   75</a></span>&#160;        std::string <a class="code" href="classMessage.html#a9d1b7342dff5fedbef018e9517820263">from</a>; </div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="classMessage.html#adbe98f7e813775fe7e809f1a08899733">   76</a></span>&#160;        std::string <a class="code" href="classMessage.html#adbe98f7e813775fe7e809f1a08899733">msg</a>; </div>
+<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="classMessage.html#a36771e3978c684efb7742fc515e2ec06">   77</a></span>&#160;        time_t <a class="code" href="classMessage.html#a36771e3978c684efb7742fc515e2ec06">arrived</a>; </div>
+<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="classMessage.html#a8da8dbab5de3bc5f5f049689b8ade1db">   78</a></span>&#160;        time_t <a class="code" href="classMessage.html#a8da8dbab5de3bc5f5f049689b8ade1db">read</a>; </div>
+<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="classMessage.html#a0ababb9e7704fc973add0565a9589eb1">   79</a></span>&#160;        time_t <a class="code" href="classMessage.html#a0ababb9e7704fc973add0565a9589eb1">t</a>; </div>
+<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="classMessage.html#aafc6b017f0086a8894ccce9ec6ccc690">   80</a></span>&#160;        <span class="keywordtype">int</span> <a class="code" href="classMessage.html#aafc6b017f0086a8894ccce9ec6ccc690">has_file</a>; </div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;};</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
+<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="classMessage_1_1Iterator.html">   85</a></span>&#160;<span class="keyword">class </span><a class="code" href="classMessage_1_1Iterator.html">Message::Iterator</a> : <span class="keyword">public</span> <a class="code" href="classDbIterator.html">DbIterator</a>&lt;Message&gt;{</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keyword">friend</span> <a class="code" href="classMessage.html">Message</a>;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classMessage_1_1Iterator.html#a75dc685269009d191458f1cb7181ed2a">seek</a>(<span class="keyword">const</span> std::string&amp;, <span class="keyword">const</span> std::string&amp;);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classMessage_1_1Iterator.html#a75dc685269009d191458f1cb7181ed2a">seek</a>(<span class="keyword">const</span> std::string&amp;, <span class="keyword">const</span> std::string&amp;, <span class="keyword">const</span> std::string&amp; <span class="keywordtype">id</span>);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        <a class="code" href="classMessage_1_1Iterator.html#aad106d97e71eff87a31481d2170f2689">Iterator</a>(rocksdb::Iterator*, rocksdb::DB*, rocksdb::ColumnFamilyHandle*);</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;};</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="classMessage_html_adbe98f7e813775fe7e809f1a08899733"><div class="ttname"><a href="classMessage.html#adbe98f7e813775fe7e809f1a08899733">Message::msg</a></div><div class="ttdeci">std::string msg</div><div class="ttdoc">mensaje </div><div class="ttdef"><b>Definition:</b> <a href="message_8h_source.html#l00076">message.h:76</a></div></div>
+<div class="ttc" id="classMessage_html_a85fbd0669aa0c7433f684fa85a781bce"><div class="ttname"><a href="classMessage.html#a85fbd0669aa0c7433f684fa85a781bce">Message::setMsg</a></div><div class="ttdeci">void setMsg(const std::string &amp;)</div><div class="ttdoc">Setea el mensaje. </div><div class="ttdef"><b>Definition:</b> <a href="message_8cpp_source.html#l00140">message.cpp:140</a></div></div>
+<div class="ttc" id="classMessage_html"><div class="ttname"><a href="classMessage.html">Message</a></div><div class="ttdef"><b>Definition:</b> <a href="message_8h_source.html#l00015">message.h:15</a></div></div>
+<div class="ttc" id="classDbEntity_html_a1899cea7753c397ab2216bd0814f3412"><div class="ttname"><a href="classDbEntity.html#a1899cea7753c397ab2216bd0814f3412">DbEntity::key</a></div><div class="ttdeci">std::string key</div><div class="ttdoc">Buffer interno usado para guarda el key. </div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8h_source.html#l00075">db_entity.h:75</a></div></div>
+<div class="ttc" id="classMessage_html_a46573773d5b65a28f527a44b3e4f8f2e"><div class="ttname"><a href="classMessage.html#a46573773d5b65a28f527a44b3e4f8f2e">Message::id</a></div><div class="ttdeci">uint64_t id</div><div class="ttdoc">id [ tiempo en usecs en big endian ] </div><div class="ttdef"><b>Definition:</b> <a href="message_8h_source.html#l00073">message.h:73</a></div></div>
+<div class="ttc" id="classMessage_html_a8da8dbab5de3bc5f5f049689b8ade1db"><div class="ttname"><a href="classMessage.html#a8da8dbab5de3bc5f5f049689b8ade1db">Message::read</a></div><div class="ttdeci">time_t read</div><div class="ttdoc">hora de lectura </div><div class="ttdef"><b>Definition:</b> <a href="message_8h_source.html#l00078">message.h:78</a></div></div>
+<div class="ttc" id="classMessage_html_a65ce745ab70a14f328d5cca191eb96eb"><div class="ttname"><a href="classMessage.html#a65ce745ab70a14f328d5cca191eb96eb">Message::getMsg</a></div><div class="ttdeci">const std::string &amp; getMsg() const </div><div class="ttdoc">Mensaje. </div><div class="ttdef"><b>Definition:</b> <a href="message_8cpp_source.html#l00105">message.cpp:105</a></div></div>
+<div class="ttc" id="classMessage_html_a1ad4628dbf3d7ed2612596f6bf2f05c0"><div class="ttname"><a href="classMessage.html#a1ad4628dbf3d7ed2612596f6bf2f05c0">Message::setTo</a></div><div class="ttdeci">void setTo(const std::string &amp;)</div><div class="ttdoc">Setea destinatario del mensaje. </div><div class="ttdef"><b>Definition:</b> <a href="message_8cpp_source.html#l00136">message.cpp:136</a></div></div>
+<div class="ttc" id="classMessage_html_a094146d3f34095c1ab1395cd06c91c06"><div class="ttname"><a href="classMessage.html#a094146d3f34095c1ab1395cd06c91c06">Message::to</a></div><div class="ttdeci">std::string to</div><div class="ttdoc">Destinatario. </div><div class="ttdef"><b>Definition:</b> <a href="message_8h_source.html#l00074">message.h:74</a></div></div>
+<div class="ttc" id="classMessage_1_1Iterator_html_aad106d97e71eff87a31481d2170f2689"><div class="ttname"><a href="classMessage_1_1Iterator.html#aad106d97e71eff87a31481d2170f2689">Message::Iterator::Iterator</a></div><div class="ttdeci">Iterator(rocksdb::Iterator *, rocksdb::DB *, rocksdb::ColumnFamilyHandle *)</div><div class="ttdef"><b>Definition:</b> <a href="message_8cpp_source.html#l00170">message.cpp:170</a></div></div>
+<div class="ttc" id="classDbEntity_html_a200948c26f60a628567adee6f7a47218"><div class="ttname"><a href="classDbEntity.html#a200948c26f60a628567adee6f7a47218">DbEntity::value</a></div><div class="ttdeci">std::string value</div><div class="ttdoc">Buffer interno usado para guardar el value. </div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8h_source.html#l00076">db_entity.h:76</a></div></div>
+<div class="ttc" id="classMessage_html_ae7c596be6b662493cbd3c61d78dd352f"><div class="ttname"><a href="classMessage.html#ae7c596be6b662493cbd3c61d78dd352f">Message::getTime</a></div><div class="ttdeci">const time_t &amp; getTime() const </div><div class="ttdoc">Hora de cuando el msje fue enviado. </div><div class="ttdef"><b>Definition:</b> <a href="message_8cpp_source.html#l00109">message.cpp:109</a></div></div>
+<div class="ttc" id="classMessage_html_a8e25dd548e8939ccd19015657a5c752d"><div class="ttname"><a href="classMessage.html#a8e25dd548e8939ccd19015657a5c752d">Message::Now</a></div><div class="ttdeci">static Message Now()</div><div class="ttdef"><b>Definition:</b> <a href="message_8cpp_source.html#l00052">message.cpp:52</a></div></div>
+<div class="ttc" id="classMessage_1_1Iterator_html"><div class="ttname"><a href="classMessage_1_1Iterator.html">Message::Iterator</a></div><div class="ttdef"><b>Definition:</b> <a href="message_8h_source.html#l00085">message.h:85</a></div></div>
+<div class="ttc" id="classDbEntity_html_ad965d9a41378a56af2f1fff8b0f1826d"><div class="ttname"><a href="classDbEntity.html#ad965d9a41378a56af2f1fff8b0f1826d">DbEntity::packKey</a></div><div class="ttdeci">void packKey()</div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8cpp_source.html#l00034">db_entity.cpp:34</a></div></div>
+<div class="ttc" id="classMessage_html_a36771e3978c684efb7742fc515e2ec06"><div class="ttname"><a href="classMessage.html#a36771e3978c684efb7742fc515e2ec06">Message::arrived</a></div><div class="ttdeci">time_t arrived</div><div class="ttdoc">hora de arrivo (a destino) </div><div class="ttdef"><b>Definition:</b> <a href="message_8h_source.html#l00077">message.h:77</a></div></div>
+<div class="ttc" id="classDbEntity_html"><div class="ttname"><a href="classDbEntity.html">DbEntity</a></div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8h_source.html#l00033">db_entity.h:33</a></div></div>
+<div class="ttc" id="classMessage_html_abbfba86d5ba3c8beaa6ab50c0d59c7ca"><div class="ttname"><a href="classMessage.html#abbfba86d5ba3c8beaa6ab50c0d59c7ca">Message::NewIterator</a></div><div class="ttdeci">static Message::Iterator NewIterator()</div><div class="ttdef"><b>Definition:</b> <a href="message_8cpp_source.html#l00166">message.cpp:166</a></div></div>
+<div class="ttc" id="classMessage_html_aae553789e5adb8373e61ff8d05e578b8"><div class="ttname"><a href="classMessage.html#aae553789e5adb8373e61ff8d05e578b8">Message::getId</a></div><div class="ttdeci">std::string getId() const </div><div class="ttdoc">Id en formato hexa. </div><div class="ttdef"><b>Definition:</b> <a href="message_8cpp_source.html#l00117">message.cpp:117</a></div></div>
+<div class="ttc" id="classDbEntity_html_a95d121a5f129e2ec5f9e9674b6e57303"><div class="ttname"><a href="classDbEntity.html#a95d121a5f129e2ec5f9e9674b6e57303">DbEntity::packValue</a></div><div class="ttdeci">void packValue()</div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8cpp_source.html#l00038">db_entity.cpp:38</a></div></div>
+<div class="ttc" id="classMessage_html_a543ade4066d5153f1f88e99c14639051"><div class="ttname"><a href="classMessage.html#a543ade4066d5153f1f88e99c14639051">Message::setRead</a></div><div class="ttdeci">void setRead()</div><div class="ttdoc">Setea el mensaje. </div><div class="ttdef"><b>Definition:</b> <a href="message_8cpp_source.html#l00144">message.cpp:144</a></div></div>
+<div class="ttc" id="classMessage_html_ab6948515d58fa7a4d2586b942395431e"><div class="ttname"><a href="classMessage.html#ab6948515d58fa7a4d2586b942395431e">Message::getIdBin</a></div><div class="ttdeci">const uint64_t &amp; getIdBin() const </div><div class="ttdoc">Id en formato binario. </div><div class="ttdef"><b>Definition:</b> <a href="message_8cpp_source.html#l00113">message.cpp:113</a></div></div>
+<div class="ttc" id="classMessage_html_a4fc4f717b634e66070366cb7722d7761"><div class="ttname"><a href="classMessage.html#a4fc4f717b634e66070366cb7722d7761">Message::Message</a></div><div class="ttdeci">Message()</div><div class="ttdef"><b>Definition:</b> <a href="message_8cpp_source.html#l00040">message.cpp:40</a></div></div>
+<div class="ttc" id="classMessage_html_ad1a3c4d7c3938c0d79ed126c18a3516c"><div class="ttname"><a href="classMessage.html#ad1a3c4d7c3938c0d79ed126c18a3516c">Message::setFrom</a></div><div class="ttdeci">void setFrom(const std::string &amp;)</div><div class="ttdoc">Setea Emisor del mensaje. </div><div class="ttdef"><b>Definition:</b> <a href="message_8cpp_source.html#l00132">message.cpp:132</a></div></div>
+<div class="ttc" id="classMessage_html_a3f7e51a39cd038788c96112a379cfa51"><div class="ttname"><a href="classMessage.html#a3f7e51a39cd038788c96112a379cfa51">Message::toJson</a></div><div class="ttdeci">std::string toJson() const </div><div class="ttdoc">Representacion en JSON del mensaje. </div><div class="ttdef"><b>Definition:</b> <a href="message_8cpp_source.html#l00121">message.cpp:121</a></div></div>
+<div class="ttc" id="classDbEntity_html_a717b824eeb538e8e69437be3e545a923"><div class="ttname"><a href="classDbEntity.html#a717b824eeb538e8e69437be3e545a923">DbEntity::unPack</a></div><div class="ttdeci">bool unPack()</div><div class="ttdef"><b>Definition:</b> <a href="db__entity_8cpp_source.html#l00042">db_entity.cpp:42</a></div></div>
+<div class="ttc" id="classMessage_html_a9d1b7342dff5fedbef018e9517820263"><div class="ttname"><a href="classMessage.html#a9d1b7342dff5fedbef018e9517820263">Message::from</a></div><div class="ttdeci">std::string from</div><div class="ttdoc">emisor </div><div class="ttdef"><b>Definition:</b> <a href="message_8h_source.html#l00075">message.h:75</a></div></div>
+<div class="ttc" id="classMessage_html_a61d0049308a4d63f9bbfca2037c9a0a4"><div class="ttname"><a href="classMessage.html#a61d0049308a4d63f9bbfca2037c9a0a4">Message::getTo</a></div><div class="ttdeci">const std::string &amp; getTo() const </div><div class="ttdoc">Devuelve receptor del mensaje. </div><div class="ttdef"><b>Definition:</b> <a href="message_8cpp_source.html#l00101">message.cpp:101</a></div></div>
+<div class="ttc" id="classMessage_html_a0ababb9e7704fc973add0565a9589eb1"><div class="ttname"><a href="classMessage.html#a0ababb9e7704fc973add0565a9589eb1">Message::t</a></div><div class="ttdeci">time_t t</div><div class="ttdoc">tiempo de servidor </div><div class="ttdef"><b>Definition:</b> <a href="message_8h_source.html#l00079">message.h:79</a></div></div>
+<div class="ttc" id="classMessage_html_aafc6b017f0086a8894ccce9ec6ccc690"><div class="ttname"><a href="classMessage.html#aafc6b017f0086a8894ccce9ec6ccc690">Message::has_file</a></div><div class="ttdeci">int has_file</div><div class="ttdoc">tiene attachment? </div><div class="ttdef"><b>Definition:</b> <a href="message_8h_source.html#l00080">message.h:80</a></div></div>
+<div class="ttc" id="classMessage_html_a7a16024d652e671f0f96e1f292787bf9"><div class="ttname"><a href="classMessage.html#a7a16024d652e671f0f96e1f292787bf9">Message::getFrom</a></div><div class="ttdeci">const std::string &amp; getFrom() const </div><div class="ttdoc">Devuelve Emisor del mensaje. </div><div class="ttdef"><b>Definition:</b> <a href="message_8cpp_source.html#l00097">message.cpp:97</a></div></div>
+<div class="ttc" id="classMessage_1_1Iterator_html_a75dc685269009d191458f1cb7181ed2a"><div class="ttname"><a href="classMessage_1_1Iterator.html#a75dc685269009d191458f1cb7181ed2a">Message::Iterator::seek</a></div><div class="ttdeci">void seek(const std::string &amp;, const std::string &amp;)</div></div>
+<div class="ttc" id="classDbIterator_html"><div class="ttname"><a href="classDbIterator.html">DbIterator</a></div><div class="ttdef"><b>Definition:</b> <a href="db__iterator_8h_source.html#l00011">db_iterator.h:11</a></div></div>
+<div class="ttc" id="classMessage_html_a0481d8813e51bca6b879d0144b4befc6"><div class="ttname"><a href="classMessage.html#a0481d8813e51bca6b879d0144b4befc6">Message::setArrived</a></div><div class="ttdeci">void setArrived()</div><div class="ttdoc">Setea el mensaje. </div><div class="ttdef"><b>Definition:</b> <a href="message_8cpp_source.html#l00148">message.cpp:148</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generado el Jueves, 25 de Junio de 2015 19:30:47 para MensajerO por &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.9.1
+</small></address>
+</body>
+</html>
