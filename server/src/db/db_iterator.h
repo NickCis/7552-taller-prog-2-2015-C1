@@ -87,6 +87,7 @@ class DbIterator {
 
 		virtual ~DbIterator(){
 			this->write();
+			delete it;
 		}
 
 	protected:
