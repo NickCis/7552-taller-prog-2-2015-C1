@@ -134,7 +134,8 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 		final DatabaseHelper dbH = DatabaseHelper.getInstance(this);
 		dbH.open();
 		List<UserEntity> list = dbH.fetchAllUsers();
-		list.remove(dbH.getUserMe());
+		if (list.get(0).getUsername().equals(dbH.getUserMe().getUsername()))
+			list.remove(0);
 		UserEntity uE = list.get(info.position);
 		switch(item.getItemId()){
 			case R.id.conversation:
