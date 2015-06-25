@@ -228,6 +228,7 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 			UserEntity ue = dbh.createUser(0, ueAux.getUsername(), ueAux.getNickname(), ueAux.getStatus(),ueAux.getAvatar(), ueAux.getLastTime(), ueAux.getStatusMessage(), ueAux.getCheckin());
 			users.add(ue);
 		}
+		dbh.close();
 	}
 	
 	public void onReceiveResult(int resultCode, Bundle resultData) {
