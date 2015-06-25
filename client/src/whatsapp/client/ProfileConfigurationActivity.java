@@ -44,6 +44,8 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 {
 	
 	private Context context;
+
+	protected short onlineStatusSelectedOption = DatabaseHelper.STATUS_ONLINE;
 	
 	private static final int SELECT_PICTURE = 2;
 	
@@ -65,26 +67,17 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, items);
 		Spinner spinner = (Spinner) findViewById(R.id.statusSelection);
 		spinner.setAdapter(adapter);
-		if (dbH.getUserMe().getStatus() != null)
-		{
+
+		if (dbH.getUserMe().getStatus() != null){
 			spinner.setSelection(dbH.getUserMe().getStatus());
+			onlineStatusSelectedOption = dbH.getUserMe().getStatus();
 		}
-		
+
 		spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-			
-			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
-			{
-				DatabaseHelper dbH = DatabaseHelper.getInstance(context);
-				dbH.open();
-				dbH.getUserMe().setStatus(Short.valueOf(Integer.toString(pos)));
-				dbH.close();
+			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id){
+				onlineStatusSelectedOption = Short.valueOf(Integer.toString(pos));
 			}
-			
-			public void onNothingSelected(AdapterView<?> parent)
-			{
-				
-			}
-			
+			public void onNothingSelected(AdapterView<?> parent){}
 		});
 		
 		EditText nickname = (EditText) findViewById(R.id.nicknameConfiguration);
@@ -256,11 +249,15 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 		dbH.getUserMe().setNickname(nickname.getText().toString());
 		EditText statusMessage = (EditText) findViewById(R.id.statusMessageConfiguration);
 		dbH.getUserMe().setStatusMessage(statusMessage.getText().toString());
+		dbH.getUserMe().setStatus(onlineStatusSelectedOption);
 		dbH.updateUser(dbH.getUserMe()); // Actualiza foto, estado y nickname
 		dbH.close();
 	}
 	
 	private void send(){
+		EditText nickname = (EditText) findViewById(R.id.nicknameConfiguration);
+		EditText statusMessage = (EditText) findViewById(R.id.statusMessageConfiguration);
+
 		DatabaseHelper dbh = DatabaseHelper.getInstance(context);
 		dbh.open();
 		String username = dbh.getUserMe().getUsername();
@@ -270,10 +267,9 @@ public class ProfileConfigurationActivity extends Activity implements ServerResu
 		receiver.setListener(this);
 		String access_token = ConfigurationManager.getInstance().getString(this, ConfigurationManager.ACCESS_TOKEN);
 		params.put("access_token", access_token);
-		params.put("nickname", dbh.getUserMe().getNickname());
-		//TODO: tiene q estar en el servidor
-		params.put("status", dbh.getUserMe().getStatusMessage());
-		params.put("online",dbh.getUserMe().getStatus() == DatabaseHelper.STATUS_ONLINE ? "true" : "false");
+		params.put("nickname", nickname.getText().toString());
+		params.put("status", statusMessage.getText().toString());
+		params.put("online", onlineStatusSelectedOption == DatabaseHelper.STATUS_ONLINE ? "true" : "false");
 		bundle.putSerializable("params", params);
 		String ip = ConfigurationManager.getInstance().getString(this, ConfigurationManager.SAVED_IP);
 		String port = ConfigurationManager.getInstance().getString(this, ConfigurationManager.SAVED_PORT);
