@@ -21,6 +21,10 @@ import model.ServerResultReceiver;
 import org.json.JSONException;
 import org.json.JSONObject;
 import utils.DatabaseHelper;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
 
 /**
  * Registro 
@@ -34,9 +38,25 @@ public class RegisterActivity extends Activity implements ServerResultReceiver.L
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.register);
+
+		EditText editText = (EditText) findViewById(R.id.userpasswordValidate);
+		editText.setOnEditorActionListener(new OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event){
+				if(actionId == EditorInfo.IME_ACTION_DONE){
+					register();
+					return true;
+				}
+				return false;
+			}
+		});
 	}
 	
 	public void register(View v) {
+		register();
+	}
+
+	public void register() {
 		Bundle bundle = new Bundle();
 		EditText userNameField = (EditText) findViewById(R.id.username);
 		EditText passwordField = (EditText) findViewById(R.id.userpassword);

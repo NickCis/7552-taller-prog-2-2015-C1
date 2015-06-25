@@ -18,6 +18,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import utils.ConfigurationManager;
 import utils.DatabaseHelper;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
 
 /**
  * Activity inicial, permite el logeo y cambio de IP PORT
@@ -53,6 +57,17 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 		portEdit.setText(getDefaultPort());
 		
 		//startService(new Intent(this,NotificationService.class));
+		EditText editText = (EditText) findViewById(R.id.userpassword);
+		editText.setOnEditorActionListener(new OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event){
+				if(actionId == EditorInfo.IME_ACTION_DONE){
+					login();
+					return true;
+				}
+				return false;
+			}
+		});
 	}
 	
 	public void register(View v) {
@@ -64,6 +79,10 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 	}
 	
 	public void login(View v) {
+		login();
+	}
+
+	public void login() {
 		//TODO: verificar campos
 		Bundle bundle = new Bundle();
 		saveData(SAVED_IP, getIP());
