@@ -112,7 +112,7 @@ public class ConversationActivity extends Activity implements ServerResultReceiv
 		dbH.open();
 		for (MessageEntity mE : listaMensajes) {
 			OneComment c;
-			adapter.add(c =new OneComment(mE.getUser().equals(dbH.getUserMe()), mE.getContent()));
+			adapter.add(c =new OneComment(mE.getUser().getUsername().equals(dbH.getUserMe().getUsername()), mE.getContent()));
 			mE.setStatus(DatabaseHelper.SEEN);
 		}
 		adapter.notifyDataSetChanged();

@@ -197,7 +197,7 @@ public class NotificationService extends BroadcastReceiver implements ServerResu
 			processMessage(data);
 		} else if (type.equals("ack")) {
 			Log.i("NotificationService", "Llego un ack");
-			processAck(data);
+			//processAck(data);
 		} else if (type.equals("profile")){
 			Log.i("NotificationService", "Cambiaron un profile");
 			processProfileChanged(data);
@@ -515,6 +515,7 @@ public class NotificationService extends BroadcastReceiver implements ServerResu
 		} catch (JSONException ex) {
 			Logger.getLogger(NotificationService.class.getName()).log(Level.SEVERE, null, ex);
 		}
+		dbH.close();
 		return null;
 	}
 	
