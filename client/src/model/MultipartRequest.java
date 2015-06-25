@@ -53,7 +53,7 @@ public class MultipartRequest extends Request<JSONObject> {
 			Bitmap bitmap = entry.getValue();
 			out = concatenateByteArrays(out, (BOUNDARY+"\ncontent-disposition: form-data; name=\""+entry.getKey()+"\"; filename=\"avatar.png\"\nContent-Type: image/png\nContent-Transfer-Encoding: binary\n\n").getBytes());
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
-			bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
 			out = concatenateByteArrays(out, stream.toByteArray());
 			out = concatenateByteArrays(out, ("\n"+BOUNDARY).getBytes());
 		}

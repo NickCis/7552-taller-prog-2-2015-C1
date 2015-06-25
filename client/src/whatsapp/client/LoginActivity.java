@@ -22,6 +22,16 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
+import com.android.volley.Response;
+import com.android.volley.Response.Listener;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.VolleyError;
+import model.CustomRequest;
+import services.AppController;
+import com.android.volley.toolbox.ImageRequest;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
 /**
  * Activity inicial, permite el logeo y cambio de IP PORT
@@ -97,7 +107,7 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 		final String URI = getIP() + ":" + getPort() + "/" + "auth";
 		bundle.putString("URI", URI);
 		//TODO: esto es auth
-		DialogFactory.createProgressDialog(this, "Registrando... por favor espere");
+		DialogFactory.createProgressDialog(this, "Conectandose... por favor espere");
 		Log.i("Auth", "Haciendo login");
 		startService(createCallingIntent(bundle));
 	}
@@ -130,7 +140,79 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 		SharedPreferences.Editor editor = data.edit();
 		editor.putBoolean(REGISTERED, true);
 	}
-	
+
+	/**
+	 * Sincroniza la informacion de perfil, es decir, baja foto y esas cosas.
+	 * Vamos a suponer que nunca va a fallar.
+	 */
+	public void syncProfile() {
+		Log.d("WhatsappClient", "Sincronizo profile");
+		String access_token = ConfigurationManager.getInstance().getString(this, ConfigurationManager.ACCESS_TOKEN);
+		DatabaseHelper dbh = DatabaseHelper.getInstance(this);
+		dbh.open();
+		String username = dbh.getUserMe().getUsername();
+		dbh.close();
+		final String URI = getIP() + ":" + getPort() + "/user/"+username+"/profile?access_token="+access_token;
+		final Context ctx = this;
+		CustomRequest req = new CustomRequest(URI, null,
+			new Listener<JSONObject>(){
+				public void onResponse(JSONObject response) {
+					Log.i("WhatsappClient", "respuesta de profile :: "+response.toString());
+					DatabaseHelper dbh = DatabaseHelper.getInstance(ctx);
+					dbh.open();
+					try {
+						String nickname = response.getString("nickname");
+						boolean online  = response.getBoolean("online");
+						String status = response.getJSONObject("status").getString("text");
+						dbh.getUserMe().setNickname(nickname);
+						dbh.getUserMe().setStatusMessage(status);
+						dbh.getUserMe().setStatus(online ? DatabaseHelper.STATUS_ONLINE : DatabaseHelper.STATUS_OFFLINE);
+						dbh.updateUser(dbh.getUserMe());
+					}catch(Exception e){}
+					dbh.close();
+				}
+			},
+			new ErrorListener(){
+				public void onErrorResponse(VolleyError error){
+					Log.e("WhatsappClient", "syncProfile :: Errorrr obteniendo el perfil! "+error.toString()+" msg: "+error.getMessage()+" cause: "+error.getCause());
+				}
+			}
+		);
+		AppController.getInstance().addToRequestQueue(req);
+		syncAvatar();
+	}
+
+	/** Sincroniza el avatar.
+	 * Obtiene el avatar que tiene el usuario al momento del login
+	 */
+	//TODO: sacar de aca, se usa tmb en UsersActivity
+	private void syncAvatar(){
+		final Context ctx = this;
+		Log.d("WhatsappClient", "Sincronizo profile");
+		String access_token = ConfigurationManager.getInstance().getString(this, ConfigurationManager.ACCESS_TOKEN);
+		DatabaseHelper dbh = DatabaseHelper.getInstance(this);
+		dbh.open();
+		String username = dbh.getUserMe().getUsername();
+		dbh.close();
+		String URI = getIP() + ":" + getPort() + "/user/" + username +"/avatar?access_token="+access_token;
+
+		ImageRequest imreq = new ImageRequest(URI, new Response.Listener<Bitmap>() {
+			public void onResponse(Bitmap t) {
+				DatabaseHelper dbh = DatabaseHelper.getInstance(ctx);
+				dbh.open();
+				dbh.getUserMe().setAvatar(t);
+				dbh.updateUser(dbh.getUserMe());
+				dbh.close();
+			}
+		}, 0,0, null, new Response.ErrorListener() {
+
+			public void onErrorResponse(VolleyError error) {
+				Log.e("WhatsappClient", "syncAvatar :: Error buscando avatar "+error.toString()+" msg: "+error.getMessage()+" cause: "+error.getCause());
+			}
+		});
+		AppController.getInstance().addToRequestQueue(imreq);
+	}
+
 	public void onReceiveResult(int resultCode, Bundle resultData) {
 		DialogFactory.disposeDialog();
 		if (resultCode == 0) {
@@ -148,6 +230,7 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 				Logger.getLogger(LoginActivity.class.getName()).log(Level.SEVERE, null, ex);
 			}
 			saveUser();
+			syncProfile();
 			startActivity(new Intent(this, MainActivity.class));
 		} else {
 			DialogFactory.createAlertDialog(this, "Problema ingresando",
