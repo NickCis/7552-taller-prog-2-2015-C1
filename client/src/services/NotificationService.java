@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.util.Log;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -254,7 +255,12 @@ public class NotificationService extends BroadcastReceiver implements ServerResu
 					if (UsersActivity.getInstance().isShowing())
 						UsersActivity.getInstance().updateView(username);
 			}
-		}, 0,0, null, null);
+		}, 0,0, null, new Response.ErrorListener() {
+
+			public void onErrorResponse(VolleyError ve) {
+				Log.e("Avatar","Error actualizando avatar");
+			}
+		});
 		AppController.getInstance().addToRequestQueue(imreq);
 	}
 	

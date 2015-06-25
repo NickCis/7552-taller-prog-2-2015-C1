@@ -283,7 +283,7 @@ public class UsersActivity extends Activity implements ServerResultReceiver.List
 		row.setDerecha(statusShow);
 		if (ue.getAvatar()!=null){
 			Drawable d = new BitmapDrawable(getResources(), ue.getAvatar());
-			rowItemAux.setAvatar(d);
+			row.setAvatar(d);
 		}
 		adapter.notifyDataSetChanged();
 		
