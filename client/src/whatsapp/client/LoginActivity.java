@@ -234,9 +234,7 @@ public class LoginActivity extends Activity implements ServerResultReceiver.List
 			startActivity(new Intent(this, MainActivity.class));
 		} else {
 			DialogFactory.createAlertDialog(this, "Problema ingresando",
-				"Verifique sus datos, en caso de no tener un usuario por favor registrese",
-				LoginActivity.class
-			);
+				"Verifique sus datos, en caso de no tener un usuario por favor registrese");
 			Log.e("Auth", "Error haciendo login");
 		}
 	}

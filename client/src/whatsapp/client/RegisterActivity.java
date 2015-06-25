@@ -65,9 +65,7 @@ public class RegisterActivity extends Activity implements ServerResultReceiver.L
 		String pass2 = passWordValidateField.getText().toString();
 		if (!pass1.equals(pass2)) {
 			DialogFactory.createAlertDialog(this, "Contraseña incorrecta",
-				"Las contraseñas no coinciden, vuelva a intentarlo",
-				RegisterActivity.class
-			);
+				"Las contraseñas no coinciden, vuelva a intentarlo");
 		} else {
 			HashMap<String, String> params = new HashMap<String, String>();
 			params.put("user", user = userNameField.getText().toString());
