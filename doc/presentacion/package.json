@@ -1,0 +1,16 @@
+{
+  "name": "Presentacion",
+  "version": "1.0.0",
+  "description": "Basada en http://tutorialzine.com/2015/02/smartphone-remote-control-for-presentations/",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "supervisor app.js"
+  },
+  "author": "Nicolas Cisco",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "express": "^4.11.0",
+    "socket.io": "^1.3.2"
+  }
+}

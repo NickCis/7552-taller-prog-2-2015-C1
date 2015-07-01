@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>reveal.js - The HTML Presentation Framework</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link type="text/css" rel="stylesheet" href="css/form.css" />
+		<link rel="stylesheet" href="css/reveal.css">
+		<!--link rel="stylesheet" href="css/theme/black.css" id="theme"-->
+		<link rel="stylesheet" href="css/theme/moon.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+	<form class="login">
+		<span>What's your secret key?</span>
+		<input type="password" placeholder="Please enter your secret key!"/>
+		<input type="submit" value="➡" />
+	</form>
+
+		<div class="reveal blurred">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+				<h1 style="text-align: right">MensajerO</h1>
+				<h3 style="text-align: right">en</h3>
+				<h1 style="text-align: right"><font color="#f08">15</font> minutos</h1>
+					<p>
+						<small>Una peque&ntilde;a introducci&oacute;n al proyecto detras del sistema de mensajer&iacute;a</small>
+					</p>
+				</section>
+
+				<section data-background="#000">
+				<p>
+					No vamos a explicar las caracteristicas b&aacute;sicas, ya que son conocidas
+				</p>
+
+				</section>
+
+				<section>
+					<h2>Servidor - Problemas</h2>
+					<p>
+					<small>Se busc&oacute; resolver, siempre mendiante el uso de <font color="#f08">estandares abiertos</font></small>
+					</p>
+					<ul>
+						<li>Internet es un medio inseguro</li>
+						<li>Overhead y lentitud de request pull para actualizaciones</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Servidor - Problemas</h2>
+					<p>
+					<small>Se busc&oacute; resolver, siempre mendiante el uso de <font color="#f08">estandares abiertos</font></small>
+					</p>
+					<ul>
+						<li>Internet es un medio inseguro -&gt; <font color="#f08">Encriptacion SSL</font></li>
+						<li>Overhead y lentitud de request pull para actualizaciones -&gt; <font color="#f08">Notificaciones PUSH</font></li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Servidor - Encriptacion SSL</h2>
+					<p>
+					<small>Se permite la utilizacion del protocolo <font color="#f08">HTTPS</font> y la utilizaci&oacute;n de <font color="#f08">certificados</font> auto firmados</small>
+					</p>
+					<pre><code data-trim contenteditable>
+$ ./server --help
+Usage: ./server [OPTION]
+  -p, --port=puerto             Especificar el puerto a utilizar
+  -l, --log-file=file           Especificar path de archivo de log
+  -L, --log-level=level         Especificar nivel de log
+  -t, --threads=num             Cantidad de threads
+  -d, --db-path=level           Path de la base de datos
+  -s, --ssl=file                Path del certificado ssl
+$ ./server -s localhost_server.pem
+Version: 1.0
+Configuracion:
+    * port: 8000
+    * threads: 1
+    * logFile: -
+    * dbPath: /tmp/test_db
+    * ssl: localhost_server.pem
+					</code></pre>
+				</section>
+				<section>
+					<h2>Notificaciones PUSH</h2>
+					<p><small>Son mensajes que se env&iacute;an de <font color="#f08">forma directa</font> a dispositvios m&oacute;viles, sirven para notificar de cambios al cliente de una manera r&aacute;pida y eficiente.</small></p>
+					<p><small>Se utiliz&oacute; el protocolo <font color="#f08">SSE</font> (Server sent events) de <font color="#f08">HTML5</font>.</small></p>
+					<pre><code data-trim contenteditable>
+$ curl -H "Accept: text/event-stream" http://localhost:8000/notification?access_token=073861d0ee73d3e3e09aab879f85a3a6
+id: 000519ca97cddd46
+data: {"id":"000519ca97cddd46","time":"1435732804","type":"message","data":{"id":"000519ca97cddcdb","to":"pepe","from":"pepe","message":"holaaa","arrived":0,"read":0,"time":1435732804}}
+
+
+id: 000519ca97cddd60
+data: {"id":"000519ca97cddd60","time":"1435732816","type":"message","data":{"id":"000519ca97cddcdb","to":"pepe","from":"pepe","message":"holaaa","arrived":0,"read":0,"time":1435732804}}
+					</code></pre>
+				</section>
+
+				<section data-background="#000">
+				<p>
+					M&aacute;s alla de las funcionalidades, el cliente espera <font color="#f08">calidad</font> y <font color="#f08">estabilidad</font>
+				</p>
+				</section>
+
+				<section>
+				<h2>Como garantizarlo?</h2>
+				<img width="250" height="250" data-src="img/calidad.png" alt="Down arrow">
+				<ul>
+					<li>Planificaci&oacute;n</li>
+					<li>Control</li>
+					<li>Trazabilidad de los cambios</li>
+					<li>Proceso de desarrollo definido</li>
+					<li>Conocimiento del sistema</li>
+					<li>Comunicaci&oacute;n</li>
+				</ul>
+				</section>
+
+				<section>
+				<h2>Proceso de desarrollo</h2>
+				<p>
+					<small>Se deben utilizar herramientas que sean accesibles en cualquier entorno de trabajo.</small>
+				</p>
+				<ol>
+					<li>Elección de una tarea a realizar del sistema de tareas</li>
+					<li>Resolución de la tarea</li>
+					<li>Desarrollo de tests</li>
+					<li>Actualizacion de la documentaci&oacute;n</li>
+					<li>Generación de nuevos tickets</li>
+				</ol>
+				</section>
+
+				<section>
+					<h2>Automatizaci&oacute;n</h2>
+					<p>
+						Un programador es vago por definici&oacute;n:
+					</p>
+					<blockquote cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
+						&ldquo;Laziness: The quality that makes you go to great effort to reduce overall energy expenditure. It makes you write labor-saving programs that other people will find useful, and document what you wrote so you don't have to answer so many questions about it. Hence, the first great virtue of a programmer.&rdquo;
+					</blockquote>
+					<p>
+					<small><i>Larry Wall</i></small>
+					</p>
+				</section>
+
+				<section data-background="#000">
+				<p>
+				La <font color="#f08">documentaci&oacute;n</font>, <font color="#f08">herramientas de testing</font> y el <font color="#f08">proceso de desarrollo</font> deben tener minimas dependecias para el desarrollador. Todo debe estar automatizado en la <font color="#f08">nube</font>.
+				</p>
+				</section>
+
+				<section>
+				<h2>Sistema integrado de tareas</h2>
+				<img data-src="img/tarea.png" alt="Down arrow">
+				</section>
+
+				<section>
+				<h2>Seguimiento de los cambios</h2>
+				<img data-src="img/cambios.png" alt="Down arrow">
+				</section>
+
+				<section>
+				<h2>Test Unitarios + Test de Integraci&oacute;n</h2>
+				<ul>
+					<li>Test Unitarios: <font color="#f08">Catch</font> (C++ test framework)</li>
+					<li>Test Integraci&oacute;n: <font color="#f08">Chakram</font> + <font color="#f08">Mocha</font> (Requests Node.js)</li>
+				</ul>
+				</section>
+
+				<section>
+				<h2>Sistema de integraci&oacute;n continua</h2>
+				<img data-src="img/travis.png" alt="Down arrow">
+				</section>
+
+				<section>
+				<h2>Code coverage</h2>
+				<img data-src="img/code_coverage.png" alt="Down arrow">
+				</section>
+
+				<section>
+				<h2>Documentaci&oacute;n</h2>
+				<img data-src="img/documentacion.png" alt="Down arrow">
+				</section>
+
+				<section style="text-align: left;" data-background="#000">
+					<h1>THE END</h1>
+					<p>
+						- Alguna pregunta?
+					</p>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="js/jquery-2.1.3.min.js"></script>
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="js/script.js"></script>
+	</body>
+</html>
